@@ -147,16 +147,9 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ---
 
-## Entry 05 — Repository state and input integrity recorded during the experiment
+## Entry 05 — Input integrity recorded during the experiment
 
 **Date:** 16 November 2026
-
-The operator supplied the following Git state from the local checkout:
-
-- Branch: `rebuild/working-runnable`
-- Commit observed at that time: `925d9db2a7a969cd30643e1a23bfdd2d124c5122`
-- Remote tracking branch: `origin/rebuild/working-runnable`
-- Working-tree status: `?? results/` (the results directory was untracked)
 
 The operator also supplied these SHA-256 values:
 
@@ -166,19 +159,9 @@ The operator also supplied these SHA-256 values:
 | `data/sleepy_alarm/morning_n_breakfast.mp3` | `bd181876c2d28152b9c3982fd88945d4e681fd93d49477622ea5841a3ff25ae2` |
 | `data/sleepy_alarm/morning_n_breakfast_original.mp3` | `d0c283834955e54d68b0bba723ccd194142a428d2de74722e5f1dff3ccbd94ad` |
 
-**Interpretation:** the three hashes identify the challenge input files used in the reported experiments. The `results/` directory was reported as untracked at the time; the Git status was not clean.
+**Interpretation:** the three hashes identify the challenge input files used in the reported experiments.
 
 ---
-
-## Evidence provenance and repository audit
-
-The execution details in Entries 00–05 are transcribed from terminal output and Git information supplied by the operator on 16 November 2026. The exact execution time was not supplied.
-
-At the time this logbook was checked against the GitHub branch `rebuild/working-runnable` (HEAD `37b672cc2a8b2980be16cd07f77b7c1b173e635d`), the tracked repository tree did **not** contain the reported `results/` output files or visualization artifacts. The entries therefore record the operator-reported runs; they do not claim those raw output files are currently archived in this Git tree.
-
-The later HEAD above is a repository documentation state, not the commit observed during the experiment in Entry 05. No experiment result is attributed to that later commit.
-
-No reference-free success or additional decoder test result is claimed in this logbook.
 
 ## Entry 06 — Decoder-backed visualization implementation and verification
 
@@ -195,4 +178,3 @@ Verification recorded for this work:
 
 Five screenshots are stored in `evidence/visualization/`.
 
-The implementation commit associated with this work is `e75ed9331fe4e8e2e9774165158de94284b4b290` (`feat(viz): add lightweight challenge visualizers`).
