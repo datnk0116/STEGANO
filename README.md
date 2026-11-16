@@ -1,4 +1,4 @@
-# STEGO — Steganography CTF Project
+# STEGANO — Steganography CTF Project
 
 **Course:** UET.CN3124 — CTF Jeopardy  
 **Topic:** Steganography  
@@ -27,8 +27,8 @@ On Windows PowerShell, activate the environment with `.venv\\Scripts\\Activate.p
 From the repository root:
 
 ```bash
-PYTHONPATH=src python -m stego blue3 data/blue3/blue.png
-PYTHONPATH=src python -m stego sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3
+PYTHONPATH=src python -m stegano blue3 data/blue3/blue.png
+PYTHONPATH=src python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3
 ```
 
 On Windows, use `$env:PYTHONPATH="src"` before the commands.
@@ -45,7 +45,7 @@ A passing integration test checks the decoder output against the expected challe
 
 ## Repository structure
 
-- `src/stego/`: extraction algorithms and CLI.
+- `src/stegano/`: extraction algorithms and CLI.
 - `data/`: official challenge artifacts used by the experiments.
 - `tests/`: image and audio integration tests.
 - `report/REPORT.md`: technical report.

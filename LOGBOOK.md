@@ -1,7 +1,7 @@
 # LOGBOOK — UET.CN3124 Steganography CTF
 
 **Project:** Blue 3 (image) and Sleepy Alarm (audio)  
-**Repository:** `datnk0116/STEGO`  
+**Repository:** `datnk0116/STEGANO`  
 **Purpose:** chronological record of the work actually performed, commands reported as executed, observed outputs, and limitations.
 
 > This logbook is an evidence record, not a plan. Entries below describe completed actions only. A result is marked successful only when the corresponding execution output was reported. No later implementation, visualization, or experiment is represented as already completed.
@@ -44,7 +44,7 @@ The operator also reported that imports of NumPy, Pillow, SciPy, and SoundFile s
 **Command reported as executed:**
 
 ```bash
-PYTHONPATH=src python -m stego blue3 data/blue3/blue.png
+PYTHONPATH=src python -m stegano blue3 data/blue3/blue.png
 ```
 
 **Reported output:**
@@ -69,7 +69,7 @@ PYTHONPATH=src python -m stego blue3 data/blue3/blue.png
 **Command reported as executed:**
 
 ```bash
-PYTHONPATH=src python -m stego sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3
+PYTHONPATH=src python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3
 ```
 
 **Reported output:**
@@ -103,7 +103,7 @@ PYTHONPATH=src python -m stego sleepy-alarm data/sleepy_alarm/morning_n_breakfas
 **Command reported as executed:**
 
 ```bash
-PYTHONPATH=src python -m stego sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3
+PYTHONPATH=src python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3
 ```
 
 **Reported output:**

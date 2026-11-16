@@ -39,7 +39,7 @@ The following results were reported from local executions on 16 November 2026. E
 Command:
 
 ```bash
-PYTHONPATH=src python -m stego blue3 data/blue3/blue.png
+PYTHONPATH=src python -m stegano blue3 data/blue3/blue.png
 ```
 
 The decoder returned:
@@ -55,7 +55,7 @@ The accepted candidate had 50 characters, `format_valid` was `true`, and the pro
 Command:
 
 ```bash
-PYTHONPATH=src python -m stego sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3
+PYTHONPATH=src python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3
 ```
 
 The decoder returned:
@@ -73,7 +73,7 @@ This is a successful **reference-assisted** extraction. It does not establish th
 Command:
 
 ```bash
-PYTHONPATH=src python -m stego sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3
+PYTHONPATH=src python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3
 ```
 
 Without a reference recording, the decoder returned the fragment `ictsl33p_Nauk_arm_224dcb2}`, reported `format_valid: false`, counted 350 symbols and 49 separators, and reported 20 malformed byte groups. The process exited with code 2.

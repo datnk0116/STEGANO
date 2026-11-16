@@ -1,6 +1,6 @@
 import unittest
 from pathlib import Path
-from stego.image import decode_blue3
+from stegano.image import decode_blue3
 ROOT=Path(__file__).resolve().parents[1]
 class TestBlue3(unittest.TestCase):
  def test_official_flag(self):

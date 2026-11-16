@@ -1,6 +1,6 @@
 import unittest
 from pathlib import Path
-from stego.audio import decode_sleepy_alarm
+from stegano.audio import decode_sleepy_alarm
 ROOT=Path(__file__).resolve().parents[1]
 class TestSleepyAlarm(unittest.TestCase):
  def test_official_reference_assisted_flag(self):
