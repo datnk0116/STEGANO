@@ -178,4 +178,21 @@ At the time this logbook was checked against the GitHub branch `rebuild/working-
 
 The later HEAD above is a repository documentation state, not the commit observed during the experiment in Entry 05. No experiment result is attributed to that later commit.
 
-No screenshot, visualization, reference-free success, or additional test result is claimed in this logbook.
+No reference-free success or additional decoder test result is claimed in this logbook.
+
+## Entry 06 — Decoder-backed visualization implementation and verification
+
+**Date:** 16 November 2026
+
+Added a Streamlit overview and Blue 3 and Sleepy Alarm pages with shared decoder/data helpers and Plotly charts. The decoder implementation and challenge artifacts were not changed. Audio waveform points are sampled in bounded blocks for display; decoder calls use the original files.
+
+Verification recorded for this work:
+
+- Nine unit tests passed.
+- Streamlit `AppTest` reported no exceptions for the overview and both challenge pages.
+- The live app health endpoint returned `ok`.
+- Blue 3 and reference-assisted Sleepy Alarm returned format-valid results. Reference-free Sleepy Alarm remained invalid with 20 byte errors.
+
+Five screenshots are stored in `evidence/visualization/`.
+
+The implementation commit associated with this work is `e75ed9331fe4e8e2e9774165158de94284b4b290` (`feat(viz): add lightweight challenge visualizers`).
