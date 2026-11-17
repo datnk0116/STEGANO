@@ -212,3 +212,15 @@ Refactored the shared resampling and correlation path in `src/audio_alignment.py
 
 **Outcome:** the visualizer diagnostics and regression coverage passed. No changes were made to the decoder or challenge MP3 files.
 
+---
+
+## Entry 09 — Audio alignment visualizer and evidence
+
+**Date:** 17 November 2026
+
+Expanded the Sleepy Alarm visualizer to show the input sample rates and frame counts; reference waveforms before and after resampling to the target rate; the normalized cross-correlation profile in milliseconds with the selected lag marked; and the aligned target/reference overlap and residual. The charts use bounded samples for display while alignment diagnostics use full-resolution signals. The page also reports target sample rate, selected lag, correlation, and overlap length.
+
+Added `evidence/visualization/Screenshot 2026-11-17 at 22.18.35.png`, which captures these views. In the shown run, both files were at 44,100 Hz; the target had 441,840 frames and reference had 438,912 frames. The selected lag was 1,729 samples, correlation was 0.999873436, and overlap was 438,912 samples.
+
+**Outcome:** the screenshot records the expanded visualizer output and its observed alignment values; it is visual evidence, not a separate test run.
+
