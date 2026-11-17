@@ -1,5 +1,7 @@
 import unittest
 from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from stegano.image import decode_blue3
 ROOT=Path(__file__).resolve().parents[1]
 class TestBlue3(unittest.TestCase):

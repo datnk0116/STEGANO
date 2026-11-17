@@ -178,3 +178,21 @@ Verification recorded for this work:
 
 Five screenshots are stored in `evidence/visualization/`.
 
+---
+
+## Entry 07 — Audio resampling and alignment regression test
+
+**Date:** 17 November 2026
+
+Added an independent audio alignment helper that resamples the reference signal to the target sample rate and estimates the time offset with cross-correlation. The returned aligned signals are limited to their shared overlap. Regression tests use generated synthetic signals to cover differing sample rates, a time offset, and differing signal lengths; no MP3 files are needed by these tests.
+
+**Command reported as executed:**
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+**Reported output:** all 5 tests passed, including the existing image and reference-assisted audio tests and 3 audio alignment tests. Summary: `Ran 5 tests in 0.311s — OK`.
+
+**Outcome:** the reported full test run passed. No additional measurements were recorded.
+
