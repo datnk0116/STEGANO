@@ -43,7 +43,7 @@ Launch the Streamlit overview from the repository root:
 streamlit run visualization/app.py
 ```
 
-The Sleepy Alarm page shows bounded source waveforms and a separate view produced by `src/audio_alignment.py`, including the aligned overlap, residual, lag and correlation.
+The Sleepy Alarm page shows bounded source waveforms and alignment diagnostics from `src/audio_alignment.py`, including the resampled reference, correlation profile, aligned overlap and residual. Its ASK diagnosis plots the decoder's channel-0 amplitude measurements for each symbol with the three cluster centers and labels, and reports the decoded symbol, separator and NUL counts. It also lists the decoded byte groups. The Blue 3 page shows the RGB baseline and histogram, highlights the selected diagonal blocks, and lists each block's RGB delta, character code and decoded character.
 
 ## Tests
 
@@ -63,6 +63,6 @@ A passing integration test checks the decoder output against the expected challe
 - `LOGBOOK.md`: experiment log, exact commands and evidence register.
 - `evidence/`: screenshots and captured run evidence.
 
-## Reproducibility and evidence
+## Run instructions and evidence
 
 Do not edit original files under `data/`. Store generated plots, decoded outputs and logs under `results/`; store screenshots under `evidence/`. Record the command, date, environment, actual result and corresponding evidence filename for every run. Do not claim a run passed until it has actually completed successfully.

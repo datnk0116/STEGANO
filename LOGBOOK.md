@@ -1,10 +1,9 @@
 # LOGBOOK — UET.CN3124 Steganography CTF
-
 **Project:** Blue 3 (image) and Sleepy Alarm (audio)  
 **Repository:** `datnk0116/STEGANO`  
 **Purpose:** chronological record of the work actually performed, commands reported as executed, observed outputs, and limitations.
 
-> This logbook is an evidence record, not a plan. Entries below describe completed actions only. A result is marked successful only when the corresponding execution output was reported. No later implementation, visualization, or experiment is represented as already completed.
+> This logbook is an evidence record, not a plan. Entries describe completed actions only. A result is marked successful only when the corresponding execution output was reported.
 
 ---
 
@@ -223,4 +222,35 @@ Expanded the Sleepy Alarm visualizer to show the input sample rates and frame co
 Added `evidence/visualization/Screenshot 2026-11-17 at 22.18.35.png`, which captures these views. In the shown run, both files were at 44,100 Hz; the target had 441,840 frames and reference had 438,912 frames. The selected lag was 1,729 samples, correlation was 0.999873436, and overlap was 438,912 samples.
 
 **Outcome:** the screenshot records the expanded visualizer output and its observed alignment values; it is visual evidence, not a separate test run.
+
+---
+
+## Entry 10 — ASK and Blue 3 diagnostic visualizations
+
+**Date:** 18 November 2026
+
+### Implementation
+
+- Added Sleepy Alarm diagnostics for the exact channel-0 measurements used by the decoder: per-symbol ASK levels and labels, the three cluster centers, and decoded byte groups. Extraction results and visualization diagnostics are reported separately.
+- Added Blue 3 diagnostics for the inferred RGB baseline and selected diagonal blocks, including pixel bounds, per-channel deltas, summed character codes, and decoded characters.
+- Updated the Sleepy Alarm and Blue 3 Streamlit pages and the README, including audio resampling and cross-correlation views.
+
+### Verification
+
+**Command:**
+
+```text
+rtk env PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
+```
+
+**Observed result:** all 19 tests passed, including AppTest for the overview and both challenge pages. `rtk git diff --check` completed without errors.
+
+The current reference-assisted run reported 350 symbols and 38 separators in the 7-second window, with no NUL characters in the decoded byte groups. Blue 3 diagnostics reconstructed the selected valid candidate from its diagonal blocks.
+
+### Evidence
+
+- `evidence/visualization/Screenshot 2026-11-18 at 06.31.35.png` — Blue 3 image with the selected diagonal blocks highlighted.
+- `evidence/visualization/Screenshot 2026-11-18 at 06.31.58.png` — Blue 3 candidate, RGB baseline, and per-block character/code table.
+- `evidence/visualization/Screenshot 2026-11-18 at 06.47.19.png` — current Sleepy Alarm ASK metrics, per-symbol clusters, and decoder parameters.
+- `evidence/visualization/Screenshot 2026-11-18 at 06.34.48.png` — decoded byte groups, bits, characters, code points, and error indicators.
 

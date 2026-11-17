@@ -12,7 +12,9 @@ from visualization.utils import (
     image_summary,
     read_waveform,
     run_blue3,
+    run_blue3_diagnostics,
     run_sleepy_alarm,
+    run_sleepy_alarm_diagnostics,
     sleepy_alignment_diagnostics,
 )
 
@@ -21,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class TestVisualizationDecoderCalls(unittest.TestCase):
     @patch("visualization.utils.decode_blue3")
-    def test_blue3_runner_returns_decoder_data_unchanged(self, decoder):
+    def test_blue3_runner_returns_decoder_data(self, decoder):
         expected = {
             "flag": "byuctf{example}",
             "format_valid": True,
@@ -120,12 +122,37 @@ class TestVisualizationData(unittest.TestCase):
         self.assertFalse(run["result"]["reference_assisted"])
         self.assertGreater(len(run["result"]["errors"]), 0)
 
-    def test_reference_assisted_decoder_output_is_unchanged(self):
+    def test_reference_assisted_decoder_returns_expected_output(self):
         run = run_sleepy_alarm(SLEEPY_TARGET_PATH, SLEEPY_REFERENCE_PATH)
         self.assertEqual(run["status"], "Success")
         self.assertEqual(run["result"]["decoded_text"], "ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}")
         self.assertEqual(run["result"]["alignment"]["lag_samples"], 1729)
         self.assertEqual(run["result"]["alignment"]["target_start_sample"], 1729)
+
+    def test_sleepy_diagnostics_match_the_reference_assisted_decoder(self):
+        run = run_sleepy_alarm_diagnostics(SLEEPY_TARGET_PATH, SLEEPY_REFERENCE_PATH)
+        self.assertEqual(run["status"], "Success")
+        result = run["result"]
+        diagnostics = run["diagnostics"]
+        self.assertEqual((result["symbol_count"], result["separator_count"]), (350, 38))
+        self.assertEqual(len(diagnostics["amplitude_levels"]), result["symbol_count"])
+        self.assertEqual(len(diagnostics["symbol_labels"]), result["symbol_count"])
+        self.assertEqual([cluster["center"] for cluster in diagnostics["clusters"]], result["amplitude_centers"])
+        self.assertEqual(diagnostics["sample_rate"], 44100)
+        self.assertEqual(diagnostics["duration_seconds"], 7.0)
+        self.assertEqual(sum(group["codepoint"] == 0 for group in diagnostics["groups"] if group["codepoint"] is not None), 0)
+
+    def test_blue3_diagnostics_describe_the_selected_decoder_blocks(self):
+        run = run_blue3_diagnostics(BLUE3_PATH)
+        self.assertEqual(run["status"], "Success")
+        result = run["result"]
+        diagnostics = run["diagnostics"]
+        self.assertEqual("".join(block["character"] for block in diagnostics["blocks"]), result["flag"])
+        self.assertEqual(len(diagnostics["blocks"]), len(result["flag"]))
+        self.assertEqual(diagnostics["baseline"], (64, 77, 205))
+        for block in diagnostics["blocks"]:
+            self.assertEqual(sum(block["rgb_delta"]), block["value"])
+            self.assertEqual(ord(block["character"]), block["value"])
 
 
 if __name__ == "__main__":

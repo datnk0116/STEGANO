@@ -19,6 +19,7 @@ from visualization.utils import (  # noqa: E402
     bounded_signal,
     read_waveform,
     run_sleepy_alarm,
+    run_sleepy_alarm_diagnostics,
     sleepy_alignment_diagnostics,
 )
 from visualization.plotting import plotly_chart  # noqa: E402
@@ -27,7 +28,7 @@ st.title("Sleepy Alarm · Audio extraction")
 st.caption("Waveforms are sampled only for display. Both decoder runs receive the original full-resolution audio files.")
 
 with st.spinner("Running reference-assisted and reference-free decoders…"):
-    assisted = run_sleepy_alarm(SLEEPY_TARGET_PATH, SLEEPY_REFERENCE_PATH)
+    assisted = run_sleepy_alarm_diagnostics(SLEEPY_TARGET_PATH, SLEEPY_REFERENCE_PATH)
     reference_free = run_sleepy_alarm(SLEEPY_TARGET_PATH)
 
 
@@ -241,6 +242,74 @@ try:
     metrics[3].metric("Aligned overlap", f"{alignment_view['overlap_samples']:,} samples")
 except Exception as exc:
     st.error(f"Could not calculate alignment visualization: {type(exc).__name__}: {exc}")
+
+
+st.subheader("ASK decoder diagnosis")
+st.caption("Per-symbol measurements and cluster labels below come from the same channel-0 measurements used by the reference-assisted decoder.")
+if assisted["diagnostics"] is None:
+    st.error(f"ASK diagnostics unavailable: {assisted['error']}")
+else:
+    diagnostic = assisted["diagnostics"]
+    result = assisted["result"]
+    nul_count = sum(group["codepoint"] == 0 for group in diagnostic["groups"] if group["codepoint"] is not None)
+    summary_cols = st.columns(4)
+    summary_cols[0].metric("Symbols decoded", f"{result['symbol_count']:,}")
+    summary_cols[1].metric("Separators", f"{result['separator_count']:,}")
+    summary_cols[2].metric("NUL characters", f"{nul_count:,}")
+    summary_cols[3].metric("Analysis window", f"{diagnostic['duration_seconds']:.2f} s")
+
+    labels = diagnostic["symbol_labels"]
+    values = np.asarray(diagnostic["amplitude_levels"])
+    times = np.asarray(diagnostic["symbol_times_seconds"])
+    label_info = {" ": ("Separator", "#9ca3af"), "0": ("Bit 0", "#2a9d8f"), "1": ("Bit 1", "#4ea8de")}
+    cluster_colors = {"separator": "#9ca3af", "0": "#2a9d8f", "1": "#4ea8de"}
+    fig = go.Figure()
+    for symbol, (name, color) in label_info.items():
+        selected = np.asarray([label == symbol for label in labels])
+        fig.add_trace(go.Scattergl(
+            x=times[selected],
+            y=values[selected],
+            mode="markers",
+            name=name,
+            marker={"size": 7, "color": color},
+            customdata=np.flatnonzero(selected),
+            hovertemplate="Symbol %{customdata}<br>Time %{x:.3f} s<br>ASK level %{y:.8g}<extra>%{fullData.name}</extra>",
+        ))
+    for cluster in diagnostic["clusters"]:
+        fig.add_hline(
+            y=cluster["center"],
+            line_dash="dash",
+            line_color=cluster_colors[cluster["label"]],
+            annotation_text=f"{cluster['label']}: {cluster['center']:.5g}",
+            annotation_position="top right",
+        )
+    fig.update_layout(
+        height=430,
+        xaxis_title="Time (seconds)",
+        yaxis_title="ASK amplitude per symbol",
+        legend_title="Cluster",
+        margin={"l": 20, "r": 20, "t": 35, "b": 20},
+    )
+    plotly_chart(fig)
+    parameter_cols = st.columns(4)
+    parameter_cols[0].metric("Channel", "0")
+    parameter_cols[1].metric("Carrier", f"{diagnostic['carrier_hz']:,.0f} Hz")
+    parameter_cols[2].metric("Symbol rate", f"{diagnostic['symbol_rate']:g} baud")
+    parameter_cols[3].metric("Symbols analyzed", f"{len(values):,}")
+    st.caption("Cluster centers are computed by the decoder. Points show the complete decoded 7-second symbol window; no plot-only resampling is applied.")
+
+    st.markdown("**Decoded byte groups**")
+    st.dataframe(
+        [{
+            "byte": group["byte_index"],
+            "bits": group["bits"],
+            "character": "NUL" if group["codepoint"] == 0 else (group["character"] or "(incomplete)"),
+            "code point": group["codepoint"],
+            "error": group["error"],
+        } for group in diagnostic["groups"]],
+        width="stretch",
+        hide_index=True,
+    )
 
 
 def show_decoder_mode(title: str, run: dict) -> None:

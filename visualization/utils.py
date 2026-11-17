@@ -21,8 +21,8 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from audio_alignment import align_audio, alignment_diagnostics  # noqa: E402
-from stegano.audio import decode_sleepy_alarm  # noqa: E402
-from stegano.image import decode_blue3  # noqa: E402
+from stegano.audio import decode_sleepy_alarm, diagnose_sleepy_alarm  # noqa: E402
+from stegano.image import decode_blue3, diagnose_blue3  # noqa: E402
 
 BLUE3_PATH = ROOT / "data" / "blue3" / "blue.png"
 SLEEPY_TARGET_PATH = ROOT / "data" / "sleepy_alarm" / "morning_n_breakfast.mp3"
@@ -47,16 +47,49 @@ def _execute(decoder: Callable[..., dict[str, Any]], *args: Any, **kwargs: Any) 
 
 
 def run_blue3(path: str | Path = BLUE3_PATH) -> dict[str, Any]:
-    """Call the existing Blue 3 decoder without altering its returned data."""
+    """Run the project Blue 3 decoder and retain its returned data."""
     return _execute(decode_blue3, path)
+
+
+def run_blue3_diagnostics(path: str | Path = BLUE3_PATH) -> dict[str, Any]:
+    """Run Blue 3 once and retain the decoder's baseline/block diagnostics."""
+    try:
+        diagnostic = diagnose_blue3(path)
+    except Exception as exc:
+        return {"status": "Failed", "result": None, "diagnostics": None, "error": f"{type(exc).__name__}: {exc}"}
+    result = diagnostic["result"]
+    return {
+        "status": "Success" if result.get("format_valid") is True else "Failed",
+        "result": result,
+        "diagnostics": diagnostic,
+        "error": None,
+    }
 
 
 def run_sleepy_alarm(
     target_path: str | Path = SLEEPY_TARGET_PATH,
     reference_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    """Call the existing audio decoder in the selected reference mode."""
+    """Run the audio decoder in the selected reference mode."""
     return _execute(decode_sleepy_alarm, target_path, reference_path)
+
+
+def run_sleepy_alarm_diagnostics(
+    target_path: str | Path = SLEEPY_TARGET_PATH,
+    reference_path: str | Path | None = None,
+) -> dict[str, Any]:
+    """Run Sleepy Alarm once and retain the exact measurements used to decode."""
+    try:
+        diagnostic = diagnose_sleepy_alarm(target_path, reference_path)
+    except Exception as exc:
+        return {"status": "Failed", "result": None, "diagnostics": None, "error": f"{type(exc).__name__}: {exc}"}
+    result = diagnostic["result"]
+    return {
+        "status": "Success" if result.get("format_valid") is True else "Failed",
+        "result": result,
+        "diagnostics": diagnostic["diagnostics"],
+        "error": None,
+    }
 
 
 def image_summary(path: str | Path) -> tuple[np.ndarray, tuple[int, int, int], int]:

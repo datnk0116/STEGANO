@@ -34,7 +34,7 @@ def _align(target, sr, reference, ref_sr):
     x, y, start = _overlap(target, reference, best)
     return x, y, {'lag_samples': best, 'correlation': score, 'target_start_sample': start}
 
-def decode_sleepy_alarm(path, reference_path=None, carrier=8000.0, baud=50.0, duration=7.0):
+def _decode_sleepy_alarm(path, reference_path=None, carrier=8000.0, baud=50.0, duration=7.0):
     target, sr = sf.read(path, always_2d=True, dtype='float64')
     signal, alignment = target, None
     if reference_path:
@@ -78,4 +78,32 @@ def decode_sleepy_alarm(path, reference_path=None, carrier=8000.0, baud=50.0, du
         else: chars.append(chr(int(bits,2)))
     text=''.join(chars)
     valid=len(chunks)==39 and not errors and len(text)==39 and text.startswith('ictf{') and text.endswith('}')
-    return {'decoded_text':text,'format_valid':valid,'symbol_count':len(levels),'separator_count':symbols.count(' '),'reference_assisted':reference_path is not None,'alignment':alignment,'errors':errors,'amplitude_centers':centers.tolist()}
+    result = {'decoded_text':text,'format_valid':valid,'symbol_count':len(levels),'separator_count':symbols.count(' '),'reference_assisted':reference_path is not None,'alignment':alignment,'errors':errors,'amplitude_centers':centers.tolist()}
+    groups=[]
+    for i, bits in enumerate(chunks):
+        character = chr(int(bits, 2)) if len(bits) == 8 else None
+        groups.append({'byte_index':i,'bits':bits,'character':character,'codepoint':ord(character) if character is not None else None,'error':len(bits)!=8})
+    diagnostics = {
+        'sample_rate':int(sr),
+        'symbol_rate':float(baud),
+        'carrier_hz':float(carrier),
+        'duration_seconds':float(duration),
+        'symbol_times_seconds':((np.arange(len(values), dtype=np.float64)+0.5)/baud).tolist(),
+        'amplitude_levels':values.tolist(),
+        'symbol_labels':[symbols[i] for i in range(len(symbols))],
+        'clusters':[{'label':{0:'separator',1:'0',2:'1'}[i],'center':float(centers[i])} for i in range(3)],
+        'groups':groups,
+    }
+    return result, diagnostics
+
+
+def decode_sleepy_alarm(path, reference_path=None, carrier=8000.0, baud=50.0, duration=7.0):
+    """Return the Sleepy Alarm extraction result."""
+    result, _ = _decode_sleepy_alarm(path, reference_path, carrier, baud, duration)
+    return result
+
+
+def diagnose_sleepy_alarm(path, reference_path=None, carrier=8000.0, baud=50.0, duration=7.0):
+    """Return the decoder result plus the exact ASK measurements used to create it."""
+    result, diagnostics = _decode_sleepy_alarm(path, reference_path, carrier, baud, duration)
+    return {'result':result,'diagnostics':diagnostics}

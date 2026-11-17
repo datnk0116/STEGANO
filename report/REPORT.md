@@ -2,7 +2,7 @@
 
 ## 1. Topic, context and objectives
 
-This project studies two public Jeopardy-style CTF challenges under the steganography topic: Blue 3, which embeds information in an image, and Sleepy Alarm, which embeds information in an audio recording. The objectives are to explain the hiding mechanism, implement extraction, reproduce the results on the supplied artifacts, and critically evaluate assumptions and limitations.
+This project studies two public Jeopardy-style CTF challenges under the steganography topic: Blue 3, which embeds information in an image, and Sleepy Alarm, which embeds information in an audio recording. The objectives are to explain the hiding mechanism, implement extraction, run the extractors on the supplied artifacts, and critically evaluate assumptions and limitations.
 
 ## 2. Background
 
@@ -26,7 +26,7 @@ The decoder reads the distributed recording and, when provided, the original/ref
 
 The reference-assisted mode depends on access to the original recording. It is distinguished from reference-free extraction in the results below.
 
-## 5. Reproducible workflow
+## 5. Execution workflow
 
 The setup, CLI commands and test invocation are maintained in `README.md`. The exact commands reported as executed, together with their outcomes, are recorded in `LOGBOOK.md`. The expected flag is a validation target only; it is not used as extraction input.
 
