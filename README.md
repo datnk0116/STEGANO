@@ -35,6 +35,16 @@ On Windows, use `$env:PYTHONPATH="src"` before the commands.
 
 Sleepy Alarm's reference-assisted run uses the original recording to align and subtract the carrier audio. This is a reference-assisted extraction, not blind steganalysis. The reference-free mode is available by omitting `--reference`; its output must be assessed separately.
 
+## Visualizations
+
+Launch the Streamlit overview from the repository root:
+
+```bash
+streamlit run visualization/app.py
+```
+
+The Sleepy Alarm page shows bounded source waveforms and a separate view produced by `src/audio_alignment.py`, including the aligned overlap, residual, lag and correlation.
+
 ## Tests
 
 ```bash
@@ -46,6 +56,7 @@ A passing integration test checks the decoder output against the expected challe
 ## Repository structure
 
 - `src/stegano/`: extraction algorithms and CLI.
+- `visualization/`: Streamlit overview and Blue 3 and Sleepy Alarm pages.
 - `data/`: official challenge artifacts used by the experiments.
 - `tests/`: image and audio integration tests.
 - `report/REPORT.md`: technical report.
