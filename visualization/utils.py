@@ -20,7 +20,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from audio_alignment import align_audio  # noqa: E402
+from audio_alignment import align_audio, alignment_diagnostics  # noqa: E402
 from stegano.audio import decode_sleepy_alarm  # noqa: E402
 from stegano.image import decode_blue3  # noqa: E402
 
@@ -128,6 +128,25 @@ def align_sleepy_audio(
     target, target_sr = sf.read(target_path, always_2d=True, dtype="float64")
     reference, reference_sr = sf.read(reference_path, always_2d=True, dtype="float64")
     return align_audio(target, target_sr, reference, reference_sr)
+
+
+def sleepy_alignment_diagnostics(
+    target_path: str | Path = SLEEPY_TARGET_PATH,
+    reference_path: str | Path = SLEEPY_REFERENCE_PATH,
+) -> dict[str, Any]:
+    """Load challenge audio and return resampling/alignment plot data."""
+    target, target_sr = sf.read(target_path, always_2d=True, dtype="float64")
+    reference, reference_sr = sf.read(reference_path, always_2d=True, dtype="float64")
+    diagnostics = alignment_diagnostics(target, target_sr, reference, reference_sr)
+    diagnostics.update(
+        {
+            "target_sample_rate": int(target_sr),
+            "reference_sample_rate": int(reference_sr),
+            "target_frames": int(len(target)),
+            "reference_frames": int(len(reference)),
+        }
+    )
+    return diagnostics
 
 
 def bounded_signal(signal: np.ndarray, max_points: int = 12_000) -> tuple[np.ndarray, np.ndarray]:

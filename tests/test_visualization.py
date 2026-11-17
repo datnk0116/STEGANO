@@ -13,6 +13,7 @@ from visualization.utils import (
     read_waveform,
     run_blue3,
     run_sleepy_alarm,
+    sleepy_alignment_diagnostics,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -85,6 +86,25 @@ class TestVisualizationData(unittest.TestCase):
         self.assertEqual(alignment["sample_rate"], audio_metadata(SLEEPY_TARGET_PATH)["sample_rate"])
         self.assertGreater(alignment["correlation"], 0.9)
         self.assertGreater(alignment["overlap_samples"], 0)
+
+    def test_alignment_diagnostics_preserve_input_and_resampled_lengths(self):
+        diagnostics = sleepy_alignment_diagnostics()
+        self.assertEqual(
+            diagnostics["metadata"]["lag_samples"],
+            diagnostics["correlation_lags"][
+                int(abs(diagnostics["correlation_profile"]).argmax())
+            ],
+        )
+        self.assertEqual(
+            diagnostics["metadata"]["sample_rate"],
+            diagnostics["target_sample_rate"],
+        )
+        self.assertEqual(
+            len(diagnostics["reference_resampled"]),
+            diagnostics["metadata"]["overlap_samples"]
+            + diagnostics["metadata"]["reference_start_sample"],
+        )
+        self.assertGreater(len(diagnostics["reference_original"]), 0)
 
     def test_bounded_signal_limits_plot_points(self):
         indices, values = bounded_signal(range(100), max_points=10)

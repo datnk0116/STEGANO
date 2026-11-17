@@ -6,7 +6,7 @@ import numpy as np
 from scipy.signal import resample_poly
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from audio_alignment import align_audio
+from audio_alignment import align_audio, alignment_diagnostics
 
 
 class TestAudioAlignment(unittest.TestCase):
@@ -38,6 +38,24 @@ class TestAudioAlignment(unittest.TestCase):
         self.assertEqual(info["target_start_sample"], 125)
         self.assertEqual(info["overlap_samples"], 5000)
         np.testing.assert_allclose(actual, aligned_reference, atol=1e-12)
+
+    def test_diagnostics_profile_marks_the_alignment_lag(self):
+        rng = np.random.default_rng(7)
+        reference = rng.normal(size=4000)
+        target = np.concatenate((np.zeros(180), resample_poly(reference, 2, 1)))
+
+        diagnostics = alignment_diagnostics(target, 16000, reference, 8000)
+        peak_lag = int(
+            diagnostics["correlation_lags"][
+                np.argmax(np.abs(diagnostics["correlation_profile"]))
+            ]
+        )
+
+        self.assertEqual(peak_lag, diagnostics["metadata"]["lag_samples"])
+        self.assertEqual(peak_lag, 180)
+        self.assertEqual(len(diagnostics["reference_original"]), len(reference))
+        self.assertEqual(len(diagnostics["reference_resampled"]), 2 * len(reference))
+        self.assertEqual(len(diagnostics["target_aligned"]), len(diagnostics["reference_aligned"]))
 
     def test_rejects_invalid_sample_rate(self):
         with self.assertRaises(ValueError):

@@ -15,11 +15,11 @@ if str(ROOT) not in sys.path:
 from visualization.utils import (  # noqa: E402
     SLEEPY_REFERENCE_PATH,
     SLEEPY_TARGET_PATH,
-    align_sleepy_audio,
     audio_metadata,
     bounded_signal,
     read_waveform,
     run_sleepy_alarm,
+    sleepy_alignment_diagnostics,
 )
 from visualization.plotting import plotly_chart  # noqa: E402
 
@@ -100,10 +100,103 @@ if waveforms:
 
 
 st.subheader("Resampling and cross-correlation alignment")
-st.caption("This view calls src/audio_alignment.py directly. The reference is resampled to the target sample rate; traces show the shared aligned overlap.")
+st.caption("Input sample rates and frame counts are shown above. Diagnostics use the same resampling and correlation path as src/audio_alignment.py; plot point reduction affects display only.")
 try:
-    aligned_target, aligned_reference, alignment_view = align_sleepy_audio()
+    diagnostics = sleepy_alignment_diagnostics()
+    alignment_view = diagnostics["metadata"]
     sample_rate = alignment_view["sample_rate"]
+    st.markdown("**Resampling the reference**")
+    st.caption(
+        f"Reference: {diagnostics['reference_sample_rate']:,} Hz → "
+        f"{sample_rate:,} Hz target rate; "
+        f"{diagnostics['reference_frames']:,} input frames → "
+        f"{len(diagnostics['reference_resampled']):,} resampled samples."
+    )
+    original_indices, original_values = bounded_signal(diagnostics["reference_original"])
+    resampled_indices, resampled_values = bounded_signal(diagnostics["reference_resampled"])
+    resample_fig = make_subplots(
+        rows=2,
+        cols=1,
+        shared_xaxes=False,
+        vertical_spacing=0.12,
+        subplot_titles=("Reference before resampling", "Reference at target sample rate"),
+    )
+    resample_fig.add_trace(
+        go.Scattergl(
+            x=original_indices / diagnostics["reference_sample_rate"],
+            y=original_values,
+            mode="lines",
+            name="Original reference",
+            line={"width": 0.8},
+        ),
+        row=1,
+        col=1,
+    )
+    resample_fig.add_trace(
+        go.Scattergl(
+            x=resampled_indices / sample_rate,
+            y=resampled_values,
+            mode="lines",
+            name="Resampled reference",
+            line={"width": 0.8},
+        ),
+        row=2,
+        col=1,
+    )
+    resample_fig.update_yaxes(title_text="Amplitude", row=1, col=1)
+    resample_fig.update_yaxes(title_text="Amplitude", row=2, col=1)
+    resample_fig.update_xaxes(title_text="Time (seconds)", row=2, col=1)
+    resample_fig.update_layout(
+        height=520,
+        hovermode="x unified",
+        margin={"l": 20, "r": 20, "t": 50, "b": 20},
+    )
+    plotly_chart(resample_fig)
+
+    st.markdown("**Cross-correlation by lag**")
+    correlation_indices, correlation_values = bounded_signal(
+        diagnostics["correlation_profile"], max_points=12_000
+    )
+    correlation_lags = diagnostics["correlation_lags"][correlation_indices]
+    selected_lag = alignment_view["lag_samples"]
+    selected_index = int(np.argmin(np.abs(diagnostics["correlation_lags"] - selected_lag)))
+    correlation_fig = go.Figure()
+    correlation_fig.add_trace(
+        go.Scattergl(
+            x=correlation_lags / sample_rate * 1000,
+            y=correlation_values,
+            mode="lines",
+            name="Normalized correlation",
+            line={"width": 0.8},
+        )
+    )
+    correlation_fig.add_trace(
+        go.Scatter(
+            x=[selected_lag / sample_rate * 1000],
+            y=[diagnostics["correlation_profile"][selected_index]],
+            mode="markers",
+            name="Selected lag",
+            marker={"size": 10, "color": "#ef553b"},
+        )
+    )
+    correlation_fig.add_vline(
+        x=selected_lag / sample_rate * 1000,
+        line_dash="dash",
+        line_color="#ef553b",
+        annotation_text=f"{selected_lag:,} samples",
+    )
+    correlation_fig.update_layout(
+        xaxis_title="Lag (milliseconds)",
+        yaxis_title="Normalized cross-correlation",
+        height=360,
+        hovermode="x unified",
+        margin={"l": 20, "r": 20, "t": 45, "b": 20},
+    )
+    plotly_chart(correlation_fig)
+
+    st.markdown("**Aligned overlap and residual**")
+    aligned_target = diagnostics["target_aligned"]
+    aligned_reference = diagnostics["reference_aligned"]
     target_indices, target_values = bounded_signal(aligned_target)
     reference_indices, reference_values = bounded_signal(aligned_reference)
     fig = make_subplots(

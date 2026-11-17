@@ -196,3 +196,19 @@ python -m unittest discover -s tests -v
 
 **Outcome:** the reported full test run passed. No additional measurements were recorded.
 
+---
+
+## Entry 08 — Resampling and correlation diagnostics in the visualizer
+
+**Date:** 17 November 2026
+
+Refactored the shared resampling and correlation path in `src/audio_alignment.py` and added `alignment_diagnostics` for visualization data. The Sleepy Alarm page now displays reference waveforms before and after resampling, the normalized correlation profile with the selected lag marked, and the existing aligned overlap and residual. Plot downsampling is limited to display; the alignment uses full-resolution signals.
+
+**Verification:**
+
+- `python -m unittest discover -s tests -v` passed all 17 tests.
+- Streamlit `AppTest` loaded the overview and both challenge pages without exceptions.
+- Synthetic signals with different sample rates, delay, and lengths confirmed that the correlation-profile peak matches the selected alignment lag.
+
+**Outcome:** the visualizer diagnostics and regression coverage passed. No changes were made to the decoder or challenge MP3 files.
+
