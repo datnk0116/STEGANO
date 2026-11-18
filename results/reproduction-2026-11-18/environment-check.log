@@ -1,0 +1,7 @@
+3.14.10 (main, Oct 25 2026, 17:12:00) [Clang 17.0.0 (clang-1700.6.4.2)]
+NumPy 2.5.5
+Pillow 13.0.0
+SciPy 1.18.1
+SoundFile 0.14.0
+Plotly 6.9.0
+Streamlit 1.67.0

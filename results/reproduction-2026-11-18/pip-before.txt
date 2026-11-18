@@ -1,0 +1,1 @@
+pip 26.2.2 from /Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/.venv/repro314/lib/python3.14/site-packages/pip (python 3.14)

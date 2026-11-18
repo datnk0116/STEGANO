@@ -1,0 +1,202 @@
+{
+  "flag": "byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}",
+  "format_valid": true,
+  "attempts": [
+    {
+      "length": 2,
+      "candidate": "જ॓"
+    },
+    {
+      "length": 3,
+      "candidate": "ܡۿ،"
+    },
+    {
+      "length": 4,
+      "candidate": "ՖԧӞщ"
+    },
+    {
+      "length": 5,
+      "candidate": "ћЅОφ͠"
+    },
+    {
+      "length": 6,
+      "candidate": "Ύ͖̹ͮ͒ʞ"
+    },
+    {
+      "length": 7,
+      "candidate": "̎˝˝˻ʤˈȢ"
+    },
+    {
+      "length": 8,
+      "candidate": "ʦɮʔɲʇɗɠǉ"
+    },
+    {
+      "length": 9,
+      "candidate": "ɆɆȣȡɄȲǾȑǉ"
+    },
+    {
+      "length": 10,
+      "candidate": "ȫȪǥǱǧǸǁǢǉƊ"
+    },
+    {
+      "length": 11,
+      "candidate": "ǜǔƽƿǉǓƸƣƫƈƉ"
+    },
+    {
+      "length": 12,
+      "candidate": "ƸƨźƗƵƧƧŷŭƛŪŶ"
+    },
+    {
+      "length": 13,
+      "candidate": "ơƍŻŭŰŰŦźśſƌĦŉ"
+    },
+    {
+      "length": 14,
+      "candidate": "ŷşŮņţŤŗŮœŇńŎĉŉ"
+    },
+    {
+      "length": 15,
+      "candidate": "ŧŁŖĥŏšŊłŒıĳĵŉÞÝ"
+    },
+    {
+      "length": 16,
+      "candidate": "ŖıĤēōŇĖĤİŀģĘĞēüÍ"
+    },
+    {
+      "length": 17,
+      "candidate": "ŐĽŗĶŃķŀľĺőĤĢĨĲĭõÍ"
+    },
+    {
+      "length": 18,
+      "candidate": "ĪüČĂĉĚĐçăġġ÷äóċĆ±Ý"
+    },
+    {
+      "length": 19,
+      "candidate": "ĈïüüßăáòêüÿíÙÛíöåä"
+    },
+    {
+      "length": 20,
+      "candidate": "úô÷ĄÙúÝ÷ÚóðüÚÙØãéÜæ"
+    },
+    {
+      "length": 21,
+      "candidate": "ïÙäæ×ãÑêÎîçäßÇÐÔÒá½ÅÍ"
+    },
+    {
+      "length": 22,
+      "candidate": "âÅÞÞËÀÝÓÆØÛÍÜÈÀºÑË»Á©"
+    },
+    {
+      "length": 23,
+      "candidate": "ßÁ¿ÄÙÂÎ¤ÈÍâÄÅËÊÂ´§¿Ø³"
+    },
+    {
+      "length": 24,
+      "candidate": "ÞÃ¾³°¸±ÍÌÏÂº½¢­¹ÎÕ{®©"
+    },
+    {
+      "length": 25,
+      "candidate": "ÛØÚèáÄÎÚÒÙÈÝÙÑáÃÀÃÃÊÍÔ¼Í"
+    },
+    {
+      "length": 26,
+      "candidate": "¼½©¨±¡Ï¼§¤¤¡°µ¯{o"
+    },
+    {
+      "length": 27,
+      "candidate": "¯£«¾°±¸±½¦¨a"
+    },
+    {
+      "length": 28,
+      "candidate": "¯£«¾°±¸±½¦¨a"
+    },
+    {
+      "length": 29,
+      "candidate": "¬ª§§£|_rp"
+    },
+    {
+      "length": 30,
+      "candidate": "¬ª§§£|_rpB"
+    },
+    {
+      "length": 31,
+      "candidate": "|wowpz}G{"
+    },
+    {
+      "length": 32,
+      "candidate": "|wowpz}G{\u001c"
+    },
+    {
+      "length": 33,
+      "candidate": "q}s}~wu}|w~oDo"
+    },
+    {
+      "length": 34,
+      "candidate": "q}s}~wu}|w~oDo&"
+    },
+    {
+      "length": 35,
+      "candidate": "yyni}ppX}~\\wp{lzmv~fmpoubohyw[D^`"
+    },
+    {
+      "length": 36,
+      "candidate": "yyni}ppX}~\\wp{lzmv~fmpoubohyw[D^`}"
+    },
+    {
+      "length": 37,
+      "candidate": "ladynKwsKjx^\\vfffpVxjevcPWfkSpnbgpE6}"
+    },
+    {
+      "length": 38,
+      "candidate": "ladynKwsKjx^\\vfffpVxjevcPWfkSpnbgpE6}W"
+    },
+    {
+      "length": 39,
+      "candidate": "ladynKwsKjx^\\vfffpVxjevcPWfkSpnbgpE6}W5"
+    },
+    {
+      "length": 40,
+      "candidate": "e_NWg}_OQcceNMuuXPVqi^Q]}bLRQeeSDVqpc41|"
+    },
+    {
+      "length": 41,
+      "candidate": "e_NWg}_OQcceNMuuXPVqi^Q]}bLRQeeSDVqpc41|X"
+    },
+    {
+      "length": 42,
+      "candidate": "e_NWg}_OQcceNMuuXPVqi^Q]}bLRQeeSDVqpc41|XQ"
+    },
+    {
+      "length": 43,
+      "candidate": "caY=@K:[[faR\\E8AGO\\bn^IPDIVHVaaOP?B6HW^lY1B"
+    },
+    {
+      "length": 44,
+      "candidate": "caY=@K:[[faR\\E8AGO\\bn^IPDIVHVaaOP?B6HW^lY1B>"
+    },
+    {
+      "length": 45,
+      "candidate": "caY=@K:[[faR\\E8AGO\\bn^IPDIVHVaaOP?B6HW^lY1B>A"
+    },
+    {
+      "length": 46,
+      "candidate": "caY=@K:[[faR\\E8AGO\\bn^IPDIVHVaaOP?B6HW^lY1B>A&"
+    },
+    {
+      "length": 47,
+      "candidate": "byuctf{more_blue_steganography_da_ba_dee_nkiY9C"
+    },
+    {
+      "length": 48,
+      "candidate": "byuctf{more_blue_steganography_da_ba_dee_nkiY9Cy"
+    },
+    {
+      "length": 49,
+      "candidate": "byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP"
+    },
+    {
+      "length": 50,
+      "candidate": "byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}"
+    }
+  ]
+}

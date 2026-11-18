@@ -1,11 +1,8 @@
 # Evidence
 
-Put real screenshots of experiment execution in this directory, organized as described in the root `LOGBOOK.md`:
+Store screenshots in the folders used by this repository:
 
-- `01_environment/` — Python and dependency installation.
-- `02_blue3/` — Blue 3 command and output.
-- `03_sleepy_alarm/` — reference-assisted and reference-free runs.
-- `04_tests/` — complete test-suite summary.
-- `05_final/` — branch, commit and repository status.
+- `terminal/` — direct captures of environment checks, CLI runs, tests, and Streamlit startup. The corresponding logbook and appendix entries link to each capture.
+- `visualization/` — screenshots of the Streamlit pages, intermediate diagnostics, and displayed results.
 
-Keep raw text logs and JSON results under `results/`, not here. Capture screenshots directly from the running application and keep them unaltered.
+Keep raw text logs and JSON results under `results/`, not here. Capture screenshots directly from the running application or Terminal and keep them unaltered.

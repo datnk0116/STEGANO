@@ -1,0 +1,8 @@
+Replay interval: 2026-11-18 15:06:20–15:08:53 +07
+Python: 3.14.10
+pip install -r requirements.txt: exit 0
+pip check: exit 0
+Blue 3 extraction: exit 0
+Sleepy Alarm reference-assisted: exit 0
+Sleepy Alarm reference-free: exit 2
+unittest discover: exit 0 (19 tests passed in 7.864 seconds)
