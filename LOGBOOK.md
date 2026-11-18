@@ -367,3 +367,29 @@ The current reference-assisted run reported 350 symbols and 38 separators in the
 - `evidence/visualization/Screenshot 2026-11-18 at 06.34.48.png` — decoded byte groups, bits, characters, code points, and error indicators.
 
 ---
+
+<a id="entry-11"></a>
+## Entry 11 — Artifact integrity and full-flag verification
+
+**Appendix/report:** [Appendix A.14](report/APPENDIX.md#app-a14-artifact-integrity-and-exact-match) · [Report §3](report/REPORT.md)
+
+**Date/time:** 18 November 2026; timestamp sample 20:08:39 (+07)
+
+**Execution duration:** the unittest command reported 2.691 seconds. Total documentation and evidence-preparation time was not timed.
+
+**Technical hypothesis:** the three challenge files match their pinned manifest size and SHA-256 values, and both decoders return the complete expected flag strings rather than only matching a prefix.
+
+### Commands and observed results
+
+1. `rtk proxy python scripts/verify_artifacts.py` — exit code 0; all three artifacts passed size and SHA-256 checks. The recorded output is [`artifact-verification-2026-11-18.log`](results/reproduction-2026-11-18/artifact-verification-2026-11-18.log).
+2. `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` — exit code 0; all 21 tests passed, including both full-string exact-match tests. Runtime was 2.691 seconds. The AppTest emitted three `missing ScriptRunContext` warnings in bare mode; the page test still passed. Full output: [`unittest-exact-match-2026-11-18.log`](results/reproduction-2026-11-18/unittest-exact-match-2026-11-18.log).
+
+The exact-match tests verified Blue 3 at 50 characters and reference-assisted Sleepy Alarm at 39 characters. The audio decoder reported 350 symbols, 38 separators, and no byte errors. The dashboard showed a 1,729-sample alignment lag measured by cross-correlation at run time; this is an observed alignment offset and is not attributed solely to MP3 encoder delay.
+
+**Errors/corrections:** no command or test failed. The Streamlit bare-mode warnings are preserved in the test log; they did not affect the passing result.
+
+**Screenshot evidence:** [verification dashboard capture](evidence/visualization/2026-11-18-verification-dashboard.png), showing the 3/3 integrity status, both exact-match statuses, and artifact table.
+
+**Terminal log screenshot:** [verification run log](evidence/terminal/2026-11-18-verification-log-terminal.png). The capture shows the artifact-verification output, both exact-match test lines, exit code 0, and the 21-test summary. The complete command output remains in the linked `.log` files above.
+
+---

@@ -19,6 +19,7 @@ The appendix expands each logbook entry with its technical hypothesis, commands,
 | [Entry 08](../LOGBOOK.md#entry-08) — correlation diagnostics | [A.10](#app-a10-correlation-diagnostics) | [§4.2](REPORT.md#report-method-audio) |
 | [Entry 09](../LOGBOOK.md#entry-09) — visual evidence | [A.11](#app-a11-alignment-visual-evidence) | [§5 Workflow](REPORT.md#report-workflow) |
 | [Entry 10](../LOGBOOK.md#entry-10) — ASK and Blue 3 diagnostics | [A.12](#app-a12-ask-and-blue-3-diagnostics) | [§4.1](REPORT.md#report-method-image), [§4.2](REPORT.md#report-method-audio) |
+| [Entry 11](../LOGBOOK.md#entry-11) — artifact integrity and exact match | [A.14](#app-a14-artifact-integrity-and-exact-match) | [§3 Analysis](REPORT.md) |
 
 <a id="app-a2-environment-setup"></a>
 ## A.2 Environment setup
@@ -313,3 +314,34 @@ The assignment asks for a concise logbook with work time, technical hypothesis, 
 | Intermediate/final results | 16 November visualization screenshots, 18 November terminal captures, and saved raw output files | Both UI states and later command results are represented; current replay logs are linked in A.2–A.8. |
 
 The 18 November terminal captures document real reruns and are linked beside their matching logbook and appendix entries. They do not represent screenshots taken during the original 16 November session. The existing 16 November visualization screenshots remain evidence of the UI states captured then.
+
+<a id="app-a14-artifact-integrity-and-exact-match"></a>
+## A.14 Artifact integrity and exact-match verification
+
+**Source:** [Logbook Entry 11](../LOGBOOK.md#entry-11) · [Report §3](REPORT.md)
+
+**Technical hypothesis:** the pinned manifest identifies the exact challenge artifact bytes, and the regression tests reject any decoded flag that differs by even one character.
+
+| Item | Recorded detail |
+|---|---|
+| Date/time | 18 November 2026; timestamp sample 20:08:39 (+07) |
+| Integrity command | `rtk proxy python scripts/verify_artifacts.py` |
+| Integrity result | Exit code 0; all 3/3 artifacts passed size and SHA-256 checks |
+| Test command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
+| Test result | 21 tests passed; exit code 0; 2.691 seconds |
+| Exact-match cases | Blue 3: 50/50 characters; Sleepy Alarm reference-assisted: 39/39 characters |
+| Audio observations | 350 symbols; 38 separators; no byte errors; observed cross-correlation lag 1,729 samples |
+| Warnings | Three Streamlit missing-`ScriptRunContext` warnings in bare mode; AppTest passed |
+| Error / correction | No command or test failure; no correction required |
+| Saved command output | [artifact verification](../results/reproduction-2026-11-18/artifact-verification-2026-11-18.log) · [unittest](../results/reproduction-2026-11-18/unittest-exact-match-2026-11-18.log) |
+| Screenshots | [dashboard evidence](../evidence/visualization/2026-11-18-verification-dashboard.png) · [Terminal log excerpt](../evidence/terminal/2026-11-18-verification-log-terminal.png) |
+
+The lag is the alignment offset observed from cross-correlation at run time; the evidence does not attribute the full value solely to MP3 encoder delay.
+
+![Verification dashboard showing artifact and exact-match status](../evidence/visualization/2026-11-18-verification-dashboard.png)
+
+*Figure A.11. Dashboard view of the three artifact checks and the Blue 3 and reference-assisted Sleepy Alarm exact-match results.*
+
+![Terminal showing verification log output](../evidence/terminal/2026-11-18-verification-log-terminal.png)
+
+*Figure A.12. Terminal capture of the artifact-check output, exact-match test results, exit status, and 21-test summary. Full test output is preserved in the linked log file.*

@@ -19,6 +19,14 @@ class TestVisualizationPages(unittest.TestCase):
                 app = AppTest.from_file(str(path), default_timeout=30).run()
                 self.assertEqual(len(app.exception), 0, f"{path.name}: {app.exception}")
 
+                if path == APP_PATHS[0]:
+                    success_messages = [element.value for element in app.success]
+                    self.assertIn("Artifact SHA-256 check passed: 3/3", success_messages)
+                    self.assertIn(
+                        "Verification gate passed for all three artifacts and both full-flag comparisons.",
+                        success_messages,
+                    )
+
 
 if __name__ == "__main__":
     unittest.main()
