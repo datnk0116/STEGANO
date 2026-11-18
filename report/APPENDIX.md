@@ -163,7 +163,7 @@ The following SHA-256 values were supplied for the inputs used by the recorded e
 
 **Source:** [Logbook Entry 06](../LOGBOOK.md#entry-06) · [Report §5](REPORT.md#report-workflow)
 
-**Estimated effort:** 2–3 hours for the 16 November session covering Entries 00–06. The screenshots are dated 21:40:24–21:41:45, followed by related commits at 23:07:59, 23:16:09, and 23:22:18 (+07).
+**Estimated effort:** 5 hours for the 16 November session covering Entries 00–06. The screenshots are dated 21:40:24–21:41:45, followed by related commits at 23:07:59, 23:16:09, and 23:22:18 (+07).
 
 **Technical hypothesis:** the UI can display decoder-backed challenge results and signal/image views while using the challenge files.
 
@@ -231,7 +231,7 @@ This run validates the reported synthetic alignment cases. It is distinct from t
 
 **Source:** [Logbook Entry 08](../LOGBOOK.md#entry-08) · [Report §4.2](REPORT.md#report-method-audio)
 
-**Estimated effort:** 2–3 hours for Entries 08–09 together. Related commits are timestamped 21:55:17–22:24:50; the alignment screenshot is dated 22:18:35 (+07).
+**Estimated effort:** 2.5 hours for Entries 08–09 together. Related commits are timestamped 21:55:17–22:24:50; the alignment screenshot is dated 22:18:35 (+07).
 
 **Technical hypothesis:** the displayed normalized correlation profile identifies the same lag selected by the full-resolution alignment routine.
 
@@ -251,7 +251,7 @@ Plot downsampling is recorded as display-only; alignment diagnostics use full-re
 
 **Source:** [Logbook Entry 09](../LOGBOOK.md#entry-09) · [Report §5](REPORT.md#report-workflow)
 
-**Session duration:** included in the 2–3-hour estimate in A.10.
+**Session duration:** included in the 2.5-hour estimate in A.10.
 
 The screenshot dated 22:18:35 (+07) records both files at 44,100 Hz, with 441,840 target frames and 438,912 reference frames. It shows a selected lag of 1,729 samples, correlation of 0.999873436, and an overlap of 438,912 samples. Entry 09 identifies this as a screenshot observation, not a separate test run; no command, test count, error, or correction was recorded for this entry.
 
@@ -264,7 +264,7 @@ The screenshot dated 22:18:35 (+07) records both files at 44,100 Hz, with 441,84
 
 **Source:** [Logbook Entry 10](../LOGBOOK.md#entry-10) · [Report §4.1](REPORT.md#report-method-image) · [Report §4.2](REPORT.md#report-method-audio)
 
-**Estimated effort:** 2–3 hours. The four screenshots are dated 06:31:35–06:47:19; the related commit is timestamped 06:49:47 (+07) and records changes across 14 files.
+**Estimated effort:** 3 hours. The four screenshots are dated 06:31:35–06:47:19; the related commit is timestamped 06:49:47 (+07) and records changes across 14 files.
 
 **Technical hypothesis:** visual diagnostics expose the intermediate measurements used by the decoders, and the selected Blue 3 candidate can be reconstructed from its diagonal blocks.
 

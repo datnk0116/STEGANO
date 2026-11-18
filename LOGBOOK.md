@@ -236,7 +236,7 @@ The operator also supplied these SHA-256 values:
 
 **Date:** 16 November 2026
 
-**Estimated effort:** 2–3 hours for the 16 November work session covering Entries 00–06. Evidence anchors: visualization screenshots 21:40:24–21:41:45 and related commits 23:07:59, 23:16:09, and 23:22:18 (+07).
+**Estimated effort:** 5 hours for the 16 November work session covering Entries 00–06. Evidence anchors: visualization screenshots 21:40:24–21:41:45 and related commits 23:07:59, 23:16:09, and 23:22:18 (+07).
 
 **Hypothesis tested:** the visualization pages display results and signal/image diagnostics from the decoder and challenge artifacts.
 
@@ -295,7 +295,7 @@ python -m unittest discover -s tests -v
 
 **Date:** 17 November 2026
 
-**Estimated effort:** 2–3 hours for Entries 08–09 together. Evidence anchors: commits 21:55:17–22:24:50 and the alignment screenshot at 22:18:35 (+07).
+**Estimated effort:** 2.5 hours for Entries 08–09 together. Evidence anchors: commits 21:55:17–22:24:50 and the alignment screenshot at 22:18:35 (+07).
 
 **Hypothesis tested:** the plotted normalized-correlation peak matches the lag selected by the alignment routine.
 
@@ -318,7 +318,7 @@ Refactored the shared resampling and correlation path in `src/audio_alignment.py
 
 **Date:** 17 November 2026
 
-**Session estimate:** included in the 2–3-hour estimate recorded in Entry 08.
+**Session estimate:** included in the 2.5-hour estimate recorded in Entry 08.
 
 **Hypothesis tested:** the displayed waveforms, lag and overlap describe the signals used by the current alignment run.
 
@@ -337,7 +337,7 @@ Added `evidence/visualization/Screenshot 2026-11-17 at 22.18.35.png`, which capt
 
 **Date:** 18 November 2026
 
-**Estimated effort:** 2–3 hours. Evidence anchors: screenshots 06:31:35–06:47:19 and the diagnostics commit at 06:49:47 (+07); the commit covered 308 insertions and 30 deletions across 14 files.
+**Estimated effort:** 3 hours. Evidence anchors: screenshots 06:31:35–06:47:19 and the diagnostics commit at 06:49:47 (+07); the commit covered 308 insertions and 30 deletions across 14 files.
 
 **Hypothesis tested:** the displayed ASK values and Blue 3 block diagnostics expose the intermediate measurements used by the decoders.
 
