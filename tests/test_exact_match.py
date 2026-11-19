@@ -33,6 +33,7 @@ class TestOfficialFlagExactMatch(unittest.TestCase):
         self.assertTrue(result["format_valid"], result["errors"])
         self.assertEqual(len(result["decoded_text"]), 39)
         self.assertEqual(result["decoded_text"], SLEEPY_ALARM_FLAG)
+        self.assertEqual(result["character_count"], 39)
         self.assertEqual(result["symbol_count"], 350)
         self.assertEqual(result["separator_count"], 38)
         self.assertEqual(result["errors"], [])

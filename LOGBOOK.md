@@ -393,3 +393,37 @@ The exact-match tests verified Blue 3 at 50 characters and reference-assisted Sl
 **Terminal log screenshot:** [verification run log](evidence/terminal/2026-11-18-verification-log-terminal.png). The capture shows the artifact-verification output, both exact-match test lines, exit code 0, and the 21-test summary. The complete command output remains in the linked `.log` files above.
 
 ---
+
+<a id="entry-12"></a>
+## Entry 12 — ASK prefix preservation and reference-assisted reproduction
+
+**Appendix/report:** [Appendix A.15](report/APPENDIX.md#app-a15-ask-prefix-preservation-and-reproduction) · [Report §2.2 and §3](report/REPORT.md)
+
+**Date:** 19 November 2026
+
+**Technical hypothesis:** projecting each symbol from its original target samples with carrier phase anchored to global sample indices will preserve leading ASK symbols when reference alignment begins inside a symbol.
+
+### Implementation and regression case
+
+The ASK decoder now retains the target prefix before the aligned overlap and decodes from sample zero. Per-symbol I/Q projection uses the original samples in each symbol window and the global sample index for carrier phase, so each measurement uses the intended target-sample window. The decoder result includes the number of decoded complete-byte characters.
+
+The synthetic regression signal places the alignment start one and a half symbol periods into the target. It checks the first 16 labels against the generated bit stream, verifies the initial ASK level, and confirms the full 39-character flag remains intact.
+
+### Commands and observed results
+
+```text
+rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v
+rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3
+```
+
+The full unittest run passed all 22 tests in 2.966 seconds with exit code 0. The first attempt using the system Python could not import Streamlit; rerunning with the project's Python 3.14 environment succeeded. A review rerun on 19 November passed all 22 tests in 2.826 seconds with exit code 0. AppTest printed three `missing ScriptRunContext` warnings in bare mode; the page test still passed.
+
+The reference-assisted decoder run returned `format_valid: true`, `reference_assisted: true`, 350 symbols, 38 separators, 39 characters, and no byte errors. The decoded flag was `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`. Alignment reported a 1,729-sample lag and target start, with normalized correlation 0.9998734358246231.
+
+The separate run manifest records the mode, 8,000 Hz carrier, 50 baud, 7-second window, input hashes, counts, and SHA-256 values for the JSON output and log. The original [`artifact_manifest.json`](results/artifact_manifest.json) remains the input-integrity record.
+
+**Run artifacts:** [decoded output](results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-output.json) · [run log](results/reproduction-2026-11-19/sleepy-alarm-reference-assisted.log) · [run manifest](results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-manifest.json)
+
+**Screenshots:** [Streamlit ASK diagnostics](evidence/visualization/2026-11-19-sleepy-alarm-streamlit.png) · [rendered run log](evidence/visualization/2026-11-19-sleepy-alarm-run-log.png)
+
+The Streamlit screenshot shows the 350/38/39 metrics, the first 32 symbol projections, symbol boundaries, and the red alignment-overlap marker. The log screenshot shows the saved `.log` contents rendered in a browser; it is not a terminal capture.

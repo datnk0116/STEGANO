@@ -34,12 +34,25 @@ def _align(target, sr, reference, ref_sr):
     x, y, start = _overlap(target, reference, best)
     return x, y, {'lag_samples': best, 'correlation': score, 'target_start_sample': start}
 
+
+def _project_symbol(samples, start_sample, sample_rate, carrier):
+    """Measure one unfiltered ASK symbol against a globally phased carrier."""
+    samples = np.asarray(samples, dtype=np.float64)
+    sample_indices = np.arange(start_sample, start_sample + len(samples), dtype=np.float64)
+    phase = 2 * np.pi * carrier * sample_indices / sample_rate
+    centered = samples - samples.mean()
+    in_phase = 2 * np.dot(centered, np.cos(phase)) / len(samples)
+    quadrature = 2 * np.dot(centered, np.sin(phase)) / len(samples)
+    return float(np.hypot(in_phase, quadrature))
+
 def _decode_sleepy_alarm(path, reference_path=None, carrier=8000.0, baud=50.0, duration=7.0):
     target, sr = sf.read(path, always_2d=True, dtype='float64')
     signal, alignment = target, None
     if reference_path:
         ref, ref_sr = sf.read(reference_path, always_2d=True, dtype='float64')
         x, y, alignment = _align(target, sr, ref, ref_sr)
+        # Keep every target sample before the overlap. The symbol clock and
+        # carrier phase remain anchored at target sample zero.
         prefix = target[:alignment['target_start_sample']]
         if target.shape[1] != ref.shape[1]: prefix = prefix.mean(axis=1, keepdims=True)
         signal = np.concatenate((prefix, x-y), axis=0)
@@ -52,9 +65,9 @@ def _decode_sleepy_alarm(path, reference_path=None, carrier=8000.0, baud=50.0, d
         if b>len(channel): break
         z=channel[a:b]
         if len(z)<8: break
-        phase=2*np.pi*carrier*np.arange(a,b)/sr
-        z=z-z.mean()
-        levels.append(float(np.hypot(2*np.dot(z,np.cos(phase))/len(z),2*np.dot(z,np.sin(phase))/len(z))) )
+        # Project original samples per symbol; no whole-signal filter can
+        # discard an edge or smear energy across adjacent symbol windows.
+        levels.append(_project_symbol(z, a, sr, carrier))
     if len(levels)!=count: raise ValueError(f'expected {count} symbols, measured {len(levels)}')
     values=np.asarray(levels); centers=np.quantile(values,[.05,.5,.95])
     for _ in range(100):
@@ -78,7 +91,7 @@ def _decode_sleepy_alarm(path, reference_path=None, carrier=8000.0, baud=50.0, d
         else: chars.append(chr(int(bits,2)))
     text=''.join(chars)
     valid=len(chunks)==39 and not errors and len(text)==39 and text.startswith('ictf{') and text.endswith('}')
-    result = {'decoded_text':text,'format_valid':valid,'symbol_count':len(levels),'separator_count':symbols.count(' '),'reference_assisted':reference_path is not None,'alignment':alignment,'errors':errors,'amplitude_centers':centers.tolist()}
+    result = {'decoded_text':text,'character_count':len(text),'format_valid':valid,'symbol_count':len(levels),'separator_count':symbols.count(' '),'reference_assisted':reference_path is not None,'alignment':alignment,'errors':errors,'amplitude_centers':centers.tolist()}
     groups=[]
     for i, bits in enumerate(chunks):
         character = chr(int(bits, 2)) if len(bits) == 8 else None

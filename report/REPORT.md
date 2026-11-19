@@ -23,7 +23,7 @@ Ba artifact trong `data/` trùng các blob được thêm tại commit nguồn [
 ### 2.2. Phương pháp và tái chạy
 
 - **Blue 3:** decoder tìm baseline RGB rồi cộng sai khác theo từng vùng chéo để khôi phục ký tự.
-- **Sleepy Alarm:** decoder căn chỉnh target và reference bằng cross-correlation, trừ hai tín hiệu đã căn chỉnh rồi phân loại các mức ASK. Lag được đo lại khi chạy, không giả định trước một độ trễ MP3 cố định.
+- **Sleepy Alarm:** decoder căn chỉnh target và reference bằng cross-correlation, trừ hai tín hiệu trong vùng overlap rồi phân loại các mức ASK. Prefix target trước overlap được giữ nguyên để giải mã từ mẫu 0. Phép chiếu I/Q được tính riêng trên mẫu gốc của từng symbol, với pha sóng mang theo chỉ số mẫu toàn cục. Lag được đo lại khi chạy, không giả định trước một độ trễ MP3 cố định.
 - Chạy toàn bộ kiểm thử trong môi trường ảo đã cài dependencies: `PYTHONPATH=src python -m unittest discover -s tests -v`.
 - Mở dashboard chẩn đoán và trạng thái kiểm chứng: `streamlit run visualization/app.py`.
 
@@ -33,14 +33,14 @@ Ba artifact trong `data/` trùng các blob được thêm tại commit nguồn [
 |---|---|
 | Tính toàn vẹn artifact | **3/3 pass** — kích thước và SHA-256 khớp manifest |
 | Blue 3 | **Exact match**, 50 ký tự: `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` |
-| Sleepy Alarm, reference-assisted | **Exact match**, 39 ký tự: `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`; 350 symbol, 38 separator, không lỗi byte |
-| Toàn bộ unittest | **21 tests pass**, exit code 0 |
+| Sleepy Alarm, reference-assisted | **Exact match**, 39 ký tự: `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`; 350 symbol, 38 separator, `reference_assisted: true`, không lỗi byte |
+| Toàn bộ unittest | **22 tests pass**, exit code 0 |
 
-Hai test trong `tests/test_exact_match.py` dùng so sánh toàn chuỗi; flag chỉ đúng tiền tố sẽ thất bại. Lần chạy được ghi nhận trước đó đo lag căn chỉnh Sleepy Alarm là 1,729 mẫu; đây là độ lệch được cross-correlation tìm thấy, không khẳng định toàn bộ lag chỉ do encoder MP3. Kết quả reference-free trước đó không khôi phục được flag hợp lệ và vẫn được giữ như một giới hạn của decoder.
+Hai test trong `tests/test_exact_match.py` dùng so sánh toàn chuỗi; flag chỉ đúng tiền tố sẽ thất bại. Regression tổng hợp mới đặt điểm overlap bên trong symbol thứ hai và xác nhận 16 nhãn đầu, mức ASK đầu tiên, cùng toàn bộ flag vẫn đúng. Lần reference-assisted ngày 19/11/2026 ghi 350 symbols, 38 separators và 39 characters; lag căn chỉnh là 1.729 mẫu, đây là độ lệch cross-correlation tìm thấy, không khẳng định toàn bộ lag chỉ do encoder MP3. Kết quả reference-free trước đó không khôi phục được flag hợp lệ và vẫn được giữ như một giới hạn của decoder.
 
 Chi tiết các lần chạy và bằng chứng liên quan nằm trong [Logbook Entry 01](../LOGBOOK.md#entry-01), [Entry 02](../LOGBOOK.md#entry-02), [Entry 03](../LOGBOOK.md#entry-03), [Entry 04](../LOGBOOK.md#entry-04) và [Entry 05](../LOGBOOK.md#entry-05).
 
-Đầu ra lệnh, thời gian chạy, cảnh báo và ảnh dashboard của lần kiểm chứng 3/3 artifact cùng 21 unittest được ghi tại [Appendix A.14](APPENDIX.md#app-a14-artifact-integrity-and-exact-match) và [Logbook Entry 11](../LOGBOOK.md#entry-11).
+Đầu ra lệnh, thời gian chạy, cảnh báo và ảnh dashboard của lần kiểm chứng 3/3 artifact cùng 21 unittest được ghi tại [Appendix A.14](APPENDIX.md#app-a14-artifact-integrity-and-exact-match) và [Logbook Entry 11](../LOGBOOK.md#entry-11). Bản sửa ASK và lần chạy 22 unittest ngày 19/11, gồm JSON, log, manifest và ảnh chụp mới, nằm tại [Appendix A.15](APPENDIX.md#app-a15-ask-prefix-preservation-and-reproduction) và [Logbook Entry 12](../LOGBOOK.md#entry-12).
 
 ## 4. Đánh giá và phản tư
 

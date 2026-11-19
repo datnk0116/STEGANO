@@ -43,7 +43,7 @@ Launch the Streamlit overview from the repository root:
 streamlit run visualization/app.py
 ```
 
-The Sleepy Alarm page shows bounded source waveforms and alignment diagnostics from `src/audio_alignment.py`, including the resampled reference, correlation profile, aligned overlap and residual. Its ASK diagnosis plots the decoder's channel-0 amplitude measurements for each symbol with the three cluster centers and labels, and reports the decoded symbol, separator and NUL counts. It also lists the decoded byte groups. The Blue 3 page shows the RGB baseline and histogram, highlights the selected diagonal blocks, and lists each block's RGB delta, character code and decoded character.
+The Sleepy Alarm page shows bounded source waveforms and alignment diagnostics from `src/audio_alignment.py`, including the resampled reference, correlation profile, aligned overlap and residual. Its ASK diagnosis plots the decoder's channel-0 amplitude measurements for each symbol with the three cluster centers and labels, and reports symbol, separator and decoded character counts. A close-up of the first 32 symbols shows symbol boundaries and the reference-overlap start; the decoded byte table lists bits and characters. The Blue 3 page shows the RGB baseline and histogram, highlights the selected diagonal blocks, and lists each block's RGB delta, character code and decoded character.
 
 ## Tests
 

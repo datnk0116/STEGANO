@@ -251,11 +251,10 @@ if assisted["diagnostics"] is None:
 else:
     diagnostic = assisted["diagnostics"]
     result = assisted["result"]
-    nul_count = sum(group["codepoint"] == 0 for group in diagnostic["groups"] if group["codepoint"] is not None)
     summary_cols = st.columns(4)
     summary_cols[0].metric("Symbols decoded", f"{result['symbol_count']:,}")
     summary_cols[1].metric("Separators", f"{result['separator_count']:,}")
-    summary_cols[2].metric("NUL characters", f"{nul_count:,}")
+    summary_cols[2].metric("Characters decoded", f"{result['character_count']:,}")
     summary_cols[3].metric("Analysis window", f"{diagnostic['duration_seconds']:.2f} s")
 
     labels = diagnostic["symbol_labels"]
@@ -291,6 +290,48 @@ else:
         margin={"l": 20, "r": 20, "t": 35, "b": 20},
     )
     plotly_chart(fig)
+
+    st.markdown("**First 32 symbols · prefix and alignment boundary**")
+    st.caption("Each point is projected from the original samples in its symbol window. Vertical lines mark symbol boundaries; the red line marks where the reference-aligned overlap begins.")
+    leading_count = min(32, len(values))
+    leading_fig = go.Figure()
+    for symbol, (name, color) in label_info.items():
+        selected = np.asarray([label == symbol for label in labels[:leading_count]])
+        leading_fig.add_trace(go.Scatter(
+            x=times[:leading_count][selected],
+            y=values[:leading_count][selected],
+            mode="markers",
+            name=name,
+            marker={"size": 9, "color": color},
+            customdata=np.flatnonzero(selected),
+            hovertemplate="Symbol %{customdata}<br>Time %{x:.4f} s<br>ASK level %{y:.8g}<extra>%{fullData.name}</extra>",
+        ))
+    for boundary in range(leading_count + 1):
+        leading_fig.add_vline(
+            x=boundary / diagnostic["symbol_rate"],
+            line_width=0.5,
+            line_color="#d1d5db",
+        )
+    alignment = result["alignment"]
+    if alignment is not None:
+        alignment_time = alignment["target_start_sample"] / diagnostic["sample_rate"]
+        leading_fig.add_vline(
+            x=alignment_time,
+            line_dash="dash",
+            line_width=2,
+            line_color="#ef553b",
+            annotation_text=f"overlap starts · sample {alignment['target_start_sample']:,}",
+            annotation_position="top right",
+        )
+    leading_fig.update_layout(
+        height=360,
+        xaxis_title="Time from target sample 0 (seconds)",
+        yaxis_title="ASK amplitude per symbol",
+        legend_title="Cluster",
+        margin={"l": 20, "r": 20, "t": 45, "b": 20},
+    )
+    plotly_chart(leading_fig)
+
     parameter_cols = st.columns(4)
     parameter_cols[0].metric("Channel", "0")
     parameter_cols[1].metric("Carrier", f"{diagnostic['carrier_hz']:,.0f} Hz")

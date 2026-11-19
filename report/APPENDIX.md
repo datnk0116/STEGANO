@@ -20,6 +20,7 @@ The appendix expands each logbook entry with its technical hypothesis, commands,
 | [Entry 09](../LOGBOOK.md#entry-09) — visual evidence | [A.11](#app-a11-alignment-visual-evidence) | [§5 Workflow](REPORT.md#report-workflow) |
 | [Entry 10](../LOGBOOK.md#entry-10) — ASK and Blue 3 diagnostics | [A.12](#app-a12-ask-and-blue-3-diagnostics) | [§4.1](REPORT.md#report-method-image), [§4.2](REPORT.md#report-method-audio) |
 | [Entry 11](../LOGBOOK.md#entry-11) — artifact integrity and exact match | [A.14](#app-a14-artifact-integrity-and-exact-match) | [§3 Analysis](REPORT.md) |
+| [Entry 12](../LOGBOOK.md#entry-12) — ASK prefix preservation and reproduction | [A.15](#app-a15-ask-prefix-preservation-and-reproduction) | [§2.2 Method](REPORT.md#report-method-audio), [§3 Analysis](REPORT.md) |
 
 <a id="app-a2-environment-setup"></a>
 ## A.2 Environment setup
@@ -305,15 +306,15 @@ The assignment asks for a concise logbook with work time, technical hypothesis, 
 
 | Requirement | Evidence currently recorded | Coverage / remaining gap |
 |---|---|---|
-| Work time | Estimated durations are recorded in Entries 06–10 alongside screenshot and commit timestamps; current setup/replay intervals are in Entries 00–05 | Historical durations are estimates; the 18 November setup and replay use the saved time markers. |
-| Technical hypothesis | A technical hypothesis is stated in each corresponding subsection A.2–A.12 | Each hypothesis is paired with its observed outcome. |
-| Commands | Original challenge commands and 18 November replay commands are recorded in A.2–A.6 and Logbook Entries 00–04 | Earlier setup and some visualization commands were not preserved verbatim; the current replay commands and outputs are stored with the corresponding entries. |
+| Work time | Estimated durations are recorded in Entries 06–10 alongside screenshot and commit timestamps; setup/replay intervals are in Entries 00–05; Entry 12 records 2.966- and 2.826-second unittest runs | Historical durations are estimates; the 18 November setup and replay use saved time markers. Documentation and screenshot preparation on 19 November was not timed. |
+| Technical hypothesis | A technical hypothesis is stated in each experimental subsection A.2–A.12 and A.14–A.15 | Each hypothesis is paired with its observed outcome. |
+| Commands | Original challenge commands and replay commands are recorded in A.2–A.6 and Entries 00–04; Entry 12 records the 19 November decoder and test commands | Earlier setup and some visualization commands were not preserved verbatim; the current replay commands and outputs are stored with the corresponding entries. |
 | Errors and fixes | Reference-free decoder failure and pip DNS issue/recovery are recorded in A.2–A.5 | The dependency installation succeeded in the isolated Python 3.14 environment; see A.2. |
 | Installation/configuration screenshots | Terminal setup capture linked in A.2 | Shows Python version, requirements installation check, and clean `pip check` for the 18 November environment rerun. |
-| Execution screenshots | Terminal captures linked in A.2–A.6 and A.8 | Show commands and actual output from 18 November reruns; the saved run logs record exit codes. They do not recreate the missing terminal screenshots from 16 November. |
-| Intermediate/final results | 16 November visualization screenshots, 18 November terminal captures, and saved raw output files | Both UI states and later command results are represented; current replay logs are linked in A.2–A.8. |
+| Execution screenshots | Terminal captures linked in A.2–A.6 and A.8; the browser-rendered run log in A.15 | The 18 November terminal captures show commands and rerun output. The 19 November image shows the saved log file, not a terminal; no new terminal capture was added. |
+| Intermediate/final results | 16 November visualization screenshots, 18 November terminal captures, 19 November Streamlit screenshot, and saved JSON/log/manifest files | The new dashboard image shows the first 32 symbols, 350/38/39 counts, symbol boundaries, and alignment start; current raw outputs are linked in A.15. |
 
-The 18 November terminal captures document real reruns and are linked beside their matching logbook and appendix entries. They do not represent screenshots taken during the original 16 November session. The existing 16 November visualization screenshots remain evidence of the UI states captured then.
+The 18 November terminal captures document real reruns and are linked beside their matching logbook and appendix entries. They do not represent screenshots taken during the original 16 November session. The existing 16 November visualization screenshots remain evidence of the UI states captured then. Entry 12 adds a 19 November browser capture of the running Streamlit page and a separate screenshot of the saved run log.
 
 <a id="app-a14-artifact-integrity-and-exact-match"></a>
 ## A.14 Artifact integrity and exact-match verification
@@ -345,3 +346,37 @@ The lag is the alignment offset observed from cross-correlation at run time; the
 ![Terminal showing verification log output](../evidence/terminal/2026-11-18-verification-log-terminal.png)
 
 *Figure A.12. Terminal capture of the artifact-check output, exact-match test results, exit status, and 21-test summary. Full test output is preserved in the linked log file.*
+
+<a id="app-a15-ask-prefix-preservation-and-reproduction"></a>
+## A.15 ASK prefix preservation and reference-assisted reproduction
+
+**Source:** [Logbook Entry 12](../LOGBOOK.md#entry-12) · [Report §2.2 and §3](REPORT.md)
+
+**Technical hypothesis:** coherent per-symbol projection on original samples, with phase indexed from the start of the target, preserves early symbols even when the reference-aligned overlap starts inside a symbol.
+
+| Item | Recorded detail |
+|---|---|
+| Date | 19 November 2026 |
+| Decoder change | Retained target prefix before aligned overlap; subtracted the aligned target/reference overlap; projected I/Q per original symbol window with global sample indices; added decoded complete-byte character count |
+| Synthetic regression | Overlap starts 1.5 symbol periods into the target; first 16 labels and first ASK level match the generated signal; full flag preserved |
+| Test command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
+| Test result | Two runs passed all 22 tests; exit code 0; 2.966 and 2.826 seconds |
+| Test warning | Review rerun emitted three Streamlit `missing ScriptRunContext` warnings in bare mode; the AppTest page test passed |
+| Reproduction command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3` |
+| Decoder result | `format_valid: true`; `reference_assisted: true`; 350 symbols; 38 separators; 39 characters; no byte errors |
+| Alignment | Lag and target start: 1,729 samples; normalized correlation: 0.9998734358246231 |
+| Configuration | 8,000 Hz carrier; 50 baud; 7-second decoding window |
+| Initial issue / correction | System Python lacked Streamlit for the test suite; reran successfully with `.venv/repro314/bin/python` |
+| Output and log | [JSON output](../results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-output.json) · [run log](../results/reproduction-2026-11-19/sleepy-alarm-reference-assisted.log) |
+| Manifest | [reference-assisted run manifest](../results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-manifest.json), including input hashes and output/log SHA-256 values |
+| Screenshots | [Streamlit ASK diagnostics](../evidence/visualization/2026-11-19-sleepy-alarm-streamlit.png) · [rendered run log](../evidence/visualization/2026-11-19-sleepy-alarm-run-log.png) |
+
+The separate run manifest supplements the input-integrity manifest; it does not replace or modify `results/artifact_manifest.json`.
+
+![Sleepy Alarm Streamlit ASK diagnostics](../evidence/visualization/2026-11-19-sleepy-alarm-streamlit.png)
+
+*Figure A.13. The 350/38/39 decoder metrics, ASK measurements, first 32 symbol windows, and the overlap start at sample 1,729.*
+
+![Sleepy Alarm reference-assisted run log](../evidence/visualization/2026-11-19-sleepy-alarm-run-log.png)
+
+*Figure A.14. The saved reference-assisted `.log` rendered in a browser, showing the run command, counts, alignment, and JSON result. This is a log view rather than a terminal capture.*

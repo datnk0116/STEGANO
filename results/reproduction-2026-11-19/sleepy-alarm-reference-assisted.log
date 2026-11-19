@@ -1,0 +1,29 @@
+Command: rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3
+Exit status: 0
+format_valid: true
+reference_assisted: true
+Symbols received: 350
+Separators received: 38
+Characters received: 39
+Alignment: {"correlation": 0.9998734358246231, "lag_samples": 1729, "target_start_sample": 1729}
+
+Decoder JSON output:
+{
+  "decoded_text": "ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}",
+  "character_count": 39,
+  "format_valid": true,
+  "symbol_count": 350,
+  "separator_count": 38,
+  "reference_assisted": true,
+  "alignment": {
+    "lag_samples": 1729,
+    "correlation": 0.9998734358246231,
+    "target_start_sample": 1729
+  },
+  "errors": [],
+  "amplitude_centers": [
+    0.00010346536568754544,
+    0.0019974891068537835,
+    0.00497272470857525
+  ]
+}
