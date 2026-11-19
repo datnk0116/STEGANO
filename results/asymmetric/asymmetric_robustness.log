@@ -1,0 +1,14 @@
+Command: rtk proxy env PYTHONPATH=src .venv/repro314/bin/python scripts/run_audio_asymmetric.py
+Exit status: 0 (baseline passed; variant failures are expected observations)
+
+Variant                                      Status  Symbols  Separators  Characters  Errors
+baseline                                     PASS        350          38          39       0
+target_only_gain_0.5                         FAIL        350          46          28      14
+target_only_gain_1.5                         FAIL        350          37          34       4
+target_only_resample_44k1_48k_44k1           PASS        350          38          39       0
+reference_only_gain_0.5                      FAIL        350          41          36       5
+reference_only_gain_1.5                      FAIL        350          38          33       4
+reference_only_resample_44k1_48k_44k1        PASS        350          38          39       0
+One-sided variants: 2/6 PASS; baseline: PASS
+JSON: results/asymmetric/asymmetric_robustness.json
+CSV:  results/asymmetric/asymmetric_robustness.csv

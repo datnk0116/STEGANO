@@ -21,6 +21,7 @@ The appendix expands each logbook entry with its technical hypothesis, commands,
 | [Entry 10](../LOGBOOK.md#entry-10) — ASK and Blue 3 diagnostics | [A.12](#app-a12-ask-and-blue-3-diagnostics) | [§4.1](REPORT.md#report-method-image), [§4.2](REPORT.md#report-method-audio) |
 | [Entry 11](../LOGBOOK.md#entry-11) — artifact integrity and exact match | [A.14](#app-a14-artifact-integrity-and-exact-match) | [§3 Analysis](REPORT.md) |
 | [Entry 12](../LOGBOOK.md#entry-12) — ASK prefix preservation and reproduction | [A.15](#app-a15-ask-prefix-preservation-and-reproduction) | [§2.2 Method](REPORT.md#report-method-audio), [§3 Analysis](REPORT.md) |
+| [Entry 13](../LOGBOOK.md#entry-13) — asymmetric audio robustness | [A.16](#app-a16-asymmetric-audio-robustness) | [Report §2.2 and §3](REPORT.md) |
 
 <a id="app-a2-environment-setup"></a>
 ## A.2 Environment setup
@@ -307,14 +308,14 @@ The assignment asks for a concise logbook with work time, technical hypothesis, 
 | Requirement | Evidence currently recorded | Coverage / remaining gap |
 |---|---|---|
 | Work time | Estimated durations are recorded in Entries 06–10 alongside screenshot and commit timestamps; setup/replay intervals are in Entries 00–05; Entry 12 records 2.966- and 2.826-second unittest runs | Historical durations are estimates; the 18 November setup and replay use saved time markers. Documentation and screenshot preparation on 19 November was not timed. |
-| Technical hypothesis | A technical hypothesis is stated in each experimental subsection A.2–A.12 and A.14–A.15 | Each hypothesis is paired with its observed outcome. |
-| Commands | Original challenge commands and replay commands are recorded in A.2–A.6 and Entries 00–04; Entry 12 records the 19 November decoder and test commands | Earlier setup and some visualization commands were not preserved verbatim; the current replay commands and outputs are stored with the corresponding entries. |
+| Technical hypothesis | A technical hypothesis is stated in each experimental subsection A.2–A.12 and A.14–A.16 | Each hypothesis is paired with its observed outcome. |
+| Commands | Original challenge commands and replay commands are recorded in A.2–A.6 and Entries 00–04; Entries 12–13 record the 19 November decoder, robustness, and test commands | Earlier setup and some visualization commands were not preserved verbatim; the current replay commands and outputs are stored with the corresponding entries. |
 | Errors and fixes | Reference-free decoder failure and pip DNS issue/recovery are recorded in A.2–A.5 | The dependency installation succeeded in the isolated Python 3.14 environment; see A.2. |
 | Installation/configuration screenshots | Terminal setup capture linked in A.2 | Shows Python version, requirements installation check, and clean `pip check` for the 18 November environment rerun. |
-| Execution screenshots | Terminal captures linked in A.2–A.6 and A.8; the browser-rendered run log in A.15 | The 18 November terminal captures show commands and rerun output. The 19 November image shows the saved log file, not a terminal; no new terminal capture was added. |
-| Intermediate/final results | 16 November visualization screenshots, 18 November terminal captures, 19 November Streamlit screenshot, and saved JSON/log/manifest files | The new dashboard image shows the first 32 symbols, 350/38/39 counts, symbol boundaries, and alignment start; current raw outputs are linked in A.15. |
+| Execution screenshots | Terminal captures linked in A.2–A.6 and A.8; the browser-rendered run log in A.15; asymmetric run capture in A.16 | The 19 November terminal capture shows the command output with baseline and all six variants; the complete output remains in the linked `.log`. |
+| Intermediate/final results | 16 November visualization screenshots, 18 November terminal captures, and 19 November Sleepy Alarm diagnostics and asymmetric dashboard | A.15 documents the first 32 symbols and alignment boundary. A.16 embeds the dashboard with the baseline metrics and six one-sided statuses. |
 
-The 18 November terminal captures document real reruns and are linked beside their matching logbook and appendix entries. They do not represent screenshots taken during the original 16 November session. The existing 16 November visualization screenshots remain evidence of the UI states captured then. Entry 12 adds a 19 November browser capture of the running Streamlit page and a separate screenshot of the saved run log.
+The 18 November terminal captures document real reruns and are linked beside their matching logbook and appendix entries. They do not represent screenshots taken during the original 16 November session. The existing 16 November visualization screenshots remain evidence of the UI states captured then. Entry 12 adds a 19 November browser capture of the running Streamlit page and a separate screenshot of the saved run log; Entry 13 adds the asymmetric dashboard and terminal captures.
 
 <a id="app-a14-artifact-integrity-and-exact-match"></a>
 ## A.14 Artifact integrity and exact-match verification
@@ -380,3 +381,38 @@ The separate run manifest supplements the input-integrity manifest; it does not 
 ![Sleepy Alarm reference-assisted run log](../evidence/visualization/2026-11-19-sleepy-alarm-run-log.png)
 
 *Figure A.14. The saved reference-assisted `.log` rendered in a browser, showing the run command, counts, alignment, and JSON result. This is a log view rather than a terminal capture.*
+
+<a id="app-a16-asymmetric-audio-robustness"></a>
+## A.16 Asymmetric audio robustness
+
+**Source:** [Logbook Entry 13](../LOGBOOK.md#entry-13) · [Report §2.2 and §3](REPORT.md)
+
+**Technical hypothesis:** the reference-assisted decoder will keep the exact payload when a moderate resampling round trip is applied to only one input, while one-sided gain changes may alter the decoded ASK levels.
+
+| Item | Recorded detail |
+|---|---|
+| Date | 19 November 2026 |
+| Mode | Reference-assisted; target and reference transformed separately |
+| Configuration | 8,000 Hz carrier; 50 baud; 7-second decode window; gain ×0.5/×1.5; 44,100→48,000→44,100 Hz resampling |
+| Baseline | PASS; 350 symbols, 38 separators, 39 characters; 0 byte errors; alignment lag 1,729 samples |
+| Variant result | 2/6 PASS: target-only and reference-only resample round trips; all four one-sided gain variants FAIL |
+| PASS criterion | `format_valid`, exact ground-truth match, and no byte errors |
+| Input integrity | Both audio SHA-256 values still match `results/artifact_manifest.json` |
+| Run command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python scripts/run_audio_asymmetric.py` |
+| Test command/result | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` — 22 tests passed; exit code 0; 2.713 seconds |
+| Test warning | Three Streamlit `missing ScriptRunContext` warnings in bare mode; AppTest passed |
+| Run artifacts | [JSON](../results/asymmetric/asymmetric_robustness.json) · [CSV](../results/asymmetric/asymmetric_robustness.csv) · [run log](../results/asymmetric/asymmetric_robustness.log) · [unittest log](../results/asymmetric/unittest.log) |
+| Dashboard screenshot | [Streamlit asymmetric robustness](../evidence/visualization/2026-11-19-asymmetric-dashboard.png) — baseline metrics, 2/6 and 4/6, heatmap, six table rows, and scope note |
+| Terminal screenshot | [Asymmetric run output](../evidence/terminal/2026-11-19-asymmetric-run-terminal.png) — command, baseline row, six variant rows, and final 2/6 summary |
+
+The PASS outcomes are the two one-sided resampling round trips. The gain variants returned 28–36 characters and 4–14 malformed byte groups, so each failed the exact-format and/or no-byte-error criteria. These measurements apply only to the two pinned Sleepy Alarm files and the six tested transformations.
+
+The Streamlit and terminal captures below document the rendered status table and actual script output. The saved `.log`, `.csv`, and `.json` preserve the complete numerical evidence.
+
+![Sleepy Alarm asymmetric robustness dashboard](../evidence/visualization/2026-11-19-asymmetric-dashboard.png)
+
+*Figure A.15. Streamlit baseline status, one-sided PASS/FAIL totals, heatmap, and all six variant rows.*
+
+![Sleepy Alarm asymmetric robustness terminal run](../evidence/terminal/2026-11-19-asymmetric-run-terminal.png)
+
+*Figure A.16. Terminal run of the asymmetric script, showing the baseline, six variant results, and 2/6 summary.*

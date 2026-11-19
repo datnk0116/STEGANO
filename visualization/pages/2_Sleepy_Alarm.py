@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import sys
 
@@ -9,6 +10,7 @@ from plotly.subplots import make_subplots
 import streamlit as st
 
 ROOT = Path(__file__).resolve().parents[2]
+ASYMMETRIC_RESULTS_PATH = ROOT / "results" / "asymmetric" / "asymmetric_robustness.json"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -351,6 +353,95 @@ else:
         width="stretch",
         hide_index=True,
     )
+
+
+st.subheader("Asymmetric audio robustness")
+if not ASYMMETRIC_RESULTS_PATH.exists():
+    st.info("Run `scripts/run_audio_asymmetric.py` to generate the one-sided target/reference results.")
+else:
+    try:
+        asymmetric = json.loads(ASYMMETRIC_RESULTS_PATH.read_text(encoding="utf-8"))
+        asymmetric_results = asymmetric["results"]
+        baseline = next(row for row in asymmetric_results if row["variant"] == "baseline")
+        variants = [row for row in asymmetric_results if row["variant"] != "baseline"]
+        pass_count = sum(row["status"] == "PASS" for row in variants)
+
+        result_cols = st.columns(3)
+        result_cols[0].metric("Baseline", baseline["status"])
+        result_cols[1].metric("One-sided variants PASS", f"{pass_count}/{len(variants)}")
+        result_cols[2].metric("One-sided variants FAIL", f"{len(variants) - pass_count}/{len(variants)}")
+        st.caption(
+            "This result is limited to the official Sleepy Alarm pair and the listed gain/resampling settings; "
+            "it does not establish general audio robustness."
+        )
+
+        variants_by_name = {row["variant"]: row for row in variants}
+        matrix_rows = (
+            ("Gain ×0.5", "target_only_gain_0.5", "reference_only_gain_0.5"),
+            ("Gain ×1.5", "target_only_gain_1.5", "reference_only_gain_1.5"),
+            (
+                "Resample 44.1→48→44.1 kHz",
+                "target_only_resample_44k1_48k_44k1",
+                "reference_only_resample_44k1_48k_44k1",
+            ),
+        )
+        heat_values = []
+        heat_labels = []
+        hover_labels = []
+        for label, target_variant, reference_variant in matrix_rows:
+            values_row = []
+            labels_row = []
+            hover_row = []
+            for variant_name in (target_variant, reference_variant):
+                row = variants_by_name.get(variant_name)
+                status = row["status"] if row else "N/A"
+                values_row.append(1 if status == "PASS" else 0)
+                labels_row.append(status)
+                hover_row.append(variant_name)
+            heat_values.append(values_row)
+            heat_labels.append(labels_row)
+            hover_labels.append(hover_row)
+
+        status_fig = go.Figure(
+            go.Heatmap(
+                z=heat_values,
+                x=["Target only", "Reference only"],
+                y=[row[0] for row in matrix_rows],
+                text=heat_labels,
+                customdata=hover_labels,
+                texttemplate="%{text}",
+                colorscale=[[0, "#ef553b"], [0.499, "#ef553b"], [0.5, "#2ca02c"], [1, "#2ca02c"]],
+                zmin=0,
+                zmax=1,
+                showscale=False,
+                hovertemplate="%{customdata}<br>%{x}: %{text}<extra></extra>",
+            )
+        )
+        status_fig.update_layout(
+            height=260,
+            xaxis_title="Only modified side",
+            yaxis_title="Transformation",
+            margin={"l": 20, "r": 20, "t": 20, "b": 20},
+        )
+        plotly_chart(status_fig)
+
+        st.dataframe(
+            [{
+                "variant": row["variant"],
+                "side": row["changed_side"],
+                "transformation": row["transformation"],
+                "status": row["status"],
+                "exact match": row["ground_truth_match"],
+                "characters": row["decoded_length"],
+                "symbols": row["symbol_count"],
+                "separators": row["separator_count"],
+                "byte errors": len(row["errors"]),
+            } for row in variants],
+            width="stretch",
+            hide_index=True,
+        )
+    except (KeyError, OSError, TypeError, ValueError) as exc:
+        st.warning(f"Asymmetric robustness results could not be displayed: {type(exc).__name__}: {exc}")
 
 
 def show_decoder_mode(title: str, run: dict) -> None:

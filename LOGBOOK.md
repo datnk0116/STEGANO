@@ -427,3 +427,37 @@ The separate run manifest records the mode, 8,000 Hz carrier, 50 baud, 7-second 
 **Screenshots:** [Streamlit ASK diagnostics](evidence/visualization/2026-11-19-sleepy-alarm-streamlit.png) · [rendered run log](evidence/visualization/2026-11-19-sleepy-alarm-run-log.png)
 
 The Streamlit screenshot shows the 350/38/39 metrics, the first 32 symbol projections, symbol boundaries, and the red alignment-overlap marker. The log screenshot shows the saved `.log` contents rendered in a browser; it is not a terminal capture.
+
+---
+
+<a id="entry-13"></a>
+## Entry 13 — Sleepy Alarm asymmetric robustness
+
+**Appendix/report:** [Appendix A.16](report/APPENDIX.md#app-a16-asymmetric-audio-robustness) · [Report §2.2 and §3](report/REPORT.md)
+
+**Date:** 19 November 2026
+
+**Technical hypothesis:** reference-assisted decoding may tolerate one-sided resampling while failing when only one member of the target/reference pair is gain-scaled.
+
+**Command:**
+
+```text
+rtk proxy env PYTHONPATH=src .venv/repro314/bin/python scripts/run_audio_asymmetric.py
+```
+
+**Observed result:** baseline PASS, reported separately from six variants. Baseline metrics were 350 symbols, 38 separators, 39 characters, 0 byte errors, and a measured alignment lag of 1,729 samples. Of the six one-sided variants, both 44,100→48,000→44,100 Hz round trips passed; gain ×0.5 and ×1.5 failed on both target-only and reference-only runs. The aggregate is **2/6 variants PASS**, with baseline excluded from the denominator.
+
+| Changed file | Gain ×0.5 | Gain ×1.5 | Resample round trip |
+|---|---|---|---|
+| Target only | FAIL · 28 characters · 14 byte errors | FAIL · 34 characters · 4 byte errors | PASS · 39 characters · 0 byte errors |
+| Reference only | FAIL · 36 characters · 5 byte errors | FAIL · 33 characters · 4 byte errors | PASS · 39 characters · 0 byte errors |
+
+**Pass criterion:** `format_valid` is true, decoded text exactly matches the ground truth, and the decoder reports no byte errors. All transformations operated on temporary copies; the two original audio hashes still match the input manifest.
+
+**Run artifacts:** [JSON](results/asymmetric/asymmetric_robustness.json) · [CSV](results/asymmetric/asymmetric_robustness.csv) · [run log](results/asymmetric/asymmetric_robustness.log).
+
+**Regression verification:** `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` passed all 22 tests in 2.713 seconds; exit code 0. The three Streamlit `missing ScriptRunContext` warnings appeared in bare mode; AppTest passed. Full output: [unittest.log](results/asymmetric/unittest.log).
+
+**Evidence:** [Streamlit dashboard capture](evidence/visualization/2026-11-19-asymmetric-dashboard.png), showing the baseline, 2/6 and 4/6 metrics, heatmap, all six table rows, and the scope note. [Terminal run capture](evidence/terminal/2026-11-19-asymmetric-run-terminal.png) shows the script command, baseline, six result rows, and final 2/6 summary.
+
+**Scope limitation:** results characterize this exact target/reference pair and these six transformations only; they do not establish general audio robustness.

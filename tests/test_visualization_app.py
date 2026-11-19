@@ -26,6 +26,30 @@ class TestVisualizationPages(unittest.TestCase):
                         "Verification gate passed for all three artifacts and both full-flag comparisons.",
                         success_messages,
                     )
+                elif path == APP_PATHS[2]:
+                    metrics = {element.label: element.value for element in app.metric}
+                    self.assertEqual(metrics["Baseline"], "PASS")
+                    self.assertEqual(metrics["One-sided variants PASS"], "2/6")
+                    robustness_rows = app.dataframe[1].value.to_dict(orient="records")
+                    self.assertEqual(len(robustness_rows), 6)
+                    self.assertEqual(
+                        {row["variant"] for row in robustness_rows},
+                        {
+                            "target_only_gain_0.5",
+                            "target_only_gain_1.5",
+                            "target_only_resample_44k1_48k_44k1",
+                            "reference_only_gain_0.5",
+                            "reference_only_gain_1.5",
+                            "reference_only_resample_44k1_48k_44k1",
+                        },
+                    )
+                    self.assertEqual(
+                        {row["variant"] for row in robustness_rows if row["status"] == "PASS"},
+                        {
+                            "target_only_resample_44k1_48k_44k1",
+                            "reference_only_resample_44k1_48k_44k1",
+                        },
+                    )
 
 
 if __name__ == "__main__":
