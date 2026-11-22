@@ -84,9 +84,12 @@ if assisted_result and assisted_result.get("alignment"):
     )
 
 if artifact_report["all_passed"] and blue3_exact and assisted_exact:
-    st.success("Verification gate passed for all three artifacts and both full-flag comparisons.")
+    st.success(
+        "Artifact integrity, Blue 3 exact match, and Sleepy Alarm reference-assisted exact match passed. "
+        "Reference-free output is shown separately."
+    )
 else:
-    st.error("Verification gate failed; review each artifact and exact-match result above.")
+    st.error("Artifact integrity or a required exact-match check failed; inspect the individual status cards.")
 
 if artifact_checks:
     st.dataframe(

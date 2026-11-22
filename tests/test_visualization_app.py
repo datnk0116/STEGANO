@@ -23,7 +23,8 @@ class TestVisualizationPages(unittest.TestCase):
                     success_messages = [element.value for element in app.success]
                     self.assertIn("Artifact SHA-256 check passed: 3/3", success_messages)
                     self.assertIn(
-                        "Verification gate passed for all three artifacts and both full-flag comparisons.",
+                        "Artifact integrity, Blue 3 exact match, and Sleepy Alarm reference-assisted exact match passed. "
+                        "Reference-free output is shown separately.",
                         success_messages,
                     )
                 elif path == APP_PATHS[2]:

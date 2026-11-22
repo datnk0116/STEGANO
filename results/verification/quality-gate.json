@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-22T13:21:32.183324+00:00",
+  "project": "STEGANO",
+  "verification_run": {
+    "tests": {
+      "status": "passed",
+      "total": 22,
+      "passed": 22,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit_code": 0
+    },
+    "artifact_integrity": {
+      "status": "passed",
+      "passed": 3,
+      "total": 3,
+      "exit_code": 0
+    },
+    "provenance": {
+      "status": "verified",
+      "exit_code": 0
+    }
+  },
+  "submission_package": {
+    "status": "not_verified",
+    "reported_by": "scripts/check_provenance.py",
+    "script_exit_code": 0,
+    "reason": "No submission archive or package manifest is configured for verification."
+  },
+  "quality_gate": {
+    "status": "passed",
+    "passed": true,
+    "scope": "Artifact integrity, the discovered unittest suite, and source provenance.",
+    "submission_ready": false
+  },
+  "runs": [
+    {
+      "name": "artifact_verification",
+      "command": [
+        "/Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/.venv/repro314/bin/python",
+        "scripts/verify_artifacts.py"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.021
+    },
+    {
+      "name": "unittest",
+      "command": [
+        "/Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/.venv/repro314/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 3.357
+    },
+    {
+      "name": "provenance",
+      "command": [
+        "/Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/.venv/repro314/bin/python",
+        "scripts/check_provenance.py"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 0.057
+    }
+  ],
+  "log": "results/verification/reproducibility.log"
+}

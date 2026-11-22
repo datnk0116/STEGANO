@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-22T13:21:32.163695+00:00",
+  "project": "STEGANO",
+  "artifact_sources": [
+    {
+      "path": "data/blue3/blue.png",
+      "official_source": "https://github.com/BYU-CSA/old-ctf-challenges/tree/master/forensics-steganography/blue-3"
+    },
+    {
+      "path": "data/sleepy_alarm/morning_n_breakfast.mp3",
+      "official_source": "https://github.com/ImaginaryCTF/ImaginaryCTF-2024-Challenges/tree/main/Forensics/Sleepy%20Alarm"
+    },
+    {
+      "path": "data/sleepy_alarm/morning_n_breakfast_original.mp3",
+      "official_source": "https://github.com/ImaginaryCTF/ImaginaryCTF-2024-Challenges/tree/main/Forensics/Sleepy%20Alarm"
+    }
+  ],
+  "environment": {
+    "python": "3.14.10",
+    "implementation": "CPython",
+    "platform": "macOS-15.7.4-arm64-arm-64bit-Mach-O",
+    "dependencies": {
+      "numpy": "2.5.5",
+      "Pillow": "13.0.0",
+      "scipy": "1.18.1",
+      "soundfile": "0.14.0",
+      "plotly": "6.9.0",
+      "streamlit": "1.67.0"
+    }
+  },
+  "artifact_integrity": {
+    "status": "verified",
+    "passed": 3,
+    "total": 3,
+    "artifacts": [
+      {
+        "path": "data/blue3/blue.png",
+        "expected_bytes": 9406,
+        "actual_bytes": 9406,
+        "expected_sha256": "009dab85bf6ccc5b42b8efa5f959ab6efa0c556b37eb6b4a77a21ec3356b721e",
+        "actual_sha256": "009dab85bf6ccc5b42b8efa5f959ab6efa0c556b37eb6b4a77a21ec3356b721e",
+        "status": "verified"
+      },
+      {
+        "path": "data/sleepy_alarm/morning_n_breakfast.mp3",
+        "expected_bytes": 179283,
+        "actual_bytes": 179283,
+        "expected_sha256": "bd181876c2d28152b9c3982fd88945d4e681fd93d49477622ea5841a3ff25ae2",
+        "actual_sha256": "bd181876c2d28152b9c3982fd88945d4e681fd93d49477622ea5841a3ff25ae2",
+        "status": "verified"
+      },
+      {
+        "path": "data/sleepy_alarm/morning_n_breakfast_original.mp3",
+        "expected_bytes": 160495,
+        "actual_bytes": 160495,
+        "expected_sha256": "d0c283834955e54d68b0bba723ccd194142a428d2de74722e5f1dff3ccbd94ad",
+        "actual_sha256": "d0c283834955e54d68b0bba723ccd194142a428d2de74722e5f1dff3ccbd94ad",
+        "status": "verified"
+      }
+    ]
+  },
+  "source_inventory": {
+    "status": "hashed",
+    "file_count": 30,
+    "files": [
+      {
+        "path": "README.md",
+        "bytes": 5803,
+        "sha256": "fba415076eda07fc82f09b907ad69449a216f23f0e2ab6d649b69cc9c7f7e2ad"
+      },
+      {
+        "path": "report/REPORT.md",
+        "bytes": 17828,
+        "sha256": "60aabddb3c0faa0e4e45f2dccb26df19d56ecbe66eb84507c316a89b405a6cae"
+      },
+      {
+        "path": "requirements.txt",
+        "bytes": 99,
+        "sha256": "3d83a59a9978087dcda74492b4c4a6806ceefc98e39d4192f595f63ef9fe9874"
+      },
+      {
+        "path": "results/artifact_manifest.json",
+        "bytes": 931,
+        "sha256": "cc9bba6899b572e0271709d616aa4c7a340514516df5b95ad9cbed67069a99ba"
+      },
+      {
+        "path": "scripts/check_provenance.py",
+        "bytes": 5785,
+        "sha256": "ebb7325c7fd3fb9ef2f901fbe1c6243b4497dac4fe3b1accd93a5877a098d8b7"
+      },
+      {
+        "path": "scripts/run_audio_asymmetric.py",
+        "bytes": 11983,
+        "sha256": "3af763bb0871c088a080419e96eefd834701cf8539870df1beb0d9c23d3e3890"
+      },
+      {
+        "path": "scripts/run_extended_robustness.py",
+        "bytes": 20087,
+        "sha256": "c2b20d010b2196f3aa56ee1ee9a635b5be2d71532313905a7d45580da421e4d0"
+      },
+      {
+        "path": "scripts/run_steganalysis_benchmark.py",
+        "bytes": 11926,
+        "sha256": "657855cf9bf05f81a7764bdef219df39fb456a3051f337d943da4f1f7d07c610"
+      },
+      {
+        "path": "scripts/verify_artifacts.py",
+        "bytes": 3774,
+        "sha256": "f50b3e2109b2bb6cd3e34fae58e8fe2aa6b0b7499c3605fad6da9678f7a2128f"
+      },
+      {
+        "path": "scripts/verify_reproducibility.py",
+        "bytes": 7047,
+        "sha256": "1bf7ecb0135f5e24577128c5ef95dcd0f984cb2f505afe930a65188116fedc11"
+      },
+      {
+        "path": "src/audio_alignment.py",
+        "bytes": 4264,
+        "sha256": "e87e0818686429bcba0e4e9edf4c94a35ee90cfc3a109e1bdbdfc4320a962ee1"
+      },
+      {
+        "path": "src/steganalysis.py",
+        "bytes": 4198,
+        "sha256": "995c3305c2a1ea5e0c190640571edfc5a08c01969cb30ef7cdd90a0668d53102"
+      },
+      {
+        "path": "src/stegano/__init__.py",
+        "bytes": 22,
+        "sha256": "46c663463329acd7039bdef0a9145293aad32e04d7f0dd06ca2719c99f0eb014"
+      },
+      {
+        "path": "src/stegano/__main__.py",
+        "bytes": 78,
+        "sha256": "28de248c91c00642578a541827361af9b0e5e049e4c61dd6ec1f9dc78580c24e"
+      },
+      {
+        "path": "src/stegano/audio.py",
+        "bytes": 6348,
+        "sha256": "957ccb19f595f747ffafcd3ea73f8c41b7bda782e456fc62b262182c23b5492d"
+      },
+      {
+        "path": "src/stegano/cli.py",
+        "bytes": 618,
+        "sha256": "1ae4c50b575d90dea403c476d0e5257ef48eceba238c40565f206668a1a15a80"
+      },
+      {
+        "path": "src/stegano/image.py",
+        "bytes": 2414,
+        "sha256": "a0084a0c697e3577387563decd0f901293f39ecc89059e165efe2ec51ff96c40"
+      },
+      {
+        "path": "tests/test_audio.py",
+        "bytes": 2818,
+        "sha256": "274d9bdcf62f27362f0b42fdc3d8b909917cb7ebe77e501c113e32e4974c0c74"
+      },
+      {
+        "path": "tests/test_audio_alignment.py",
+        "bytes": 2641,
+        "sha256": "dce231140d469de218865617371b48a4bed88f377a18d354537a4814e46f0d4a"
+      },
+      {
+        "path": "tests/test_exact_match.py",
+        "bytes": 1816,
+        "sha256": "60b9e81af324b3de68a99280346dd15c21e1c2428cbc5e8e3cda0fb2cc49dad2"
+      },
+      {
+        "path": "tests/test_image.py",
+        "bytes": 448,
+        "sha256": "bd6ba724b03a1554a0e1da4ee8f8f91fae153deb9d32909545b70561058b1bcf"
+      },
+      {
+        "path": "tests/test_visualization.py",
+        "bytes": 6792,
+        "sha256": "f22657823d87866c39a357a5d314ff0e621267f8b9efc2fc649ebf87c8f3903e"
+      },
+      {
+        "path": "tests/test_visualization_app.py",
+        "bytes": 2501,
+        "sha256": "6e2fd0fd2c83022cc2ca654fdb85bcbbcec9521c26e826e45d812de1975e43bf"
+      },
+      {
+        "path": "visualization/__init__.py",
+        "bytes": 71,
+        "sha256": "68a89c08745ee5ec410ad442dcb0b202703cfa3b6f82093200126c5495e72f02"
+      },
+      {
+        "path": "visualization/app.py",
+        "bytes": 5051,
+        "sha256": "9c4c1539c7cbdde493d3a7f1a53951a9b4cec488373b028d05e8edf53e5a8716"
+      },
+      {
+        "path": "visualization/pages/1_Blue_3.py",
+        "bytes": 4490,
+        "sha256": "abbf99c4753d6da35ff93f2c1c0f1b1afbda9116ceb14a725b5557d8119c7762"
+      },
+      {
+        "path": "visualization/pages/2_Sleepy_Alarm.py",
+        "bytes": 20106,
+        "sha256": "f9afe7fdebf3d454ae5b1bfda62523ec3ffe0c62ba3e60af055d370aa1fe1675"
+      },
+      {
+        "path": "visualization/pages/__init__.py",
+        "bytes": 56,
+        "sha256": "fb572ac4fdfac63e7f4d1d17001f3660fd6cbd5d63ca803cf14488b88384230e"
+      },
+      {
+        "path": "visualization/plotting.py",
+        "bytes": 448,
+        "sha256": "f04df9f00269c019b3b343d4a830161c9be62e296d3f94a689e3f5af59361532"
+      },
+      {
+        "path": "visualization/utils.py",
+        "bytes": 7658,
+        "sha256": "f06f00f6e0211607eb7915e9b474f58185a13c1c93289c99a37100aa961d3f8d"
+      }
+    ]
+  },
+  "submission_package": {
+    "status": "not_verified",
+    "reason": "No submission archive or package manifest is configured for verification."
+  },
+  "status": "verified"
+}

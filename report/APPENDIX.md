@@ -20,8 +20,11 @@ The appendix expands each logbook entry with its technical hypothesis, commands,
 | [Entry 09](../LOGBOOK.md#entry-09) — visual evidence | [A.11](#app-a11-alignment-visual-evidence) | [§5 Workflow](REPORT.md#report-workflow) |
 | [Entry 10](../LOGBOOK.md#entry-10) — ASK and Blue 3 diagnostics | [A.12](#app-a12-ask-and-blue-3-diagnostics) | [§4.1](REPORT.md#report-method-image), [§4.2](REPORT.md#report-method-audio) |
 | [Entry 11](../LOGBOOK.md#entry-11) — artifact integrity and exact match | [A.14](#app-a14-artifact-integrity-and-exact-match) | [§3 Analysis](REPORT.md) |
-| [Entry 12](../LOGBOOK.md#entry-12) — ASK prefix preservation and reproduction | [A.15](#app-a15-ask-prefix-preservation-and-reproduction) | [§2.2 Method](REPORT.md#report-method-audio), [§3 Analysis](REPORT.md) |
+| [Entry 12](../LOGBOOK.md#entry-12) — ASK prefix preservation and output regression | [A.15](#app-a15-ask-prefix-preservation-and-output-regression) | [§2.2 Method](REPORT.md#report-method-audio), [§3 Analysis](REPORT.md) |
 | [Entry 13](../LOGBOOK.md#entry-13) — asymmetric audio robustness | [A.16](#app-a16-asymmetric-audio-robustness) | [Report §2.2 and §3](REPORT.md) |
+| [Entry 14](../LOGBOOK.md#entry-14) — steganalysis benchmark and extended robustness | [A.17](#app-a17-steganalysis-benchmark-and-extended-robustness) | [Report §2.2 and §3](REPORT.md) |
+| [Entry 15](../LOGBOOK.md#entry-15) — automated quality gate and provenance | [A.18](#app-a18-quality-gate-and-provenance) | [Report §5](REPORT.md) |
+| [Entry 16](../LOGBOOK.md#entry-16) — visualization evidence review | [A.19](#app-a19-visualization-evidence-review) | [Report §5](REPORT.md) |
 
 <a id="app-a2-environment-setup"></a>
 ## A.2 Environment setup
@@ -308,14 +311,14 @@ The assignment asks for a concise logbook with work time, technical hypothesis, 
 | Requirement | Evidence currently recorded | Coverage / remaining gap |
 |---|---|---|
 | Work time | Estimated durations are recorded in Entries 06–10 alongside screenshot and commit timestamps; setup/replay intervals are in Entries 00–05; Entry 12 records 2.966- and 2.826-second unittest runs | Historical durations are estimates; the 18 November setup and replay use saved time markers. Documentation and screenshot preparation on 19 November was not timed. |
-| Technical hypothesis | A technical hypothesis is stated in each experimental subsection A.2–A.12 and A.14–A.16 | Each hypothesis is paired with its observed outcome. |
+| Technical hypothesis | A technical hypothesis is stated in each experimental subsection A.2–A.12 and A.14–A.17 | Each hypothesis is paired with its observed outcome. |
 | Commands | Original challenge commands and replay commands are recorded in A.2–A.6 and Entries 00–04; Entries 12–13 record the 19 November decoder, robustness, and test commands | Earlier setup and some visualization commands were not preserved verbatim; the current replay commands and outputs are stored with the corresponding entries. |
 | Errors and fixes | Reference-free decoder failure and pip DNS issue/recovery are recorded in A.2–A.5 | The dependency installation succeeded in the isolated Python 3.14 environment; see A.2. |
 | Installation/configuration screenshots | Terminal setup capture linked in A.2 | Shows Python version, requirements installation check, and clean `pip check` for the 18 November environment rerun. |
 | Execution screenshots | Terminal captures linked in A.2–A.6 and A.8; the browser-rendered run log in A.15; asymmetric run capture in A.16 | The 19 November terminal capture shows the command output with baseline and all six variants; the complete output remains in the linked `.log`. |
 | Intermediate/final results | 16 November visualization screenshots, 18 November terminal captures, and 19 November Sleepy Alarm diagnostics and asymmetric dashboard | A.15 documents the first 32 symbols and alignment boundary. A.16 embeds the dashboard with the baseline metrics and six one-sided statuses. |
 
-The 18 November terminal captures document real reruns and are linked beside their matching logbook and appendix entries. They do not represent screenshots taken during the original 16 November session. The existing 16 November visualization screenshots remain evidence of the UI states captured then. Entry 12 adds a 19 November browser capture of the running Streamlit page and a separate screenshot of the saved run log; Entry 13 adds the asymmetric dashboard and terminal captures.
+The 18 November terminal captures document real reruns and are linked beside their matching logbook and appendix entries. They do not represent screenshots taken during the original 16 November session. The existing 16 November visualization screenshots remain evidence of the UI states captured then. Entry 12 adds a 19 November browser capture of the running Streamlit page and a separate screenshot of the saved run log; Entry 13 adds the asymmetric dashboard and terminal captures. Entry 14 preserves the benchmark and robustness logs and JSON/CSV outputs and links later terminal and Streamlit captures in A.17.
 
 <a id="app-a14-artifact-integrity-and-exact-match"></a>
 ## A.14 Artifact integrity and exact-match verification
@@ -348,8 +351,8 @@ The lag is the alignment offset observed from cross-correlation at run time; the
 
 *Figure A.12. Terminal capture of the artifact-check output, exact-match test results, exit status, and 21-test summary. Full test output is preserved in the linked log file.*
 
-<a id="app-a15-ask-prefix-preservation-and-reproduction"></a>
-## A.15 ASK prefix preservation and reference-assisted reproduction
+<a id="app-a15-ask-prefix-preservation-and-output-regression"></a>
+## A.15 ASK prefix preservation and output regression
 
 **Source:** [Logbook Entry 12](../LOGBOOK.md#entry-12) · [Report §2.2 and §3](REPORT.md)
 
@@ -363,7 +366,7 @@ The lag is the alignment offset observed from cross-correlation at run time; the
 | Test command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
 | Test result | Two runs passed all 22 tests; exit code 0; 2.966 and 2.826 seconds |
 | Test warning | Review rerun emitted three Streamlit `missing ScriptRunContext` warnings in bare mode; the AppTest page test passed |
-| Reproduction command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3` |
+| Run command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3` |
 | Decoder result | `format_valid: true`; `reference_assisted: true`; 350 symbols; 38 separators; 39 characters; no byte errors |
 | Alignment | Lag and target start: 1,729 samples; normalized correlation: 0.9998734358246231 |
 | Configuration | 8,000 Hz carrier; 50 baud; 7-second decoding window |
@@ -416,3 +419,72 @@ The Streamlit and terminal captures below document the rendered status table and
 ![Sleepy Alarm asymmetric robustness terminal run](../evidence/terminal/2026-11-19-asymmetric-run-terminal.png)
 
 *Figure A.16. Terminal run of the asymmetric script, showing the baseline, six variant results, and 2/6 summary.*
+
+<a id="app-a17-steganalysis-benchmark-and-extended-robustness"></a>
+## A.17 Steganalysis benchmark and extended robustness
+
+**Source:** [Logbook Entry 14](../LOGBOOK.md#entry-14) · [Report §2.2 and §3](REPORT.md)
+
+**Technical hypothesis:** fixed image/audio triage heuristics provide a reproducible first-pass detector, while controlled transformations expose challenge-specific recovery limits.
+
+| Item | Recorded detail |
+|---|---|
+| Date/time | 20 November 2026; generated at 18:15:20 (+07) |
+| Environment | Python 3.14.10 in `.venv/repro314`; existing project dependencies |
+| Benchmark command | `rtk proxy .venv/repro314/bin/python scripts/run_steganalysis_benchmark.py > results/steganalysis/benchmark-run.log 2>&1` |
+| Benchmark result | Image TP=5, TN=12, FP=0, FN=0 (17/17 scored); audio TP=0, TN=8, FP=0, FN=5 (13/13 scored), recall 0 |
+| Dataset limits | Positive samples are the official artifact plus deterministic transformed copies; benign controls are seeded synthetic samples, not a representative corpus |
+| Reference-free audio | FAIL; 26 decoded characters, 49 separators, 20 malformed byte groups; `format_valid: false` |
+| Reference-assisted audio | PASS; exact 39-character match, 350 symbols, 38 separators, 0 byte errors |
+| Open-source comparison | Capability/method scope only; Aperi'Solve, The-A-Files, and WavSteg were not executed |
+| Robustness command | `rtk proxy .venv/repro314/bin/python scripts/run_extended_robustness.py > results/robustness/extended-robustness-run.log 2>&1` |
+| Blue 3 matrix | 1/9 variants PASS; Gaussian blur radius 0.3 is the sole PASS |
+| Sleepy Alarm matrix | 7/23 trials PASS, including baseline; remaining 16 trials FAIL under exact-match criteria |
+| PASS criterion | Valid format, exact ground-truth match, and no byte errors |
+| Run logs | [benchmark log](../results/steganalysis/benchmark-run.log) · [robustness log](../results/robustness/extended-robustness-run.log) |
+| Machine-readable outputs | [benchmark JSON](../results/steganalysis/benchmark.json) · [Blue 3 JSON/CSV](../results/robustness/blue3_extended_robustness.json) · [Sleepy Alarm JSON/CSV](../results/robustness/sleepy_alarm_robustness_matrix.json) |
+| Screenshots (captured 19:23–19:30 +07) | [Reference-assisted result excerpt](../evidence/terminal/2026-11-20-reference-assisted-result-terminal.png) · [Detector TP/TN/FP/FN](../evidence/terminal/2026-11-20-steganalysis-benchmark-metrics-terminal.png) · [Reference-free audio FAIL](../evidence/terminal/2026-11-20-reference-free-audio-failure-terminal.png) · [Extended robustness summary](../evidence/terminal/2026-11-20-extended-robustness-summary-terminal.png) · [Sleepy Alarm result comparison](../evidence/visualization/2026-11-20-sleepy-alarm-decoder-results.png) · [Sleepy Alarm ASK diagnostics](../evidence/visualization/2026-11-20-sleepy-alarm-ask-diagnostics.png) · [Blue 3 RGB channel histogram and diagonal trace](../evidence/visualization/2026-11-20-blue3-rgb-channel-histogram-and-diagonal-trace.png) |
+
+The 23 audio trials comprise one baseline plus 11 one-sided transformations on each of the target and reference: six gain settings, three AWGN SNR settings, a 7.5–8.5 kHz band-pass filter, and a 44.1→48→44.1 kHz resampling round trip. PASS variants were baseline, gain ×0.75, AWGN SNR 30 dB, and resample round-trip on both sides. FAIL rows remain failures in the JSON/CSV. The nine Blue 3 variants cover brightness, contrast, blur, crop, and Gaussian noise. These are single-artifact exploratory matrices, not population-level robustness estimates.
+
+<a id="app-a18-quality-gate-and-provenance"></a>
+## A.18 Automated quality gate and provenance
+
+**Source:** [Logbook Entry 15](../LOGBOOK.md#entry-15) · [Report §5](REPORT.md#report-quality-gate-provenance)
+
+**Technical objective:** run the project's artifact, unittest, and provenance checks; generate machine-readable quality-gate results from the observed run.
+
+| Item | Recorded detail |
+|---|---|
+| Date | 22 November 2026 |
+| Environment | Python 3.14.10 in `.venv/repro314` |
+| Main command | `rtk proxy .venv/repro314/bin/python scripts/verify_reproducibility.py` |
+| Unittest command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
+| Unittest | 22/22 tests passed; exit code 0 |
+| Artifact integrity | 3/3 verified; exit code 0 |
+| Provenance | `verified`; 30 source/config/documentation files inventoried and hashed; 3/3 artifact hashes match |
+| Submission package | `not_verified`; no submission archive or package manifest is configured |
+| Generated outputs | [Quality gate JSON](../results/verification/quality-gate.json) · [provenance JSON](../results/verification/provenance.json) · [complete run log](../results/verification/reproducibility.log) |
+| Unittest warning | Three Streamlit `missing ScriptRunContext` warnings appeared in bare mode; all tests, including AppTest, passed |
+| Terminal screenshots | [Quality gate run; includes initial path errors before the successful command](../evidence/terminal/2026-11-22-quality-gate-run-with-initial-path-errors-terminal.png) · [22-test summary](../evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png) · [Artifact integrity 3/3](../evidence/terminal/2026-11-22-unittest-and-artifact-integrity-terminal.png) · [Artifact and provenance checks](../evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png) |
+
+The `submission_package` value is copied from the output of `check_provenance.py`; that script exits 0 because the project artifact/source checks passed, while separately reporting the package itself as `not_verified`. A local pass does not mean the package was verified.
+
+<a id="app-a19-visualization-evidence-review"></a>
+## A.19 Visualization evidence review
+
+**Source:** [Logbook Entry 16](../LOGBOOK.md#entry-16) · [Report §5](REPORT.md)
+
+| Item | Recorded detail |
+|---|---|
+| Date | 22 November 2026 |
+| Review result | Fourteen 22 November visualization captures are indexed; twelve current dashboard views are usable, with one retained pre-fix Overview and one near-duplicate alignment capture. |
+| Overview evidence | [Corrected Overview](../evidence/visualization/2026-11-22-overview-corrected-status.png) shows artifact integrity and separate decoder outcomes, including the reference-free FAIL. The older [pre-fix Overview](../evidence/visualization/2026-11-22-overview-before-status-copy-fix.png) is retained as historical evidence; its green banner was misleading. |
+| Blue 3 evidence | [Input/baseline](../evidence/visualization/2026-11-22-blue3-input-baseline-overview.png) · [RGB histogram and diagonal trace](../evidence/visualization/2026-11-22-blue3-rgb-histogram-diagonal-trace.png) · [selected candidate and block table](../evidence/visualization/2026-11-22-blue3-selected-candidate-block-table.png) |
+| Sleepy Alarm evidence | [Audio metadata](../evidence/visualization/2026-11-22-sleepy-audio-file-metadata.png) · [target/reference waveforms](../evidence/visualization/2026-11-22-sleepy-target-reference-waveforms.png) · [reference resampling](../evidence/visualization/2026-11-22-sleepy-reference-resampling.png) · [alignment/correlation/residual](../evidence/visualization/2026-11-22-sleepy-alignment-correlation-residual.png) · [ASK symbol clusters](../evidence/visualization/2026-11-22-sleepy-ask-symbol-clusters.png) · [first 32 symbols and byte groups](../evidence/visualization/2026-11-22-sleepy-first-32-symbols-byte-groups.png) · [assisted/reference-free comparison](../evidence/visualization/2026-11-22-sleepy-assisted-vs-free-results.png) |
+| Robustness evidence | [Asymmetric six-variant view](../evidence/visualization/2026-11-22-sleepy-asymmetric-robustness-2-of-6.png); this is the 2/6 one-sided result, not the separate 23-trial matrix. |
+| Duplicate | [Repeated alignment/residual capture](../evidence/visualization/2026-11-22-sleepy-alignment-correlation-residual-repeat.png) substantially overlaps the primary capture and is optional in the final evidence set. |
+| Outstanding capture | None for the currently implemented dashboard views; corrected Overview has been captured. |
+| Proposed figures still to generate | Report §6 proposes a quality-gate summary, extended robustness heatmaps, paired benchmark confusion matrices, and a provenance flow diagram. They are not part of the captured dashboard set yet; source data are in `results/verification/quality-gate.json`, `results/robustness/`, `results/steganalysis/benchmark.json`, and `results/verification/provenance.json`. |
+
+The stale Overview screenshot is retained as evidence of the earlier screen state and is not presented as a correct final view. No evidence file was deleted.

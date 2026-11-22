@@ -1,7 +1,5 @@
 {
   "schema_version": 1,
-  "source_repository": "https://github.com/datnk0116/STEGO",
-  "source_commit": "d37072a190b4c3fcff3e93f76c2b055b170f227f",
   "artifacts": [
     {
       "path": "data/blue3/blue.png",
