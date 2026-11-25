@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-25T14:30:04.439942+00:00",
+  "generated_at": "2026-11-25T15:45:46.275435+00:00",
   "project": "STEGANO",
   "artifact_sources": [
     {
@@ -71,8 +71,8 @@
       },
       {
         "path": "README.md",
-        "bytes": 7809,
-        "sha256": "eea64c943b9440473dd69e061565e65752e71ec065be9e0b7aadbcc96b13ef5c"
+        "bytes": 7779,
+        "sha256": "a7ebbc9781c1cb63add58c8640b417e821a527f33f4a786744750ef53c25da89"
       },
       {
         "path": "evidence/terminal/2026-11-18-audio-assisted-terminal.png",
@@ -316,8 +316,8 @@
       },
       {
         "path": "report/REPORT.md",
-        "bytes": 51241,
-        "sha256": "82ca5f25c0eeceef352e8a1e2da7c5791459ad5cee58eeda3ec09a7ad7a327e7"
+        "bytes": 43359,
+        "sha256": "c903089b68bb7bb12df0237afed6727f4cbf8d5f18d833d10080b130668813f7"
       },
       {
         "path": "report/figures/benchmark-confusion-matrices.svg",

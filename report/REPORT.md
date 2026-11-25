@@ -1,155 +1,155 @@
-# STEGANO — Báo cáo đồ án thực hành CTF Jeopardy
+# STEGANO — CTF Jeopardy Practical Project Report
 
-**Học phần:** UET.CN3124 — An toàn và an ninh mạng (ĐH Công nghệ, ĐHQGHN)  
-**Chủ đề:** Steganography (Blue 3 — Ảnh; Sleepy Alarm — Âm thanh)  
-**Sinh viên:** Nguyễn Khả Đạt — **MSSV:** 24021404 — **Lớp:** INT3307E_3  
-**Giảng viên hướng dẫn:** Nguyễn Đại Thọ
-
----
-
-## Tóm tắt
-
-Đồ án nghiên cứu và triển khai quy trình giải mã độc lập cho hai thử thách CTF Jeopardy thuộc chủ đề Steganography trên hai loại phương tiện khác nhau: **Blue 3** (ảnh PNG, BYU-CSA) và **Sleepy Alarm** (âm thanh MP3, ImaginaryCTF 2024). Trên bộ artifact đã kiểm tra toàn vẹn (3/3 khớp kích thước và SHA-256 trong `results/artifact_manifest.json`), bộ giải mã khôi phục chính xác flag của Blue 3 (`byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}`, 50 ký tự) bằng sai khác RGB trên các khối chéo, và khôi phục chính xác flag của Sleepy Alarm (`ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`, 39 ký tự, 350 symbol, 38 separator, 0 lỗi byte) ở chế độ có tệp tham chiếu (*reference-assisted*) với độ lệch căn chỉnh 1.729 mẫu (tương quan chuẩn hóa 0,9999). Ngược lại, chế độ không có tệp tham chiếu (*reference-free*) thất bại (26 ký tự, 49 separator, 20 nhóm byte lỗi, mã thoát 2) và được giữ nguyên như một giới hạn thực nghiệm.
-
-Ngoài phần giải mã cốt lõi, đồ án bổ sung script kiểm chứng dấu hiệu khám phá tín hiệu (`scripts/inspect_discovery_signals.py`), ma trận đánh giá độ bền (robustness) 9 biến thể ảnh (Blue 3 đạt 1/9 PASS) và 23 lượt âm thanh một phía (Sleepy Alarm đạt 7/23 PASS), thí nghiệm bất đối xứng 6 biến thể âm thanh (2/6 PASS), benchmark bộ phát hiện heuristic cơ sở (ảnh đạt TP=5, TN=12, FP=0, FN=0; âm thanh đạt TP=0, TN=8, FP=0, FN=5 — bỏ sót 5/5 mẫu dương), ứng dụng trực quan hóa Streamlit và quy trình kiểm chứng quality gate/provenance tự động với 22/22 `unittest` đạt. Báo cáo cũng phân tích cơ chế bị khai thác từ góc nhìn tấn công–phòng thủ, chỉ rõ điều kiện thành công, giới hạn suy luận và các hướng cải tiến.
+**Course:** UET.CN3124 — Information Security (VNU University of Engineering and Technology)  
+**Topic:** Steganography (Blue 3 — Image; Sleepy Alarm — Audio)  
+**Student:** Nguyễn Khả Đạt — **Student ID:** 24021404 — **Class:** INT3307E_3  
+**Instructor:** Nguyễn Đại Thọ
 
 ---
 
-## 1. Giới thiệu và mục tiêu
+## Abstract
 
-Trong học phần **UET.CN3124 — An toàn và an ninh mạng**, hình thức thực hành theo mô hình **CTF Jeopardy** (giải các thử thách phân theo chủ đề để tìm chuỗi flag xác nhận [3]) giúp rèn luyện năng lực phân tích kỹ thuật, trích xuất chứng cứ số (CLO4) và tư duy đánh giá rủi ro – phòng thủ hệ thống (CLO5) theo chuẩn đầu ra môn học. Nhóm chủ đề **Steganography** (giấu tin mật) được lựa chọn vì đặt ra bài toán kép: vừa che giấu thông điệp ngay trong dữ liệu đa phương tiện hợp lệ mà không làm biến dạng rõ rệt về mặt cảm nhận, vừa đòi hỏi người phân tích kết hợp xử lý tín hiệu/ảnh với suy luận an ninh.
+This project investigates and implements independent decoding pipelines for two Jeopardy-style CTF challenges under the Steganography track across two distinct media modalities: **Blue 3** (PNG image, BYU-CSA) and **Sleepy Alarm** (MP3 audio, ImaginaryCTF 2024). Over the integrity-verified artifacts (3/3 matching byte sizes and SHA-256 digests in `results/artifact_manifest.json`), the image decoder recovers the exact Blue 3 flag (`byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}`, 50 characters) via RGB differences over diagonal blocks, while the audio decoder recovers the exact Sleepy Alarm flag (`ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`, 39 characters, 350 symbols, 38 separators, 0 byte errors) in *reference-assisted* mode with a cross-correlation alignment lag of 1,729 samples (normalized correlation 0.9999). By contrast, *reference-free* mode fails (26 characters, 49 separators, 20 malformed byte groups, exit code 2) and is preserved as an explicit experimental limitation.
 
-Đồ án chọn đồng thời một thử thách ảnh (**Blue 3**) và một thử thách âm thanh (**Sleepy Alarm**) nhằm tránh phụ thuộc vào một dạng dữ liệu hay một kỹ thuật nhúng duy nhất (như LSB thuần túy):
+Beyond core extraction, the project contributes a reproducible post-hoc signal discovery script (`scripts/inspect_discovery_signals.py`), a 9-variant image robustness matrix (Blue 3: 1/9 PASS) and a 23-trial one-sided audio robustness matrix (Sleepy Alarm: 7/23 PASS), a 6-variant asymmetric audio experiment (2/6 PASS), a fixed-threshold heuristic steganalysis benchmark (image: TP=5, TN=12, FP=0, FN=0; audio: TP=0, TN=8, FP=0, FN=5 — missing all 5 positive samples), a multi-page Streamlit diagnostic dashboard, and an automated quality-gate/provenance verification workflow with 22/22 `unittest` cases passing. The report also analyzes the underlying mechanisms from an offensive and defensive perspective, explicitly documenting success conditions, inference boundaries, and directions for future improvement.
 
-- **Blue 3** nhúng dữ liệu trong miền không gian ảnh PNG bằng tổng sai khác giá trị RGB so với màu nền trên các khối nằm dọc đường chéo chính.
-- **Sleepy Alarm** nhúng dữ liệu trong miền thời gian–tần số của tệp MP3 bằng điều chế biên độ ASK (sóng mang 8.000 Hz, tốc độ 50 baud, 3 mức biên độ), đòi hỏi căn chỉnh thời gian và trừ tín hiệu tham chiếu.
+---
 
-**Lý do chọn phương án và so sánh lựa chọn:** Các công cụ phổ biến như Aperi'Solve [4] (chủ yếu trích xuất bit-plane LSB và chuỗi văn bản ảnh) hay Audacity/Sonic Visualiser (quan sát phổ và dạng sóng thủ công) phù hợp cho bước thăm dò trực quan ban đầu, nhưng không mô hình hóa trực tiếp phép cộng sai khác RGB trên lưới $n \times n$ biến thiên của Blue 3, cũng không tự động hóa được bước căn chỉnh cross-correlation chính xác từng mẫu, giữ tiền tố trước vùng chồng lấp và chiếu I/Q theo pha toàn cục cho 350 symbol ASK. Việc cài đặt bằng Python với NumPy [7], SciPy [8], Pillow [9] và soundfile [10] bảo đảm tính tái lập, kiểm thử tự động và đo lường định lượng độ bền.
+## 1. Introduction and Objectives
 
-| Phương án cân nhắc | Tính sẵn có của artifact | Khả năng tái lập tự động | Độ phức tạp kỹ thuật | Liên kết học phần UET.CN3124 |
+In **UET.CN3124 — Information Security**, Jeopardy-style Capture The Flag (CTF) practical work—where participants solve categorized technical tasks to recover a verified flag string [3]—develops forensic evidence extraction skills (CLO4) and security risk/defense evaluation (CLO5) aligned with the course learning outcomes. The **Steganography** topic was selected because it poses a dual analytical problem: concealing payloads inside seemingly benign multimedia carriers without perceptible distortion, while requiring signal/image processing paired with security reasoning.
+
+The project pairs one image challenge (**Blue 3**) with one audio challenge (**Sleepy Alarm**) to avoid relying on a single data modality or a single textbook technique such as plain least-significant-bit (LSB) embedding:
+
+- **Blue 3** embeds data in the spatial domain of a PNG image using cumulative RGB differences relative to the background color along main-diagonal blocks.
+- **Sleepy Alarm** embeds data in the time–frequency domain of an MP3 file using Amplitude-Shift Keying (ASK) modulation (8,000 Hz carrier, 50 baud, three amplitude levels), requiring time alignment and reference subtraction.
+
+**Rationale for Python (NumPy, SciPy, Pillow, soundfile) and Comparison of Alternatives:** Existing tools such as Aperi'Solve [4] (primarily targeting LSB bit-plane visualization and string extraction) or Audacity/Sonic Visualiser (manual waveform and spectrogram inspection) are useful for initial visual triage, but they neither model Blue 3's variable $n \times n$ diagonal RGB-delta grid nor automate sample-accurate cross-correlation alignment, pre-overlap prefix preservation, and globally phased per-symbol I/Q projection across 350 ASK symbols. Implementing the pipeline in Python with NumPy [7], SciPy [8], Pillow [9], and soundfile [10] guarantees reproducibility, automated regression testing, and quantitative robustness evaluation.
+
+| Evaluated Option | Artifact Availability | Automated Reproducibility | Technical Depth | Alignment with UET.CN3124 |
 |---|---|---|---|---|
-| **Cặp Blue 3 + Sleepy Alarm & pipeline Python (được chọn)** | Đủ 3 artifact chính thức, kiểm chứng SHA-256 [1], [2] | Cao: CLI, 22 `unittest`, benchmark & quality gate | Phối hợp không gian ảnh RGB-delta + tín hiệu số ASK/I-Q | Bao phủ phân tích chứng cứ số (CLO4) và đánh giá kênh ẩn/DLP (CLO5) |
-| Chỉ giải thử thách LSB ảnh đơn lẻ | Sẵn nhiều bài công khai | Trung bình (thường thiếu đối chứng âm) | Thấp, chỉ kiểm tra bit ít trọng số | Chỉ phản ánh một kỹ thuật nhúng cổ điển |
-| Dùng thuần công cụ GUI/web (Aperi'Solve, Audacity) | Phụ thuộc giao diện ngoài | Thấp, thao tác thủ công khó kiểm thử hồi quy | Hạn chế khi cần chiếu I/Q và đo độ bền hàng loạt | Khó chuẩn hóa kiểm chứng kỹ thuật phòng thủ |
-| Thử thách âm thanh ASK không có bản gốc tham chiếu | Không có tệp gốc đối chứng | Không thể kiểm chứng phép trừ tham chiếu | Dễ rơi vào suy đoán không định lượng được phần dư | Thiếu cơ sở đối chiếu reference-assisted vs reference-free |
+| **Blue 3 + Sleepy Alarm & custom Python pipeline (Selected)** | All 3 official artifacts pinned and SHA-256 verified [1], [2] | High: CLI, 22 `unittest`, benchmark & quality gate | Combines spatial RGB-delta and ASK I/Q signal processing | Covers digital evidence extraction (CLO4) and covert-channel/DLP defense (CLO5) |
+| Single basic image LSB challenge | Widely available | Moderate (often lacks negative controls) | Low; inspects only least-significant bits | Reflects only one classical hiding scheme |
+| GUI/web tools only (Aperi'Solve, Audacity) | Depends on external UI | Low; manual clicks resist regression testing | Limited for batch I/Q projection and robustness sweeps | Difficult to standardize defensive verification |
+| ASK audio challenge without original reference | Lacks clean cover recording | Cannot verify reference subtraction | Risks unquantified guesses on residual noise | Misses reference-assisted vs. reference-free contrast |
 
-**Phạm vi và khung phân bổ công việc:** Trong khung đồ án cá nhân dự kiến khoảng 30 giờ của học phần, khối lượng công việc được phân bổ qua các giai đoạn chính gồm: khảo sát và cài đặt bộ giải mã cho hai challenge; bổ sung kiểm thử đơn vị và hồi quy; triển khai thực nghiệm bất đối xứng, ma trận độ bền và benchmark bộ phát hiện; xây dựng giao diện trực quan hóa Streamlit; tự động hóa quality gate/provenance và hoàn thiện báo cáo (không gán số giờ riêng cho từng công đoạn vì thời lượng thực hiện trong nhật ký là ước lượng tự báo cáo).
-
----
-
-## 2. Bối cảnh và kiến thức nền
-
-**Steganography so với mật mã học (Cryptography):** Mật mã học biến đổi bản rõ thành bản mã không thể đọc được nhằm bảo vệ tính bí mật, nhưng bản thân sự tồn tại của thông điệp mã hóa là hiển nhiên đối với bên quan sát. Ngược lại, steganography giấu sự *tồn tại* của thông điệp bên trong một vật mang (*cover media*) tưởng chừng vô hại như ảnh hoặc âm thanh [11]; hai kỹ thuật thường bổ trợ nhau trong thực tế.
-
-**Nhúng miền không gian trong ảnh (Spatial-domain RGB delta):** Thay vì chỉ sửa trực tiếp bit ít trọng số nhất (LSB) của từng điểm ảnh [11], một biến thể miền không gian mã hóa từng ký tự bằng độ lệch màu cộng dồn $\Delta = \sum_{(x,y)\in B_i} (I(x,y) - B_0)$ trên một vùng/khối $B_i$ so với màu nền chuẩn $B_0$. Khi $B_0$ chiếm đa số tuyệt đối điểm ảnh, sai khác cộng dồn vừa đủ nhỏ để mắt thường khó nhận ra trên từng điểm ảnh, vừa khôi phục được giá trị mã ký tự khi cộng trên toàn khối.
-
-**Điều chế ASK trong âm thanh và vai trò tín hiệu tham chiếu:** *Amplitude-Shift Keying* (ASK) biểu diễn ký hiệu số bằng cách thay đổi biên độ của một sóng mang hình sin $s(t) = A_k \cos(2\pi f_c t + \phi)$. Khi tín hiệu dữ liệu có biên độ rất nhỏ (khoảng $10^{-4}$–$5\times 10^{-3}$, tương ứng tâm cụm đo được tới $\approx 0,005$) được cộng lên một bản nhạc nền có băng thông rộng và biên độ lớn hơn nhiều, năng lượng nhạc nền lấn át tín hiệu mang tin trong từng cửa sổ symbol. Nếu có bản ghi gốc (*reference*), việc căn chỉnh pha/thời gian chính xác và lấy hiệu `target - reference` sẽ triệt tiêu phần lớn nền nhạc, làm lộ rõ các mức biên độ ASK.
-
-**Ảnh hưởng của nén MP3 tới phép trừ tín hiệu:** MP3 (MPEG-1/2 Layer-3) là định dạng nén mất dữ liệu (*lossy*) sử dụng băng lọc kết hợp biến đổi MDCT theo khung và mô hình tâm lý thính học (*psychoacoustic masking*) [12]. Quá trình mã hóa/giải mã MP3 thường chèn thêm độ trễ đầu khung (*encoder delay*), suy giảm hoặc làm tròn phổ tần số cao (bao gồm vùng 8 kHz) và tạo sai số lượng tử hóa giữa hai lần nén. Do đó, không thể trừ trực tiếp từ mẫu 0 mà phải ước lượng độ trễ (lag) bằng tương quan chéo (*cross-correlation*) trước khi trừ; đồng thời, ngay cả sau khi trừ, phần dư vẫn còn nhiễu nén MP3 khiến biên độ symbol dao động nhẹ.
+**Scope and Work Allocation Framework:** Within the course's ~30-hour individual project framework, effort is structured across core phases: challenge investigation and decoder implementation; unit and regression test authoring; asymmetric robustness, extended robustness, and steganalysis benchmarking; Streamlit diagnostic visualization; automated quality-gate/provenance engineering; and technical documentation (individual per-task hour counts are intentionally not assigned, as logbook durations are self-reported estimates).
 
 ---
 
-## 3. Môi trường và công cụ
+## 2. Background and Theoretical Foundations
+
+**Steganography vs. Cryptography:** Cryptography transforms plaintext into unreadable ciphertext to protect confidentiality, yet the existence of an encrypted message remains obvious to an observer. By contrast, steganography conceals the *existence* of the message inside an innocuous cover medium such as an image or audio recording [11]; in practice, the two techniques frequently complement one another.
+
+**Spatial-Domain Image Embedding (RGB Delta):** Rather than modifying only the least-significant bits (LSBs) of individual pixels [11], this spatial-domain variant encodes each character via the cumulative color deviation $\Delta = \sum_{(x,y)\in B_i} (I(x,y) - B_0)$ over a block $B_i$ relative to the dominant background color $B_0$. When $B_0$ accounts for the overwhelming majority of pixels, small per-pixel perturbations remain visually inconspicuous while still summing to exact character codepoints across each block.
+
+**Audio ASK Modulation and the Role of a Reference Signal:** Amplitude-Shift Keying (ASK) encodes symbols by varying the amplitude of a sinusoidal carrier $s(t) = A_k \cos(2\pi f_c t + \phi)$. When the embedded carrier has very small amplitude (approximately $10^{-4}$–$5\times 10^{-3}$, consistent with the largest measured cluster center $\approx 0.005$) and is superposed onto broadband music of much higher energy, the background music masks the carrier within every symbol window. Given the original recording (*reference*), accurate time alignment and subtraction (`target - reference`) cancels most of the cover music, exposing the discrete ASK amplitude levels.
+
+**Effect of MP3 Compression on Signal Subtraction:** MP3 (MPEG-1/2 Layer-3) is a lossy perceptual audio codec combining filter banks, frame-based Modified Discrete Cosine Transform (MDCT), and psychoacoustic masking [12]. Encoding and decoding commonly introduce frame-level encoder delay, high-frequency attenuation or rounding (including around 8 kHz), and quantization differences across re-encodings. Consequently, signals cannot be subtracted directly from sample 0; the offset lag must first be estimated via cross-correlation, and residual quantization noise persists even after subtraction.
+
+---
+
+## 3. Environment and Tools
 
 <a id="report-environment"></a>
 <a id="report-artifacts"></a>
 
-**Môi trường thực thi và tính minh bạch tham số:** Mã nguồn yêu cầu **Python $\ge 3.10$**. Các lần chạy tái lập và quality gate được ghi nhận trong hồ sơ sử dụng **Python 3.14.10** (CPython) trên macOS arm64 (`results/final/provenance.json`). Phiên bản các thư viện chính được chốt trong `requirements-lock.txt` (sinh từ `pip freeze` trên môi trường kiểm thử) bên cạnh khoảng phiên bản tại `requirements.txt`: NumPy `2.5.5`, Pillow `13.0.0`, SciPy `1.18.1`, SoundFile `0.14.0`, Plotly `6.9.0` và Streamlit `1.67.0`.
+**Execution Environment and Parameter Provenance:** The codebase requires **Python $\ge 3.10$**. Recorded reproduction and quality-gate runs use **Python 3.14.10** (CPython) on macOS arm64 (`results/final/provenance.json`). Exact dependency versions from the verified environment are pinned in `requirements-lock.txt` (`pip freeze`) alongside compatible ranges in `requirements.txt`: NumPy `2.5.5`, Pillow `13.0.0`, SciPy `1.18.1`, SoundFile `0.14.0`, Plotly `6.9.0`, and Streamlit `1.67.0`.
 
-[Manifest chạy ngày 19/11](../results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-manifest.json) ghi nhận cấu hình giải mã cố định cho Sleepy Alarm gồm sóng mang 8.000 Hz, tốc độ 50 baud và cửa sổ 7,0 giây. Hồ sơ lịch sử xác nhận các thông số đã dùng trong thực nghiệm nhưng không lưu dấu vết quá trình dò tìm ban đầu trước khi biết flag; do đó báo cáo xem đây là cấu hình decoder cố định, không tuyên bố lựa chọn mù, và xem phép đối chiếu *exact match* là bước kiểm tra hợp lệ sau giải mã. Để phục vụ đối chiếu kỹ thuật tái lập khi vấn đáp, Mục 4 bổ sung kết quả kiểm tra tín hiệu **sau khi đã giải** (*post-hoc inspection*) bằng `scripts/inspect_discovery_signals.py`. Tác giả xác nhận không tham khảo writeup công khai cho hai challenge.
+The [November 19 run manifest](../results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-manifest.json) records fixed Sleepy Alarm decoder parameters of an 8,000 Hz carrier, 50 baud symbol rate, and 7.0-second analysis window. Historical records confirm the parameters used in the experiments but do not preserve the pre-solve exploration steps prior to knowing the expected flag; accordingly, this report treats these values as fixed decoder settings rather than claiming blind parameter selection, and treats exact-match string comparison as post-decode validation. For transparent oral-defense verification, Section 4 supplements this with a reproducible **post-hoc** signal inspection via `scripts/inspect_discovery_signals.py`. The author confirms no public writeups were consulted for either challenge.
 
-**Tính toàn vẹn artifact đầu vào:** Ba tệp gốc trong `data/` được kiểm tra kích thước và mã băm SHA-256 bằng `python scripts/verify_artifacts.py` đối chiếu với [manifest](../results/artifact_manifest.json):
+**Input Artifact Integrity:** The three official inputs under `data/` are verified for byte size and SHA-256 digest via `python scripts/verify_artifacts.py` against [artifact_manifest.json](../results/artifact_manifest.json):
 
-| Artifact | Kích thước (bytes) | SHA-256 | Nguồn gốc |
+| Artifact | Size (bytes) | SHA-256 | Official Source |
 |---|---:|---|---|
-| `data/blue3/blue.png` | 9.406 | `009dab85bf6ccc5b42b8efa5f959ab6efa0c556b37eb6b4a77a21ec3356b721e` | BYU-CSA [1] |
-| `data/sleepy_alarm/morning_n_breakfast.mp3` | 179.283 | `bd181876c2d28152b9c3982fd88945d4e681fd93d49477622ea5841a3ff25ae2` | ImaginaryCTF 2024 [2] |
-| `data/sleepy_alarm/morning_n_breakfast_original.mp3` | 160.495 | `d0c283834955e54d68b0bba723ccd194142a428d2de74722e5f1dff3ccbd94ad` | ImaginaryCTF 2024 [2] |
+| `data/blue3/blue.png` | 9,406 | `009dab85bf6ccc5b42b8efa5f959ab6efa0c556b37eb6b4a77a21ec3356b721e` | BYU-CSA [1] |
+| `data/sleepy_alarm/morning_n_breakfast.mp3` | 179,283 | `bd181876c2d28152b9c3982fd88945d4e681fd93d49477622ea5841a3ff25ae2` | ImaginaryCTF 2024 [2] |
+| `data/sleepy_alarm/morning_n_breakfast_original.mp3` | 160,495 | `d0c283834955e54d68b0bba723ccd194142a428d2de74722e5f1dff3ccbd94ad` | ImaginaryCTF 2024 [2] |
 
 ---
 
-## 4. Quy trình từng bước
+## 4. Step-by-Step Methodology
 
 <a id="report-methods"></a>
 
-Toàn bộ các bước triển khai, giả thuyết, kết quả trung gian và xử lý lỗi đều được ghi chép theo thời gian thực trong [LOGBOOK.md](../LOGBOOK.md) và chi tiết hóa tại [APPENDIX.md](APPENDIX.md). Phần *kiểm tra dấu hiệu tín hiệu* trong mỗi mục dưới đây là phép **kiểm tra tái lập sau khi đã giải (post-hoc)** thực thi qua `python scripts/inspect_discovery_signals.py` (`results/final/discovery-signals.json`, `results/final/discovery-signals.log`), không phải nhật ký lịch sử trước khi giải mã. Các lệnh đều là lệnh Python thuần chạy từ thư mục gốc repo.
+All implementation steps, hypotheses, intermediate outputs, and error resolutions are recorded chronologically in [LOGBOOK.md](../LOGBOOK.md) and detailed in [APPENDIX.md](APPENDIX.md). The *signal discovery checks* below are **reproducible post-hoc inspections** executed via `python scripts/inspect_discovery_signals.py` (`results/final/discovery-signals.json`, `results/final/discovery-signals.log`), not contemporaneous pre-solve logs. All commands below are plain Python invocations from the repository root.
 
-### 4.1. Challenge 1 — Blue 3 (Ảnh PNG)
+### 4.1. Challenge 1 — Blue 3 (PNG Image)
 
-1. **Dấu hiệu nhận diện cấu trúc (kiểm tra post-hoc từ ảnh gốc):** Khi thống kê kênh RGB của `data/blue3/blue.png` ($512 \times 512$ px = 262.144 điểm ảnh), ảnh chỉ có 49 màu phân biệt và màu nền `(64, 77, 205)` chiếm 258.916 điểm ảnh (98,77%). Khi lọc mặt nạ các điểm ảnh khác màu nền (`pixels != base`), toàn bộ **3.228 điểm ảnh** (1,23%) đều tập trung dọc đường chéo chính với khoảng cách $|x - y| \le 9\text{ px}$ (`results/final/discovery-signals.json`), minh họa trực quan ở Hình 1. Quan sát này lý giải việc thử mô hình chia ảnh thành $n \times n$ khối vuông và cộng sai khác RGB trên $n$ khối đường chéo.
-2. **Giả thuyết và lệnh thực thi:** Tổng sai khác RGB so với màu nền trong $n$ khối chéo cho chuỗi ký tự khớp khuôn dạng flag:
+1. **Structural Discovery Check (post-hoc on raw image):** Inspecting the RGB distribution of `data/blue3/blue.png` ($512 \times 512$ px = 262,144 pixels) reveals only 49 distinct RGB colors, with a single modal background `(64, 77, 205)` covering 258,916 pixels (98.77%). Masking all non-background pixels (`pixels != base`) shows that all **3,228 altered pixels** (1.23%) lie within $|x - y| \le 9\text{ px}$ along the main diagonal (`results/final/discovery-signals.json`), visually confirmed in Figure 1. This spatial localization motivates partitioning the image into an $n \times n$ grid and summing RGB deltas across the $n$ diagonal blocks.
+2. **Hypothesis and Execution Command:** Summing RGB differences from the background color across $n$ diagonal blocks yields a valid challenge flag:
    ```bash
    PYTHONPATH=src python -m stegano blue3 data/blue3/blue.png
    ```
-3. **Kết quả trung gian và đầu ra:** Trong `src/stegano/image.py`, bộ giải mã duyệt $n$ từ $2$ đến $\min(w,h)$. Tệp log `results/recheck/blue3.log` ghi nhận 49 lần thử (`length=2..50`); ở $n=2..49$, các chuỗi sinh ra là ký tự nhiễu hoặc thiếu dấu đóng `}` (ví dụ tại $n=49$ thu được `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP`), đến $n=50$ thu được chuỗi hợp lệ `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` (`format_valid: true`, exit code 0).
-4. **Lỗi và hiệu chỉnh:** Ở lần dựng kiểm thử trực quan ban đầu ([Logbook Entry 00](../LOGBOOK.md#entry-00), [Entry 12](../LOGBOOK.md#entry-12)), môi trường `.venv` cũ dùng Python 3.9.6 (< 3.10) và Python hệ thống thiếu `streamlit`; sinh viên đã tạo môi trường ảo riêng dùng Python 3.14.10 và kiểm tra `pip check`.
-5. **Bằng chứng:** Xem [Logbook Entry 01](../LOGBOOK.md#entry-01), [Appendix A.3](APPENDIX.md#app-a3-blue-3-extraction) và Hình 1.
+3. **Intermediate and Final Output:** In `src/stegano/image.py`, the decoder sweeps $n$ from $2$ to $\min(w, h)$. The saved log `results/recheck/blue3.log` records 49 candidate attempts (`length=2..50`); grids $n=2..49$ produce garbled text or omit the closing brace (e.g., $n=49$ yields `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP`), whereas $n=50$ matches `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` (`format_valid: true`, exit code 0).
+4. **Errors and Fixes:** Early environment checks ([Logbook Entry 00](../LOGBOOK.md#entry-00), [Entry 12](../LOGBOOK.md#entry-12)) found that the legacy `.venv` used Python 3.9.6 (< 3.10) and system Python lacked `streamlit`; a dedicated Python 3.14.10 virtual environment was created and verified with `pip check`.
+5. **Evidence:** See [Logbook Entry 01](../LOGBOOK.md#entry-01), [Appendix A.3](APPENDIX.md#app-a3-blue-3-extraction), and Figure 1.
 
-![Biểu đồ phân bố kênh RGB và dấu vết khối chéo Blue 3](../evidence/visualization/2026-11-22-blue3-rgb-histogram-diagonal-trace.png)
+![Blue 3 RGB channel histogram and diagonal trace](../evidence/visualization/2026-11-22-blue3-rgb-histogram-diagonal-trace.png)
 
-*Hình 1. Trang chẩn đoán Blue 3 trên Streamlit: histogram kênh RGB tập trung tại màu nền `(64, 77, 205)` và toàn bộ điểm ảnh sai khác phân bố dọc 50 khối trên đường chéo chính (`evidence/visualization/2026-11-22-blue3-rgb-histogram-diagonal-trace.png`).*
+*Figure 1. Streamlit Blue 3 diagnostic view showing the RGB channel histogram concentrated at `(64, 77, 205)` and the 50 decoded blocks along the main diagonal (`evidence/visualization/2026-11-22-blue3-rgb-histogram-diagonal-trace.png`).*
 
-### 4.2. Challenge 2 — Sleepy Alarm (Âm thanh MP3)
+### 4.2. Challenge 2 — Sleepy Alarm (MP3 Audio)
 
-1. **Dấu hiệu phổ và tham số symbol (kiểm tra post-hoc từ cặp âm thanh):** Trước khi trừ bản gốc, phổ `periodogram` trong 7,0 giây đầu của `morning_n_breakfast.mp3` có đỉnh chính tại 1.598,71 Hz của nhạc nền, còn dải 7,9–8,1 kHz chỉ chiếm **0,03%** (`0.000257`, `results/final/discovery-signals.json`) năng lượng; lưu ý con số **0,02%** (`0.000204`) trong `results/steganalysis/benchmark.json` ở Mục 6.2 là tỷ số đo trên **toàn tệp 10,02 giây**, còn **0,03%** đo riêng trên **cửa sổ 7,0 giây đầu** chứa payload. Sau khi căn chỉnh cross-correlation (`lag_samples = 1729`) và lấy hiệu `target - reference`, phần dư làm lộ một đỉnh hẹp dải nổi bật đúng tại **8.000,00 Hz**, với dải 7,9–8,1 kHz tăng lên chiếm **52,40%** (`0.524009`) tổng năng lượng phần dư (Hình 2). Khi vẽ phần dư với tham số cấu hình cố định của decoder là tốc độ **50 baud** (tương ứng chu kỳ **20 ms/symbol**, 350 symbol trong 7,0 giây), biểu đồ 32 symbol đầu (`evidence/visualization/2026-11-22-sleepy-first-32-symbols-byte-groups.png`) và Hình 3 xác nhận các ranh giới mức biên độ khớp nhất quán với khung 20 ms này (đây là tham số cố định của decoder được kiểm chứng nhất quán, không phải đại lượng đo độc lập từ đầu).
-2. **Giả thuyết và lệnh thực thi:** Trừ bản gốc làm lộ 3 mức biên độ ASK (separator, bit `0`, bit `1`), còn chạy không tham chiếu dùng làm đối chứng âm:
+1. **Spectral and Symbol-Timing Check (post-hoc on audio pair):** Before subtraction, the 7.0-second `periodogram` of `morning_n_breakfast.mp3` peaks at 1,598.71 Hz (background music), while the 7.9–8.1 kHz band accounts for only **0.03%** (`0.000257`, `results/final/discovery-signals.json`) of total energy; note that the **0.02%** (`0.000204`) figure in `results/steganalysis/benchmark.json` (Section 6.2) is measured across the **full 10.02-second file**, whereas **0.03%** is measured over the **first 7.0-second payload window**. After cross-correlation alignment (`lag_samples = 1729`) and subtraction (`target - reference`), the residual spectrum peaks sharply at **8,000.00 Hz**, with the 7.9–8.1 kHz band rising to **52.40%** (`0.524009`) of residual energy (Figure 2). Plotting the residual under the fixed decoder parameter of **50 baud** (**20 ms/symbol**, 350 symbols in 7.0 s), both the 32-symbol zoom (`evidence/visualization/2026-11-22-sleepy-first-32-symbols-byte-groups.png`) and Figure 3 confirm amplitude transitions align consistently with 20 ms boundaries (this is a fixed decoder configuration verified for consistency, not an independently derived measurement).
+2. **Hypothesis and Execution Commands:** Subtracting the aligned original recording exposes three ASK amplitude levels (separator, bit `0`, bit `1`), while running without `--reference` serves as a negative control:
    ```bash
-   # Chế độ có tham chiếu (reference-assisted)
+   # Reference-assisted mode
    PYTHONPATH=src python -m stegano sleepy-alarm \
      data/sleepy_alarm/morning_n_breakfast.mp3 \
      --reference data/sleepy_alarm/morning_n_breakfast_original.mp3
 
-   # Chế độ không tham chiếu (reference-free — đối chứng âm)
+   # Reference-free mode (negative control)
    PYTHONPATH=src python -m stegano sleepy-alarm \
      data/sleepy_alarm/morning_n_breakfast.mp3
    ```
-3. **Kết quả trung gian:** Ở chế độ *reference-assisted* (`results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-output.json`), căn chỉnh đạt `lag_samples = 1729`, `target_start_sample = 1729`, tương quan `0.9998734358246231` ($\approx 0,9999$). Phân cụm 350 phép chiếu I/Q cho 3 tâm biên độ `[0.0001035, 0.0019975, 0.0049727]` (Hình 3), tách 38 separator, 0 lỗi nhóm byte, giải mã đúng 39 ký tự `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}` (exit code 0). Ở chế độ *reference-free* (`results/recheck/sleepy-alarm-reference-free.log`), vẫn đo 350 symbol nhưng phân cụm lỗi (49 separator, 20 nhóm byte sai độ dài), chỉ ra mảnh vỡ `ictsl33p_Nauk_arm_224dcb2}` (26 ký tự, `format_valid: false`, exit code 2).
-4. **Lỗi phát hiện và cách sửa ([Logbook Entry 12](../LOGBOOK.md#entry-12)):** Phiên bản decoder trước ngày 19/11 chỉ giải mã trên đoạn chồng lấp `x - y`, làm mất phần đầu (`prefix`) của tệp target trước điểm `target_start_sample` khi vùng overlap bắt đầu bên trong symbol đầu tiên. Bản sửa trong `src/stegano/audio.py` ghép lại `prefix = target[:alignment['target_start_sample']]` và giữ chỉ số mẫu toàn cục khi chiếu I/Q từng symbol; bài kiểm thử hồi quy tổng hợp (`tests/test_audio.py`) đặt điểm overlap tại 1,5 chu kỳ symbol đã xác nhận 16 nhãn đầu và toàn bộ flag đều đúng. Khi chạy `unittest` với `AppTest` của Streamlit ở chế độ bare-mode xuất hiện 3 cảnh báo `missing ScriptRunContext` (không ảnh hưởng kết quả PASS) và biểu ngữ trạng thái dashboard tổng quan đã được sửa ở [Logbook Entry 16](../LOGBOOK.md#entry-16).
-5. **Bằng chứng:** Xem [Logbook Entry 02](../LOGBOOK.md#entry-02), [Entry 03](../LOGBOOK.md#entry-03), [Entry 12](../LOGBOOK.md#entry-12), [Appendix A.4](APPENDIX.md#app-a4-sleepy-alarm-reference-assisted)–[A.5](APPENDIX.md#app-a5-sleepy-alarm-reference-free), [A.15](APPENDIX.md#app-a15-ask-prefix-preservation-and-output-regression), Hình 2 và Hình 3.
+3. **Intermediate and Final Output:** In *reference-assisted* mode (`results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-output.json`), alignment yields `lag_samples = 1729`, `target_start_sample = 1729`, and correlation `0.9998734358246231` ($\approx 0.9999$). Clustering the 350 I/Q projections produces three centers `[0.0001035, 0.0019975, 0.0049727]` (Figure 3), 38 separators, 0 malformed byte groups, and the exact 39-character flag `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}` (exit code 0). In *reference-free* mode (`results/recheck/sleepy-alarm-reference-free.log`), 350 symbols are still measured but clustering breaks down (49 separators, 20 malformed byte groups), producing only the broken fragment `ictsl33p_Nauk_arm_224dcb2}` (26 characters, `format_valid: false`, exit code 2).
+4. **Bugs Found and Fixes ([Logbook Entry 12](../LOGBOOK.md#entry-12)):** Prior to November 19, the decoder operated only on the aligned overlap `x - y`, discarding the target prefix before `target_start_sample` whenever alignment began inside an early symbol. The fix in `src/stegano/audio.py` prepends `prefix = target[:alignment['target_start_sample']]` and projects each symbol using global sample indices for carrier phase; a synthetic regression test in `tests/test_audio.py` placing the overlap 1.5 symbol periods into the target verifies the first 16 labels and full flag. Additionally, running Streamlit `AppTest` in bare mode emits three non-fatal `missing ScriptRunContext` warnings (tests still pass), and a misleading green status banner on the Overview page was corrected in [Logbook Entry 16](../LOGBOOK.md#entry-16).
+5. **Evidence:** See [Logbook Entry 02](../LOGBOOK.md#entry-02), [Entry 03](../LOGBOOK.md#entry-03), [Entry 12](../LOGBOOK.md#entry-12), [Appendix A.4](APPENDIX.md#app-a4-sleepy-alarm-reference-assisted)–[A.5](APPENDIX.md#app-a5-sleepy-alarm-reference-free), [A.15](APPENDIX.md#app-a15-ask-prefix-preservation-and-output-regression), Figure 2, and Figure 3.
 
-![Phổ năng lượng trước và sau khi trừ bản gốc của Sleepy Alarm](figures/sleepy-residual-spectrum.svg)
+![Sleepy Alarm spectrum before vs. after reference subtraction](figures/sleepy-residual-spectrum.svg)
 
-*Hình 2. So sánh phổ `periodogram` 0–16 kHz trong 7,0 giây đầu trước và sau khi căn chỉnh trừ bản gốc (`report/figures/sleepy-residual-spectrum.svg`, sinh bởi `scripts/inspect_discovery_signals.py`): đỉnh sóng mang 8.000 Hz lộ rõ từ 0,03% lên 52,40% năng lượng phần dư.*
+*Figure 2. Comparison of 0–16 kHz `periodogram` power spectra over the first 7.0 s before and after reference alignment subtraction (`report/figures/sleepy-residual-spectrum.svg`, generated by `scripts/inspect_discovery_signals.py`): the 8,000 Hz carrier rises from 0.03% to 52.40% of residual energy.*
 
-![Phân cụm biên độ ASK của Sleepy Alarm trên Streamlit](../evidence/visualization/2026-11-22-sleepy-ask-symbol-clusters.png)
+![Sleepy Alarm ASK symbol amplitude clusters](../evidence/visualization/2026-11-22-sleepy-ask-symbol-clusters.png)
 
-*Hình 3. Phân bố biên độ 350 symbol ASK sau khi trừ tham chiếu: 3 cụm tách biệt rõ giữa separator, bit `0` và bit `1` (`evidence/visualization/2026-11-22-sleepy-ask-symbol-clusters.png`).*
+*Figure 3. Amplitude distribution across 350 ASK symbols after reference subtraction, showing three well-separated clusters for separator, bit `0`, and bit `1` (`evidence/visualization/2026-11-22-sleepy-ask-symbol-clusters.png`).*
 
 ---
 
-## 5. Kết quả
+## 5. Results
 
 <a id="report-results"></a>
 
-Bảng dưới đây tổng hợp toàn bộ kết quả định lượng thu được từ các tệp JSON/log đã lưu trong repo:
+The table below summarizes all quantitative findings traced directly to saved JSON and log records in the repository:
 
-| Hạng mục kiểm tra | Kết quả ghi nhận | Nguồn số liệu |
+| Verification Item | Recorded Outcome | Data Source |
 |---|---|---|
-| Tính toàn vẹn artifact | **3/3 PASS** (size + SHA-256 khớp) | `results/artifact_manifest.json` |
-| Dấu hiệu khám phá (post-hoc) | Blue 3: 3.228 px trong $\lvert x-y \rvert \le 9$; Audio residual: đỉnh 8.000 Hz (52,40%) | `results/final/discovery-signals.json` |
-| Giải mã Blue 3 | **Exact match**, 50 ký tự: `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` | `results/recheck/blue3.log` |
-| Sleepy Alarm (có reference) | **Exact match**, 39 ký tự: `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`; 350 symbol, 38 separator, lag 1.729, corr 0,9999, 0 lỗi byte | `results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-output.json` |
-| Sleepy Alarm (không reference) | **FAIL** — 26 ký tự, 49 separator, 20 nhóm byte lỗi, `format_valid: false`, exit code 2 | `results/steganalysis/benchmark.json` |
-| Sleepy Alarm bất đối xứng | Baseline **PASS**; biến đổi một phía **2/6 PASS** (2 resample PASS, 4 gain FAIL) | `results/asymmetric/asymmetric_robustness.json` |
-| Robustness mở rộng Blue 3 | **1/9 PASS** (chỉ Gaussian blur r=0,3 đạt exact match) | `results/robustness/blue3_extended_robustness.json` |
-| Robustness mở rộng Sleepy Alarm | **7/23 PASS** (baseline + gain ×0,75, AWGN SNR 30 dB, resample mỗi phía) | `results/robustness/sleepy_alarm_robustness_matrix.json` |
-| Detector cơ sở — Ảnh | **TP=5, TN=12, FP=0, FN=0** (Precision/Recall/F1 = 1,00 trên 17 mẫu) | `results/steganalysis/benchmark.json` |
-| Detector cơ sở — Âm thanh | **TP=0, TN=8, FP=0, FN=5** (Recall = 0,00 trên 13 mẫu — bỏ sót 5/5 mẫu dương) | `results/steganalysis/benchmark.json` |
-| Kiểm thử & Quality gate cuối | **22/22 unittest PASS** (exit code 0); provenance (97 tệp) & archive (169 thành viên) `verified` | `results/final/quality-gate.json` |
+| Artifact integrity | **3/3 PASS** (byte size + SHA-256 verified) | `results/artifact_manifest.json` |
+| Signal discovery check (post-hoc) | Blue 3: 3,228 px within $\lvert x-y \rvert \le 9$; Audio residual: 8,000 Hz peak (52.40%) | `results/final/discovery-signals.json` |
+| Blue 3 extraction | **Exact match**, 50 chars: `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` | `results/recheck/blue3.log` |
+| Sleepy Alarm (reference-assisted) | **Exact match**, 39 chars: `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`; 350 symbols, 38 separators, lag 1,729, corr 0.9999, 0 byte errors | `results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-output.json` |
+| Sleepy Alarm (reference-free) | **FAIL** — 26 chars, 49 separators, 20 malformed byte groups, `format_valid: false`, exit code 2 | `results/steganalysis/benchmark.json` |
+| Sleepy Alarm asymmetric robustness | Baseline **PASS**; one-sided transforms **2/6 PASS** (2 resample PASS, 4 gain FAIL) | `results/asymmetric/asymmetric_robustness.json` |
+| Blue 3 extended robustness | **1/9 PASS** (only Gaussian blur r=0.3 achieves exact match) | `results/robustness/blue3_extended_robustness.json` |
+| Sleepy Alarm extended robustness | **7/23 PASS** (baseline + gain ×0.75, AWGN SNR 30 dB, resample on each side) | `results/robustness/sleepy_alarm_robustness_matrix.json` |
+| Baseline detector — Image | **TP=5, TN=12, FP=0, FN=0** (Precision/Recall/F1 = 1.00 across 17 samples) | `results/steganalysis/benchmark.json` |
+| Baseline detector — Audio | **TP=0, TN=8, FP=0, FN=5** (Recall = 0.00 across 13 samples — misses all 5 positives) | `results/steganalysis/benchmark.json` |
+| Automated tests & final quality gate | **22/22 unittest PASS** (exit code 0); provenance (97 files) & archive (169 members) `verified` | `results/final/quality-gate.json` |
 
-Về kiểm tra chất lượng và nguồn gốc (*provenance*), lần chạy cuối trong `results/final/quality-gate.json` và `results/final/provenance.json` xác nhận 3/3 artifact gốc, 22/22 `unittest`, 97 tệp nguồn được băm và toàn bộ 169 thành viên trong gói nộp `submission_package_current.zip` đạt trạng thái `verified`; chi tiết đối chiếu các mốc lịch sử và luồng provenance nằm trong phần Phụ lục.
+For quality assurance and provenance, the final run in `results/final/quality-gate.json` and `results/final/provenance.json` verifies 3/3 official artifacts, 22/22 `unittest` cases, 97 hashed source/documentation files, and all 169 archive members in `submission_package_current.zip` as `verified`; historical snapshots and the provenance workflow are detailed in the Appendix.
 
 ---
 
-## 6. Phân tích kỹ thuật và phòng thủ
+## 6. Technical, Offensive, and Defensive Analysis
 
-### 6.1. Cơ chế kỹ thuật, điều kiện thành công và giới hạn
+### 6.1. Technical Mechanisms, Success Conditions, and Limits
 
-**Blue 3 (`src/stegano/image.py`):** Tệp `blue.png` có kích thước $512 \times 512$ px, chỉ gồm 49 màu RGB phân biệt, trong đó màu nền chiếm tới **98,77%** tổng số điểm ảnh (`modal_rgb_fraction = 0.987686`) và độ lệch chuẩn trung bình các kênh chỉ là **0,094** (`results/steganalysis/benchmark.json`). Bộ giải mã xác định màu nền phổ biến nhất `base`, sau đó thử lần lượt số khối $n \in [2, \min(w,h)]$, cắt $n$ khối kích thước $\lfloor w/n \rfloor \times \lfloor h/n \rfloor$ trên đường chéo chính (`pixels[i*ch:(i+1)*ch, i*cw:(i+1)*cw]`). Với mỗi khối $i$, tổng sai khác 3 kênh RGB so với `base` là $\text{value} = \sum (\text{block} - \text{base})$ (cộng trên cả chiều không gian và 3 kênh màu), rồi chuyển thành ký tự qua `chr(value)`.
+**Blue 3 (`src/stegano/image.py`):** `blue.png` measures $512 \times 512$ px with only 49 distinct RGB colors, where the modal background accounts for **98.77%** of all pixels (`modal_rgb_fraction = 0.987686`) and mean channel standard deviation is **0.094** (`results/steganalysis/benchmark.json`). The decoder identifies the modal RGB color `base`, iterates grid counts $n \in [2, \min(w,h)]$, and extracts $n$ diagonal blocks of size $\lfloor w/n \rfloor \times \lfloor h/n \rfloor$ (`pixels[i*ch:(i+1)*ch, i*cw:(i+1)*cw]`). For each block $i$, it sums the RGB channel differences relative to `base` ($\text{value} = \sum (\text{block} - \text{base})$ across height, width, and 3 channels) and maps `chr(value)`.
 
-- *Điều kiện thành công & giới hạn:* Phương pháp đòi hỏi ảnh không bị thay đổi độ sáng/tương phản toàn cục (vốn làm lệch hiệu `block - base` nhân theo số pixel trong khối $10\times 10 = 100$ lần), không bị cắt xén (làm lệch tọa độ đường chéo) và không có nhiễu cộng làm tràn mã ký tự. Đặc biệt, vòng lặp chọn $n=50$ dựa trên điều kiện kiểm tra định dạng đã biết (`candidate.startswith('byuctf{')`, kết thúc bằng `}`, chỉ gồm ký tự chữ/số hoặc `_{}`); đây là **kiểm tra theo định dạng đã biết**, không phải giải mã mù hoàn toàn trên chuỗi bất kỳ. Bảng dưới đây trích 7 khối chéo đầu tiên từ `diagnose_blue3` cho thấy cách tổng sai khác RGB tạo nên tiền tố `byuctf{`:
+- *Success Conditions & Limits:* Decoding assumes no global brightness/contrast scaling (which perturbs `block - base` across every pixel in a $10 \times 10 = 100$-pixel block), no edge cropping (which shifts diagonal alignment), and no additive noise pushing codepoints out of range. Crucially, selecting $n = 50$ relies on known challenge-format validation (`candidate.startswith('byuctf{')`, trailing `}`, and alphanumeric/`_{}` characters); this is **format-guided selection**, not blind extraction of arbitrary payloads. The table below lists the first seven blocks extracted by `diagnose_blue3`:
 
-| Khối | Tọa độ `(x0:x1, y0:y1)` | `rgb_delta` `(ΔR, ΔG, ΔB)` | Tổng mã ký tự | Ký tự |
+| Block | Coordinates `(x0:x1, y0:y1)` | `rgb_delta` `(ΔR, ΔG, ΔB)` | Sum / Codepoint | Character |
 |---:|---|---|---:|---|
 | 0 | `(0:10, 0:10)` | `(30, 37, 31)` | 98 | `b` |
 | 1 | `(10:20, 10:20)` | `(33, 50, 38)` | 121 | `y` |
@@ -159,13 +159,13 @@ Về kiểm tra chất lượng và nguồn gốc (*provenance*), lần chạy c
 | 5 | `(50:60, 50:60)` | `(32, 35, 35)` | 102 | `f` |
 | 6 | `(60:70, 60:70)` | `(49, 40, 34)` | 123 | `{` |
 
-**Sleepy Alarm (`src/stegano/audio.py`):** Cặp MP3 có tần số lấy mẫu 44.100 Hz, 2 kênh stereo, thời lượng khoảng 10,02 giây. Bộ giải mã đọc tham số cố định: sóng mang $f_c = 8.000\text{ Hz}$, tốc độ $50\text{ baud}$ ($\approx 882\text{ mẫu/symbol}$), cửa sổ $7\text{ giây} \Rightarrow 350\text{ symbol}$. Trong chế độ có tham chiếu, hàm `_align` hạ mẫu theo hệ số `round(sr/4000) = 11` để tìm độ trễ thô bằng FFT cross-correlation, rồi tinh chỉnh từng mẫu trong lân cận $\pm 11$ mẫu để tối đa hóa tương quan chuẩn hóa (đạt `lag_samples = 1729`, `correlation = 0.999873`). Phần tiền tố `target[:1729]` được ghép trước hiệu `x - y` nhằm giữ nguyên mốc thời gian và pha sóng mang tại mẫu 0. Tiếp theo, `_project_symbol` chiếu trực tiếp từng cửa sổ symbol (không dùng bộ lọc thông dải toàn cục để tránh làm nhòe năng lượng biên) lên cặp trực giao I/Q:
+**Sleepy Alarm (`src/stegano/audio.py`):** Both MP3 files are 44,100 Hz stereo audio (~10.02 s). The decoder fixes $f_c = 8{,}000\text{ Hz}$, $50\text{ baud}$ ($\approx 882\text{ samples/symbol}$), and a $7\text{-second}$ window ($350\text{ symbols}$). In reference-assisted mode, `_align` downsamples by `round(sr/4000) = 11` for coarse FFT cross-correlation and refines within $\pm 11$ samples at full rate (`lag_samples = 1729`, `correlation = 0.999873`). Prepending `target[:1729]` before `x - y` preserves sample-0 symbol timing and carrier phase. `_project_symbol` then computes unfiltered per-symbol I/Q projection (avoiding whole-signal band-pass smearing across symbol edges):
 $$I_i = \frac{2}{N_i}\sum_{k} (z_k - \bar{z})\cos\!\left(\frac{2\pi f_c k}{f_s}\right),\quad Q_i = \frac{2}{N_i}\sum_{k} (z_k - \bar{z})\sin\!\left(\frac{2\pi f_c k}{f_s}\right),\quad A_i = \sqrt{I_i^2 + Q_i^2}$$
-Ba mức biên độ $A_i$ được phân cụm bằng k-means 1D khởi tạo tại phân vị 5%, 50%, 95% thành ký tự phân cách (`' '`), bit `'0'` và bit `'1'`, rồi ghép mỗi cụm 8 bit giữa các separator thành 1 ký tự ASCII.
+Three amplitude levels $A_i$ are clustered via 1D k-means initialized at the 5th, 50th, and 95th percentiles into separator (`' '`), bit `'0'`, and bit `'1'`, and each 8-bit group is decoded as ASCII.
 
-- *Điều kiện thành công & giới hạn:* Thành công phụ thuộc vào việc có bản ghi gốc đồng dạng (cùng biên độ nền, không bị cắt xén hoặc lọc dải 7,5–8,5 kHz) và cố định đúng $(f_c, \text{baud}, \text{duration})$. Việc chấp nhận kết quả (`format_valid`) dựa trên kiểm tra 39 cụm đủ 8 bit, không lỗi byte và khớp khuôn dạng `ictf{...}`, tức là kiểm tra theo định dạng của challenge chứ không phải giải mù phổ quát. Năm nhóm byte đầu tiên trích từ `diagnose_sleepy_alarm` minh họa quá trình ghép 8 bit thành ký tự `ictf{`:
+- *Success Conditions & Limits:* Decoding requires a matching reference recording (comparable background amplitude, uncropped, and unfiltered in 7.5–8.5 kHz) and exact $(f_c, \text{baud}, \text{duration})$ settings. Output acceptance (`format_valid`) enforces 39 error-free 8-bit groups matching `ictf{...}`, which validates against the challenge format rather than performing universal blind demodulation. The first five byte groups from `diagnose_sleepy_alarm` illustrate how `ictf{` is assembled:
 
-| Chỉ số byte | Chuỗi 8 bit (sau phân cụm ASK) | Mã ASCII | Ký tự |
+| Byte Index | 8-Bit Sequence (after ASK clustering) | ASCII Code | Character |
 |---:|---|---:|---|
 | 0 | `01101001` | 105 | `i` |
 | 1 | `01100011` | 99 | `c` |
@@ -173,98 +173,98 @@ Ba mức biên độ $A_i$ được phân cụm bằng k-means 1D khởi tạo t
 | 3 | `01100110` | 102 | `f` |
 | 4 | `01111011` | 123 | `{` |
 
-### 6.2. Phân tích dưới góc nhìn tấn công và phòng thủ
+### 6.2. Offensive and Defensive Perspective
 
-- **Cơ chế bị khai thác & rủi ro thực tế:** Kẻ tấn công lợi dụng dung lượng dư thừa của tệp đa phương tiện thông thường (ảnh minh họa PNG hoặc tệp ghi âm/nhạc chuông MP3) để thiết lập **kênh rò rỉ dữ liệu bí mật (*data exfiltration*)** hoặc truyền lệnh điều khiển (C2) vượt qua tường lửa/DLP truyền thống vốn chỉ kiểm tra văn bản hoặc chữ ký mã độc. Với kỹ thuật sai khác khối màu hoặc ASK tần số cao (8 kHz, biên độ $\le 0,005$), nội dung tệp vẫn hiển thị và phát ra âm thanh bình thường đối với người dùng cuối.
-- **Dấu hiệu phát hiện (*Indicators*):**
-  1. *Với ảnh kiểu Blue 3:* Histogram tập trung cực đoan vào một giá trị RGB (>90% điểm ảnh giống hệt nhau), độ lệch chuẩn kênh rất thấp, xuất hiện các biến thiên màu cục bộ rời rạc dọc cấu trúc hình học (đường chéo) không tự nhiên.
-  2. *Với âm thanh kiểu Sleepy Alarm:* Có năng lượng hẹp dải quanh tần số sóng mang (8 kHz) biến thiên theo chu kỳ khối cố định (20 ms ứng với 50 baud) và xuất hiện sai lệch nhỏ ở miền tần số cao nếu so được với bản gốc công khai.
-- **Biện pháp phòng thủ, giảm thiểu (*Mitigations*) và giới hạn thực nghiệm:**
-  - *Chuẩn hóa và tái tạo nội dung (Content Disarm and Reconstruction — CDR):* Áp dụng các phép biến đổi mạnh tại cổng mạng (ví dụ thay đổi độ sáng/tương phản, cắt viền, thêm nhiễu hoặc tái mã hóa mất dữ liệu ở mức phù hợp). Tuy nhiên, cần lưu ý giới hạn từ số liệu thực nghiệm (Mục 7): **xử lý nhẹ không đủ làm biện pháp phòng thủ** vì *Gaussian blur radius 0,3* (Blue 3) và *resample round-trip 44,1→48→44,1 kHz* cả hai phía (Sleepy Alarm) vẫn **PASS** toàn bộ flag. Ngoài ra, dù 8/9 phép biến đổi ảnh làm Blue 3 **FAIL** tiêu chí exact-match, biến đổi `brightness ×0,9` vẫn giữ đúng **47/50 vị trí ký tự** (`edit_distance = 3`, `results/robustness/blue3_extended_robustness.json`), tức là làm hỏng tính hợp lệ giải mã tự động nhưng chưa xóa sạch toàn bộ dữ liệu rò rỉ.
-  - *Lọc dải tần và thay đổi biên độ (với âm thanh):* Trong tập thử nghiệm của đồ án, bộ lọc thông dải 7,5–8,5 kHz, nhiễu AWGN từ 20 dB trở xuống và lệch gain $\times 0,5/\times 1,5$ (hoặc $\times 0,25/\times 1,25/\times 1,75$) đều khiến decoder thất bại (FAIL). Các kỹ thuật tái nén MP3 ở bitrate thấp hơn hoặc lọc thông thấp cũng là hướng giảm thiểu hợp lý về mặt lý thuyết, song chưa được thực nghiệm đo đạc trực tiếp trong đồ án này.
-  - *Giám sát tệp media:* Quét bất thường thống kê (entropy không gian, phân bố màu, phổ tần số hẹp dải) tại proxy/DLP đối với tệp đa phương tiện gửi ra ngoài bất thường.
-- **Liên hệ trung thực với kết quả detector của đồ án:** Bộ phát hiện heuristic cố định trong `src/steganalysis.py` yêu cầu thỏa mãn đồng thời 2 ngưỡng cho mỗi loại media (`results/steganalysis/benchmark.json`):
-  - *Ảnh:* Đạt **TP=5, TN=12, FP=0, FN=0** (F1 = 1,00) vì `blue.png` và 4 biến thể độ sáng đều có `modal_rgb_fraction = 0.9877 >= 0.90` và `mean_channel_std ≈ 0.094 <= 8.0`. Tuy nhiên ngưỡng này dễ bỏ sót nếu đối tượng là ảnh tự nhiên phức tạp (không đơn sắc) và chỉ được đánh giá trên 12 ảnh đối chứng tổng hợp.
-  - *Âm thanh:* Đạt **TP=0, TN=8, FP=0, FN=5** (Recall = 0,00 — bỏ sót toàn bộ 5 mẫu dương). Nguyên nhân trực tiếp từ số liệu `benchmark.json`: điều kiện biến thiên RMS theo khối 50 baud đạt (`symbol_block_rms_cv ≈ 0.987 >= 0.15`), nhưng điều kiện tỷ số năng lượng dải 8 kHz thất bại hoàn toàn (`carrier_band_energy_ratio ≈ 0.000204 < 0.02`, tức chỉ ~0,02% tổng năng lượng trên toàn tệp, thậm chí thấp hơn mẫu tổng hợp `~0.009`). Điều này chứng minh sóng mang biên độ nhỏ bị nhạc nền lấn át hoàn toàn trên phổ toàn cục, nên detector ngưỡng năng lượng cố định không thể dùng làm cổng chặn đơn lẻ.
-  - *Hướng cải tiến detector:* Thay tỷ số năng lượng toàn cục bằng tỷ số đỉnh phổ hẹp dải so với nền cục bộ (*narrowband peak-to-local-floor ratio*), phân tích sai khác phổ/cepstral theo cửa sổ trượt 20 ms, và hiệu chỉnh bộ phân loại học máy trên tập dữ liệu âm thanh/ảnh thực tế đa dạng thay vì ngưỡng cứng.
+- **Exploited Mechanism & Real-World Risk:** Adversaries exploit spare capacity in everyday media files (PNG images or MP3 audio clips) to establish **covert data exfiltration channels** or command-and-control (C2) signaling that bypass conventional signature-based DLP/firewall inspection. Because Blue 3 perturbations are localized and Sleepy Alarm operates at 8 kHz with amplitude $\le 0.005$, the files remain visually and audibly normal to end users.
+- **Detection Indicators:**
+  1. *Blue 3-style images:* Extreme histogram dominance (>90% identical RGB pixels), near-zero channel standard deviation, and discrete localized color shifts aligned along a geometric diagonal.
+  2. *Sleepy Alarm-style audio:* Narrowband energy modulation around 8 kHz switching at fixed symbol intervals (20 ms for 50 baud), or high-frequency residual discrepancies when compared against a known clean original.
+- **Defensive Mitigations and Experimental Limits:**
+  - *Content Disarm and Reconstruction (CDR):* Apply non-trivial transformations at network egress gateways (e.g., brightness/contrast normalization, cropping, additive noise, or lossy re-encoding). Crucially, our experimental evidence (Section 7) shows **light sanitization is insufficient as a defense**: *Gaussian blur radius 0.3* (Blue 3) and *44.1→48→44.1 kHz resampling round-trip* on either side (Sleepy Alarm) still **PASS** full flag recovery. Furthermore, although 8/9 image transforms cause Blue 3 to **FAIL** exact-match criteria, `brightness ×0.9` still preserves **47/50 character positions** (`edit_distance = 3`, `results/robustness/blue3_extended_robustness.json`), breaking automated format validity without fully erasing leaked content.
+  - *Band Filtering & Gain Perturbation (Audio):* Within our tested matrix, a 7.5–8.5 kHz band-pass filter, AWGN at $\le 20\text{ dB}$ SNR, and one-sided gain mismatches ($\times 0.25/\times 0.5/\times 1.25/\times 1.5/\times 1.75$) all cause decoder failure (FAIL). Lower-bitrate MP3 re-compression or low-pass filtering is likewise a sound theoretical mitigation, though not directly benchmarked in this project.
+  - *Statistical Media Monitoring:* Deploy statistical anomaly checks (spatial entropy, color dominance, narrowband spectral peaks) on outbound media at DLP/proxy gateways.
+- **Honest Link to Project Detector Benchmark:** The fixed heuristics in `src/steganalysis.py` require both modality-specific thresholds to trigger (`results/steganalysis/benchmark.json`):
+  - *Image:* Achieves **TP=5, TN=12, FP=0, FN=0** (F1 = 1.00) because `blue.png` and its four brightness variants exhibit `modal_rgb_fraction = 0.9877 >= 0.90` and `mean_channel_std ≈ 0.094 <= 8.0`. However, this heuristic would miss payloads embedded in complex natural photographs and was evaluated only against 12 synthetic benign controls.
+  - *Audio:* Scores **TP=0, TN=8, FP=0, FN=5** (Recall = 0.00 — missing all 5 positive samples). `benchmark.json` explains why: the 50-baud RMS variation check triggers (`symbol_block_rms_cv ≈ 0.987 >= 0.15`), but the global 8 kHz energy ratio fails (`carrier_band_energy_ratio ≈ 0.000204 < 0.02`, ~0.02% of full-file energy—lower than the synthetic controls at `~0.009`). Because the broadband music overwhelms the weak carrier globally, fixed whole-file energy thresholds are unsuitable as a standalone detection gate.
+  - *Detector Improvements:* Replace global energy ratios with a narrowband peak-to-local-floor ratio, compute short-window (20 ms) spectral/cepstral residuals, and calibrate ML classifiers on diverse real-world media corpora.
 
-**Bảng đối chiếu hai kỹ thuật dưới góc nhìn an toàn thông tin (UET.CN3124):**
+**Side-by-Side Comparison under UET.CN3124 Security Concepts:**
 
-| Tiêu chí | Blue 3 (Ảnh PNG) | Sleepy Alarm (Âm thanh MP3) |
+| Dimension | Blue 3 (PNG Image) | Sleepy Alarm (MP3 Audio) |
 |---|---|---|
-| **Miền nhúng** | Miền không gian: tổng sai khác RGB theo $n$ khối chéo | Miền thời gian–tần số: điều chế ASK sóng mang 8 kHz, 50 baud |
-| **Kích thước payload của challenge** | 50 ký tự trên ảnh $512 \times 512$ px *(kích thước thực tế của bài, chưa phải dung lượng tối đa)* | 39 byte trong cửa sổ 7 giây *(kích thước thực tế của bài, chưa phải dung lượng tối đa)* |
-| **Độ bền quan sát được** | 1/9 biến thể ảnh PASS (`Gaussian blur r=0,3`); `brightness ×0,9` còn 47/50 vị trí khớp *(không so sánh trực tiếp với tỷ lệ của audio do khác loại và số lượng phép biến đổi)* | 7/23 lượt một phía PASS (baseline + gain ×0,75, AWGN 30 dB, resample mỗi phía) *(không so sánh trực tiếp với tỷ lệ của ảnh)* |
-| **Dấu hiệu phát hiện (IDS/DLP)** | Tỷ lệ màu đơn sắc cực cao (98,77%), `mean_channel_std` thấp (0,094) | Đỉnh năng lượng hẹp dải quanh 8 kHz (0,02% toàn tệp / 0,03% trong 7 s đầu trước khi trừ; lộ 52,40% sau khi trừ) |
-| **Biện pháp phòng thủ (CDR/giám sát)** | Biến đổi mạnh độ sáng/tương phản, cắt viền, nhiễu (xử lý nhẹ như blur 0,3 không đủ) | Lọc dải 7,5–8,5 kHz, lệch gain hoặc nhiễu mạnh (resample nhẹ không đủ) |
-| **Liên hệ học phần UET.CN3124** | Kênh ẩn rò rỉ dữ liệu qua tệp ảnh; kiểm soát nội dung đa phương tiện tại cổng DLP | Kênh ẩn thời gian–tần số vượt qua bộ lọc chữ ký thông thường; bài toán phát hiện kênh ẩn trên IDS/DLP |
+| **Embedding Domain** | Spatial domain: cumulative RGB delta across $n$ diagonal blocks | Time–frequency domain: 8 kHz ASK modulation at 50 baud |
+| **Challenge Payload Size** | 50 chars in a $512 \times 512$ image *(challenge payload size, not maximum capacity)* | 39 bytes in a 7 s window *(challenge payload size, not maximum capacity)* |
+| **Observed Robustness** | 1/9 image variants PASS (`Gaussian blur r=0.3`); `brightness ×0.9` keeps 47/50 positions *(not directly comparable to audio due to different transform types and matrix size)* | 7/23 one-sided trials PASS (baseline + gain ×0.75, AWGN 30 dB, resample on each side) *(not directly comparable to image ratio)* |
+| **Detection Indicators (IDS/DLP)** | Extreme modal color dominance (98.77%), low `mean_channel_std` (0.094) | Narrowband 8 kHz peak (0.02% full file / 0.03% 7 s window pre-subtraction; 52.40% post-subtraction) |
+| **Defensive Mitigations (CDR/Monitoring)** | Strong brightness/contrast scaling, cropping, noise (light blur 0.3 insufficient) | 7.5–8.5 kHz filtering, gain mismatch, strong noise (light resampling insufficient) |
+| **Course Alignment (UET.CN3124)** | Image covert exfiltration channel; multimedia content inspection at DLP egress | Time–frequency covert channel evading signature filters; covert-channel detection on IDS/DLP |
 
 ---
 
-## 7. Phần tùy biến và mở rộng
+## 7. Custom Extensions and Contributions
 
 <a id="report-asymmetric-robustness"></a>
 <a id="report-benchmark"></a>
 <a id="report-extended-robustness"></a>
 <a id="report-visualization"></a>
 
-Ngoài việc giải mã hai challenge, sinh viên đã phát triển các công cụ đo lường và kiểm chứng mở rộng sau:
+Beyond baseline challenge solving, the following custom evaluation and verification tools were developed:
 
-1. **Thí nghiệm độ bền bất đối xứng Sleepy Alarm (`scripts/run_audio_asymmetric.py`):** Biến đổi độc lập chỉ `target` hoặc chỉ `reference` với gain ($\times 0,5$; $\times 1,5$) và resample round-trip ($44,1 \to 48 \to 44,1\text{ kHz}$). Kết quả trong `results/asymmetric/asymmetric_robustness.json` cho thấy baseline PASS (tính riêng), còn biến đổi một phía đạt **2/6 PASS**:
+1. **Asymmetric Audio Robustness Experiment (`scripts/run_audio_asymmetric.py`):** Independently transforms either `target` or `reference` using gain ($\times 0.5$, $\times 1.5$) and resampling round-trip ($44.1 \to 48 \to 44.1\text{ kHz}$). In `results/asymmetric/asymmetric_robustness.json`, the baseline PASSES separately, while one-sided variants achieve **2/6 PASS**:
 
-   | Tệp bị biến đổi | Gain ×0,5 | Gain ×1,5 | Resample 44,1→48→44,1 kHz |
+   | Modified File | Gain ×0.5 | Gain ×1.5 | Resample 44.1→48→44.1 kHz |
    |---|---|---|---|
-   | **Target** | **FAIL** (28 ký tự, 14 lỗi byte) | **FAIL** (34 ký tự, 4 lỗi byte) | **PASS** (39 ký tự, 0 lỗi byte) |
-   | **Reference** | **FAIL** (36 ký tự, 5 lỗi byte) | **FAIL** (33 ký tự, 4 lỗi byte) | **PASS** (39 ký tự, 0 lỗi byte) |
+   | **Target** | **FAIL** (28 chars, 14 byte errors) | **FAIL** (34 chars, 4 byte errors) | **PASS** (39 chars, 0 byte errors) |
+   | **Reference** | **FAIL** (36 chars, 5 byte errors) | **FAIL** (33 chars, 4 byte errors) | **PASS** (39 chars, 0 byte errors) |
 
-2. **Ma trận độ bền mở rộng (`scripts/run_extended_robustness.py`):** Đánh giá bằng tiêu chí nghiêm ngặt (`format_valid`, khớp chính xác ground truth và 0 lỗi byte), kết quả lưu tại `results/robustness/` và minh họa tại Hình 4:
-   - *Blue 3 (`blue3_extended_robustness.json`):* Đạt **1/9 PASS** — chỉ phép làm mờ nhẹ *Gaussian blur radius 0,3* giữ được toàn bộ 50 ký tự; 8 phép còn lại (brightness $\times 0,9/\times 1,1$, contrast $\times 0,9/\times 1,1$, crop 16 px và nhiễu Gaussian $\sigma = 0,5/1,0/2,0$) đều FAIL (dù brightness $\times 0,9$ giữ đúng 47/50 vị trí ký tự ở độ dài 50).
-   - *Sleepy Alarm (`sleepy_alarm_robustness_matrix.json`):* Đạt **7/23 PASS** gồm baseline và 6 lượt biến đổi một phía (gain $\times 0,75$, AWGN SNR 30 dB, resample round-trip trên từng phía `target` và `reference`); 16 lượt còn lại (gain $\times 0,25/\times 0,5/\times 1,25/\times 1,5/\times 1,75$, AWGN SNR 20/10 dB, bandpass 7,5–8,5 kHz trên mỗi phía) đều FAIL.
+2. **Extended Robustness Matrices (`scripts/run_extended_robustness.py`):** Evaluated under strict PASS criteria (`format_valid`, exact ground-truth match, 0 byte errors), stored under `results/robustness/` and plotted in Figure 4:
+   - *Blue 3 (`blue3_extended_robustness.json`):* **1/9 PASS** — only *Gaussian blur radius 0.3* preserves all 50 characters; the remaining eight variants (brightness $\times 0.9/\times 1.1$, contrast $\times 0.9/\times 1.1$, 16 px crop, and Gaussian noise $\sigma = 0.5/1.0/2.0$) FAIL (though brightness $\times 0.9$ matches 47/50 positions).
+   - *Sleepy Alarm (`sleepy_alarm_robustness_matrix.json`):* **7/23 PASS**, comprising the baseline plus six one-sided transforms (gain $\times 0.75$, AWGN SNR 30 dB, and resampling round-trip on both `target` and `reference`); the other 16 trials (gain $\times 0.25/\times 0.5/\times 1.25/\times 1.5/\times 1.75$, AWGN SNR 20/10 dB, and 7.5–8.5 kHz band-pass on each side) FAIL.
 
-![Heatmap robustness của Blue 3 và Sleepy Alarm](figures/robustness-heatmaps.svg)
+![Extended robustness results for Blue 3 and Sleepy Alarm](figures/robustness-heatmaps.svg)
 
-*Hình 4. Tổng hợp kết quả PASS/FAIL trên 9 biến thể ảnh Blue 3 và 23 lượt thử nghiệm Sleepy Alarm (`report/figures/robustness-heatmaps.svg`, nguồn `results/recheck/robustness/`).*
+*Figure 4. PASS/FAIL breakdown across 9 Blue 3 image variants and 23 Sleepy Alarm audio trials (`report/figures/robustness-heatmaps.svg`, source `results/recheck/robustness/`).*
 
-3. **Benchmark bộ phát hiện steganalysis & đối chiếu công cụ mã nguồn mở (`scripts/run_steganalysis_benchmark.py`):** Ma trận nhầm lẫn trên 17 mẫu ảnh và 13 mẫu âm thanh được minh họa ở Hình 5 (`results/steganalysis/benchmark.json`). Đồng thời, báo cáo đối chiếu ở mức phạm vi kỹ thuật với [Aperi'Solve](https://github.com/Zeecka/AperiSolve) [4] (phân tích ảnh/bit-plane), [The-A-Files](https://github.com/pawel-kaczmarek/The-A-Files) [5] (framework đánh giá độ bền steganography âm thanh) và [WavSteg](https://github.com/ragibson/Steganography) [6] (LSB trên WAV) — không cài đặt hoặc chạy thực nghiệm các công cụ ngoài này.
-4. **Dashboard trực quan hóa Streamlit & Quality gate tự động:** Xây dựng ứng dụng 3 trang (`visualization/app.py`) hiển thị trạng thái toàn vẹn, phân tích chẩn đoán từng bước và tự động hóa kiểm thử/đóng gói qua `scripts/verify_reproducibility.py`.
+3. **Steganalysis Benchmark & Open-Source Scope Comparison (`scripts/run_steganalysis_benchmark.py`):** Confusion matrices across 17 image and 13 audio samples are shown in Figure 5 (`results/steganalysis/benchmark.json`). Scope-only comparisons (without executing external tools) are documented against [Aperi'Solve](https://github.com/Zeecka/AperiSolve) [4] (image/bit-plane triage), [The-A-Files](https://github.com/pawel-kaczmarek/The-A-Files) [5] (audio steganography robustness framework), and [WavSteg](https://github.com/ragibson/Steganography) [6] (WAV LSB).
+4. **Streamlit Diagnostic Dashboard & Automated Quality Gate:** Built a 3-page Streamlit application (`visualization/app.py`) for integrity/diagnostic inspection and automated test/archive verification via `scripts/verify_reproducibility.py`.
 
-![Ma trận nhầm lẫn của detector ảnh và audio](figures/benchmark-confusion-matrices.svg)
+![Baseline detector confusion matrices](figures/benchmark-confusion-matrices.svg)
 
-*Hình 5. Ma trận nhầm lẫn của bộ phát hiện heuristic cơ sở trên tập mẫu xác định: ảnh 17 mẫu (F1 = 1,00) và âm thanh 13 mẫu (FN = 5/5, Recall = 0,00) (`report/figures/benchmark-confusion-matrices.svg`).*
+*Figure 5. Confusion matrices for the fixed-threshold baseline detectors: 17 image samples (F1 = 1.00) and 13 audio samples (FN = 5/5, Recall = 0.00) (`report/figures/benchmark-confusion-matrices.svg`).*
 
 ---
 
-## 8. Đánh giá, hạn chế và bài học
+## 8. Evaluation, Limitations, and Lessons Learned
 
 <a id="report-reflection"></a>
 <a id="report-limitations"></a>
 
-**Khó khăn đã gặp:** (1) Sai lệch môi trường ban đầu giữa Python 3.9.6 trong `.venv` cũ và yêu cầu $\ge 3.10$ / 3.14.10; (2) Lỗi cắt bỏ phần prefix trước điểm chồng lấp trong giải mã ASK khi offset rơi vào giữa symbol; (3) Hiện tượng bộ phát hiện âm thanh dựa trên ngưỡng tỷ lệ năng lượng dải 8 kHz bỏ sót 5/5 mẫu do nhạc nền lấn át năng lượng sóng mang.
+**Challenges Encountered:** (1) Initial environment mismatch between Python 3.9.6 in `.venv` and the $\ge 3.10$ / 3.14.10 requirement; (2) silent truncation of the target prefix prior to overlap in early ASK decoding; and (3) complete failure (5/5 false negatives) of the whole-file 8 kHz energy-ratio audio detector due to broadband music masking.
 
-**Giới hạn suy luận (Critique):**
+**Critical Scope Limitations:**
 
-- Kiểm tra *exact match* mới xác nhận bộ giải mã hoạt động trên 3 artifact cố định với định dạng flag đã biết (`byuctf{...}` và `ictf{...}`), chưa chứng minh khả năng phát hiện hoặc giải mã mù trên challenge có cấu trúc khác.
-- Chế độ *reference-assisted* của Sleepy Alarm phụ thuộc hoàn toàn vào bản ghi gốc; thử nghiệm *reference-free* thất bại và được giữ nguyên.
-- Tập mẫu benchmark (17 ảnh, 13 âm thanh) sử dụng các mẫu đối chứng tổng hợp xác định (*deterministic synthetic controls*) nên không đại diện cho phân phối media thực tế ngoài môi trường sản xuất. Tương tự, các ma trận robustness 1/9 và 7/23 chỉ đặc tả đúng từng cấu hình biến đổi đã thử trên một artifact mỗi loại.
-- Thời lượng làm việc ghi trong Logbook Entries 06–10 là ước lượng tự báo cáo, không dùng làm bằng chứng định lượng; mã băm SHA-256 chỉ xác nhận tính nhất quán byte với manifest đã ghim.
-- File `requirements.txt` dùng khoảng phiên bản nên đã bổ sung `requirements-lock.txt` để khóa chặt phiên bản thư viện của môi trường chạy thành công.
+- Exact-match tests verify recovery on three fixed artifacts with known flag formats (`byuctf{...}` and `ictf{...}`); they do not prove blind payload discovery or generalization to unseen challenges.
+- Sleepy Alarm's exact-match extraction depends on having the clean reference recording; *reference-free* extraction fails and is retained as a negative result.
+- The detector benchmark (17 image, 13 audio samples) uses deterministic synthetic benign controls and does not represent real-world media distributions. Likewise, the 1/9 and 7/23 robustness rates characterize only one artifact per challenge under the specific transforms tested.
+- Work-duration figures in Logbook Entries 06–10 are self-reported estimates rather than timed measurements; SHA-256 verification confirms byte identity against the pinned manifest rather than publisher identity.
+- Because `requirements.txt` specifies version ranges, `requirements-lock.txt` was added to pin the exact verified Python 3.14.10 environment.
 
-**Quá trình phát triển tư duy và đối chiếu tài liệu học thuật:**
+**Intellectual Growth and Alignment with Academic Literature:**
 
-- *Điều chỉnh giả định từ thực nghiệm:* Ban đầu, khi xử lý Sleepy Alarm, thiết kế chỉ trừ và giải mã trực tiếp trên đoạn chồng lấp `x - y`; sau đó nhận ra nếu điểm bắt đầu overlap rơi vào giữa symbol đầu tiên thì phần tiền tố bị cắt bỏ và pha sóng mang bị lệch, nên đã sửa giữ nguyên `prefix = target[:target_start_sample]` và viết thêm kiểm thử hồi quy tổng hợp đặt overlap tại 1,5 chu kỳ symbol (`tests/test_audio.py`). Tương tự, ban đầu kết quả exact-match dễ được nhìn nhận như giải mã thành công tổng quát, nhưng khi rà soát lại mã nguồn đã nhận rõ cả hai decoder đều kiểm tra theo định dạng flag đã biết (`byuctf{...}`, `ictf{...}`, 39 ký tự) chứ chưa giải mù, từ đó điều chỉnh cách diễn đạt và giữ nguyên các kết quả âm làm ranh giới trung thực.
-- *Đối chiếu với tài liệu [11] và [12]:* Kết quả thực nghiệm phù hợp với nhận định trong [11] (Petitcolas et al.) về sự đánh đổi giữa tính vô hình, kích thước thông điệp và độ bền trước nhiễu/biến đổi nhẹ (Blue 3 giữ nền xanh 98,77% đồng nhất nhưng dễ mất exact-match khi thay đổi điểm ảnh). Ở âm thanh, [12] (Brandenburg) giải thích ở mức nguyên lý rằng nén mất dữ liệu MP3/MDCT tạo độ trễ khung và nhiễu lượng tử hóa phổ nói chung, lý giải vì sao cần bước căn chỉnh cross-correlation và vẫn còn nhiễu dư sau phép trừ (riêng giá trị đo được `lag_samples = 1729` là độ lệch tương quan thực nghiệm giữa hai tệp, không gán toàn bộ cho bộ mã hóa MP3).
+- *Iterative Refinement of Assumptions:* Initially, the Sleepy Alarm decoder only subtracted and demodulated the aligned overlap `x - y`; inspecting edge cases revealed that an overlap starting mid-symbol drops leading samples and shifts carrier phase, leading to the `prefix = target[:target_start_sample]` fix and a synthetic 1.5-symbol overlap regression test (`tests/test_audio.py`). Likewise, while exact-match initially looked like general decoding success, auditing the source code clarified that both decoders rely on known challenge-format checks (`byuctf{...}`, `ictf{...}`, 39 chars) rather than blind recovery—prompting honest scoping and preservation of negative results (*reference-free* FAIL, audio detector FN=5/5).
+- *Comparison with [11] and [12]:* Empirical behavior aligns with [11] (Petitcolas et al.) on the classical trade-off between imperceptibility, payload size, and fragility to perturbations (Blue 3 maintains 98.77% uniform background pixels yet loses exact-match under mild pixel transforms). For audio, [12] (Brandenburg) explains in principle why lossy MP3/MDCT compression introduces frame delay and spectral quantization noise—justifying cross-correlation alignment and residual noise after subtraction (while the observed `lag_samples = 1729` remains an empirical alignment offset rather than being attributed solely to MP3 encoder delay).
 
-**Bài học rút ra và hướng phát triển tiếp theo:** Thứ nhất, trong phân tích tín hiệu đa phương tiện, việc giữ nguyên gốc tọa độ thời gian/pha và kiểm thử hồi quy với các trường hợp biên tổng hợp (như overlap giữa symbol) giúp phát hiện lỗi âm thầm mà dữ liệu chuẩn có thể che khuất. Thứ hai, các bộ phát hiện dựa trên ngưỡng tĩnh toàn cục rất dễ thất bại khi tín hiệu nhúng có công suất nhỏ hơn nhiều lần so với tín hiệu phủ. Các bước thực hiện cụ thể cho hướng nghiên cứu tiếp theo gồm: (i) thử nghiệm **tái nén MP3** ở các mức bitrate (128/96/64 kbps bằng `ffmpeg`/`lame` trên bản sao tạm) để kiểm chứng giả thuyết CDR âm thanh vốn chưa được thực nghiệm tại §6.2; (ii) thay ngưỡng năng lượng toàn cục trong `src/steganalysis.py` bằng tỷ số đỉnh phổ hẹp dải so với nền cục bộ; và (iii) nghiên cứu bộ giải điều chế ASK không cần tệp tham chiếu dựa trên ước lượng đường bao cục bộ kết hợp đồng bộ pha mù (Costas loop / PLL).
-
----
-
-## 9. Kết luận
-
-Đồ án đã hoàn thành đầy đủ mục tiêu giải mã, kiểm chứng và đánh giá hai challenge Steganography (Blue 3 và Sleepy Alarm) theo chuẩn mực tái lập thực nghiệm. Hai flag chuẩn được khôi phục chính xác, toàn bộ 3/3 artifact gốc và 22/22 `unittest` đều vượt qua quy trình quality gate, đồng thời các kết quả âm (*reference-free* FAIL, audio detector FN=5/5, mức độ dễ tổn thương 1/9 và 7/23 trước biến đổi) được giữ nguyên trung thực để làm rõ ranh giới kỹ thuật và bài toán phòng thủ trong an toàn thông tin.
+**Lessons Learned and Concrete Next Steps:** Maintaining sample-0 phase/time anchoring and writing synthetic boundary regression tests catches subtle signal bugs masked by happy-path data, while global-energy heuristics fail when weak narrowband carriers are buried under broadband cover audio. Concrete next steps include: (i) running actual **MP3 re-compression** experiments at 128/96/64 kbps (`ffmpeg`/`lame` on temporary copies) to test the unverified audio CDR hypothesis noted in Section 6.2; (ii) upgrading `src/steganalysis.py` from global energy ratios to narrowband peak-to-local-floor ratios; and (iii) exploring reference-free ASK demodulation using local envelope estimation and blind carrier synchronization (Costas loop / PLL).
 
 ---
 
-## Tài liệu tham khảo
+## 9. Conclusion
+
+This project fulfills its objectives of independently decoding, verifying, and analyzing two Steganography CTF challenges (Blue 3 and Sleepy Alarm) under strict reproducibility standards. Both official flags are recovered exactly, all 3/3 official artifacts and 22/22 `unittest` cases pass the automated quality gate, and all negative outcomes (*reference-free* FAIL, audio detector FN=5/5, and 1/9 and 7/23 robustness limits) are preserved transparently to frame realistic defensive boundaries in information security.
+
+---
+
+## References
 
 [1] BYU-CSA, "blue-3 (Forensics/Steganography CTF Challenge)," *old-ctf-challenges*, GitHub. [Online]. Available: https://github.com/BYU-CSA/old-ctf-challenges/tree/master/forensics-steganography/blue-3
 
@@ -292,44 +292,44 @@ Ngoài việc giải mã hai challenge, sinh viên đã phát triển các công
 
 ---
 
-## Phụ lục
+## Appendix
 
 <a id="report-quality-gate-provenance"></a>
 
-> *Các lệnh có tiền tố `rtk proxy` trong phụ lục là bản ghi lịch sử; bỏ tiền tố này khi chạy lại.*
+> *Commands prefixed with `rtk proxy` in the appendices are historical execution records; omit this prefix when re-running locally.*
 
-### A. Tóm tắt Quality gate và Provenance
+### A. Quality Gate and Provenance Summary
 
-Quy trình kiểm chứng tự động (`scripts/verify_reproducibility.py`) chạy tuần tự `scripts/verify_artifacts.py`, `unittest discover -s tests -v` và `scripts/check_provenance.py`. Với gói nộp `submission_package_current.zip`, trình kiểm tra đối chiếu mã CRC (`testzip()`), danh sách tệp bắt buộc, tập thành viên đầy đủ và khớp từng byte với bản checkout hiện tại (ngoại trừ các tệp kết quả tự kiểm chứng chỉ kiểm tra tồn tại và CRC để tránh vòng lặp hash).
+The automated verification runner (`scripts/verify_reproducibility.py`) sequentially executes `scripts/verify_artifacts.py`, `unittest discover -s tests -v`, and `scripts/check_provenance.py`. For `submission_package_current.zip`, provenance checks CRC integrity (`testzip()`), required files, complete member set, and byte-for-byte parity with the working checkout (exempting self-referential quality-gate outputs from byte comparison to prevent hash recursion, while still verifying their presence and CRC).
 
-| Hạng mục | Snapshot 22/11 (`results/verification/`) | Recheck (`results/recheck/`) | Lần chạy cuối (`results/final/`) |
+| Check | Snapshot 22/11 (`results/verification/`) | Recheck (`results/recheck/`) | Final Run (`results/final/`) |
 |---|---|---|---|
 | Unittest | **22/22 PASS** (exit 0) | **22/22 PASS** (exit 0) | **22/22 PASS** (exit 0) |
 | Artifact integrity | **3/3 verified** | **3/3 verified** | **3/3 verified** |
-| Provenance | `verified` (30 tệp băm) | `verified` (95 tệp băm) | `verified` (97 tệp băm) |
-| `submission_package` | `not_verified` | `verified` (159 thành viên) | `verified` (169 thành viên) |
+| Provenance | `verified` (30 hashed files) | `verified` (95 hashed files) | `verified` (97 hashed files) |
+| `submission_package` | `not_verified` | `verified` (159 members) | `verified` (169 members) |
 
-![Tóm tắt quality gate từ lần recheck đã lưu](figures/quality-gate-summary.svg)
+![Quality gate summary from saved recheck JSON](figures/quality-gate-summary.svg)
 
-*Hình A.1. Tóm tắt quality gate dựng từ bộ `results/recheck/quality-gate.json` và `results/recheck/provenance.json` (`report/figures/quality-gate-summary.svg`). Lần chạy cuối tại `results/final/` giữ cùng trạng thái PASS với 97 tệp provenance và 169 thành viên archive.*
+*Figure A.1. Quality-gate summary rendered from `results/recheck/quality-gate.json` and `results/recheck/provenance.json` (`report/figures/quality-gate-summary.svg`). The final run in `results/final/` preserves the PASS state with 97 inventoried files and 169 archive members.*
 
-![Luồng kiểm tra provenance từ manifest đến quality gate](figures/provenance-flow.svg)
+![Provenance and verification flow](figures/provenance-flow.svg)
 
-*Hình A.2. Luồng đối chiếu nguồn gốc artifact và kiểm tra toàn vẹn gói nộp hội tụ tại quality gate (`report/figures/provenance-flow.svg`).*
+*Figure A.2. End-to-end provenance and archive verification flow converging at the quality gate (`report/figures/provenance-flow.svg`).*
 
-### B. Liên kết hồ sơ chi tiết
+### B. Detailed Record Cross-References
 
-- Nhật ký thực nghiệm đầy đủ (Entries 00–16): [LOGBOOK.md](../LOGBOOK.md)
-- Phụ lục kỹ thuật chi tiết từng lần chạy (A.1–A.19): [APPENDIX.md](APPENDIX.md)
-- Tái tạo số liệu khám phá tín hiệu và hình phổ phần dư (`results/final/discovery-signals.json`, `figures/sleepy-residual-spectrum.svg`):
+- Full chronological experiment log (Entries 00–16): [LOGBOOK.md](../LOGBOOK.md)
+- Detailed per-run appendix records (A.1–A.19): [APPENDIX.md](APPENDIX.md)
+- Reproduce post-hoc signal discovery metrics and residual spectrum SVG (`results/final/discovery-signals.json`, `figures/sleepy-residual-spectrum.svg`):
   ```bash
   python scripts/inspect_discovery_signals.py
   ```
-- Tái tạo bốn hình SVG tĩnh từ dữ liệu `results/recheck/`:
+- Re-render the four static report SVG figures from `results/recheck/`:
   ```bash
   python scripts/render_report_figures.py
   ```
-- Chạy lại quality gate vào thư mục mới (ví dụ `results/final/`):
+- Re-run the quality gate into a new directory (e.g., `results/final/`):
   ```bash
   python scripts/create_submission_zip.py
   python scripts/verify_reproducibility.py \
@@ -338,30 +338,30 @@ Quy trình kiểm chứng tự động (`scripts/verify_reproducibility.py`) ch�
     --log-output results/final/reproducibility.log
   ```
 
-### C. Bằng chứng chạy lệnh trên terminal
+### C. Terminal Execution Evidence
 
-Sáu ảnh chụp màn hình gốc dưới đây từ `evidence/terminal/` ghi lại đầy đủ đầu ra cài đặt môi trường, giải mã hai challenge (bao gồm đối chứng âm không tham chiếu), kiểm thử tự động và xác minh toàn vẹn artifact/provenance:
+The six unaltered terminal screenshots below from `evidence/terminal/` document environment verification, decoding of both challenges (including the reference-free negative control), automated unit tests, and artifact/provenance checks:
 
-![Cài đặt môi trường Python 3.14.10 và pip check](../evidence/terminal/2026-11-18-setup-terminal.png)
+![Python 3.14.10 environment setup and pip check](../evidence/terminal/2026-11-18-setup-terminal.png)
 
-*Hình C.1. Kiểm tra môi trường Python 3.14.10, cài đặt phụ thuộc từ `requirements.txt` và xác nhận `pip check` không có lỗi (`evidence/terminal/2026-11-18-setup-terminal.png`).*
+*Figure C.1. Python 3.14.10 environment verification, dependency check against `requirements.txt`, and clean `pip check` (`evidence/terminal/2026-11-18-setup-terminal.png`).*
 
-![Chạy decoder Blue 3 trên terminal](../evidence/terminal/2026-11-18-blue3-terminal.png)
+![Blue 3 decoder terminal output](../evidence/terminal/2026-11-18-blue3-terminal.png)
 
-*Hình C.2. Đầu ra lệnh giải mã Blue 3 khôi phục flag 50 ký tự `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` (`evidence/terminal/2026-11-18-blue3-terminal.png`).*
+*Figure C.2. Blue 3 decoder terminal output recovering the 50-character flag `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` (`evidence/terminal/2026-11-18-blue3-terminal.png`).*
 
-![Chạy decoder Sleepy Alarm có tham chiếu trên terminal](../evidence/terminal/2026-11-18-audio-assisted-terminal.png)
+![Sleepy Alarm reference-assisted terminal output](../evidence/terminal/2026-11-18-audio-assisted-terminal.png)
 
-*Hình C.3. Đầu ra lệnh giải mã Sleepy Alarm chế độ có tham chiếu: `format_valid: true`, 350 symbol, 38 separator, lag 1.729 mẫu, 0 lỗi byte (`evidence/terminal/2026-11-18-audio-assisted-terminal.png`).*
+*Figure C.3. Sleepy Alarm reference-assisted decoder output: `format_valid: true`, 350 symbols, 38 separators, 1,729-sample lag, 0 byte errors (`evidence/terminal/2026-11-18-audio-assisted-terminal.png`).*
 
-![Kết quả thất bại của Sleepy Alarm chế độ không tham chiếu](../evidence/terminal/2026-11-20-reference-free-audio-failure-terminal.png)
+![Sleepy Alarm reference-free failure terminal output](../evidence/terminal/2026-11-20-reference-free-audio-failure-terminal.png)
 
-*Hình C.4. Đối chứng âm chế độ không tham chiếu (`reference_free`): `status: FAIL`, `format_valid: false`, 26 ký tự, 49 separator và 20 nhóm byte lỗi (`evidence/terminal/2026-11-20-reference-free-audio-failure-terminal.png`).*
+*Figure C.4. Negative control in reference-free mode (`reference_free`): `status: FAIL`, `format_valid: false`, 26 characters, 49 separators, and 20 malformed byte groups (`evidence/terminal/2026-11-20-reference-free-audio-failure-terminal.png`).*
 
-![Kết quả 22/22 unittest đạt](../evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png)
+![22/22 unittest passed terminal output](../evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png)
 
-*Hình C.5. Toàn bộ 22 `unittest` vượt qua (`Ran 22 tests in 2.634s — OK`) kèm các cảnh báo bare-mode không gây lỗi của Streamlit `AppTest` (`evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png`).*
+*Figure C.5. Full 22-test `unittest` run passing (`Ran 22 tests in 2.634s — OK`) with non-fatal Streamlit bare-mode `AppTest` warnings (`evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png`).*
 
-![Kiểm tra toàn vẹn 3/3 artifact và provenance](../evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png)
+![Artifact integrity 3/3 and provenance check terminal output](../evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png)
 
-*Hình C.6. Kiểm tra toàn vẹn 3/3 artifact bằng SHA-256 và chạy `scripts/check_provenance.py` (`evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png`).*
+*Figure C.6. SHA-256 verification of all 3/3 official artifacts and `scripts/check_provenance.py` execution (`evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png`).*

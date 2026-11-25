@@ -1,6 +1,6 @@
 # STEGANO — Steganography CTF Project
 
-**Course:** UET.CN3124 — Information Security (An toàn và an ninh mạng)  
+**Course:** UET.CN3124 — Information Security  
 **Topic:** Steganography (CTF Jeopardy)  
 **Challenges:** Blue 3 (image) and Sleepy Alarm (audio)
 
