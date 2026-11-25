@@ -12,6 +12,7 @@ INCLUDE = (
     "README.md",
     "LOGBOOK.md",
     "requirements.txt",
+    "requirements-lock.txt",
     "data",
     "src",
     "scripts",
@@ -27,14 +28,22 @@ REQUIRED_ARCHIVE_FILES = {
     "requirements.txt",
     "src/stegano/cli.py",
     "report/REPORT.md",
+    "report/24021404_UETCN3124_CTF_Report.pdf",
 }
 EXCLUDED_PARTS = {".git", ".venv", "__pycache__"}
-PACKAGE_BUILD_LOG = "results/recheck/package-build.log"
+PACKAGE_BUILD_LOGS = {
+    "results/recheck/package-build.log",
+    "results/final/package-build.log",
+}
 SELF_CHECK_OUTPUTS = {
     "results/recheck/quality-gate.json",
     "results/recheck/quality-gate-console.log",
     "results/recheck/provenance.json",
     "results/recheck/reproducibility.log",
+    "results/final/quality-gate.json",
+    "results/final/quality-gate-console.log",
+    "results/final/provenance.json",
+    "results/final/reproducibility.log",
 }
 
 
@@ -42,7 +51,7 @@ def should_skip(path: Path, output: Path) -> bool:
     if path.is_symlink() or path.resolve() == output:
         return True
     try:
-        if path.relative_to(ROOT).as_posix() == PACKAGE_BUILD_LOG:
+        if path.relative_to(ROOT).as_posix() in PACKAGE_BUILD_LOGS:
             return True
     except ValueError:
         pass
