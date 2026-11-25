@@ -72,15 +72,15 @@ def parse_artifacts(output: str, exit_code: int) -> dict[str, Any]:
     }
 
 
-def write_log(runs: list[tuple[str, dict[str, Any]]]) -> None:
+def write_log(runs: list[tuple[str, dict[str, Any]]], log_path: Path) -> None:
     sections = []
     for label, run in runs:
         sections.append(
             f"[{label}]\n$ {' '.join(run['command'])}\n"
             f"exit_code={run['exit_code']}\n{run['output'].rstrip()}"
         )
-    LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    LOG_PATH.write_text("\n\n".join(sections) + "\n", encoding="utf-8")
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_path.write_text("\n\n".join(sections) + "\n", encoding="utf-8")
 
 
 def main() -> int:
@@ -91,8 +91,26 @@ def main() -> int:
         default=DEFAULT_OUTPUT,
         help="JSON output path (default: results/verification/quality-gate.json)",
     )
+    parser.add_argument(
+        "--provenance-output",
+        type=Path,
+        default=PROVENANCE_PATH,
+        help="provenance JSON path (default: results/verification/provenance.json)",
+    )
+    parser.add_argument(
+        "--log-output",
+        type=Path,
+        default=LOG_PATH,
+        help="combined run log path (default: results/verification/reproducibility.log)",
+    )
     args = parser.parse_args()
     output_path = args.output if args.output.is_absolute() else ROOT / args.output
+    provenance_path = (
+        args.provenance_output
+        if args.provenance_output.is_absolute()
+        else ROOT / args.provenance_output
+    )
+    log_path = args.log_output if args.log_output.is_absolute() else ROOT / args.log_output
     started_at = datetime.now(timezone.utc).isoformat()
 
     artifact_run = run_command([sys.executable, "scripts/verify_artifacts.py"])
@@ -105,18 +123,20 @@ def main() -> int:
         [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"],
         env=test_env,
     )
-    provenance_run = run_command([sys.executable, "scripts/check_provenance.py"])
+    provenance_run = run_command(
+        [sys.executable, "scripts/check_provenance.py", "--output", str(provenance_path)]
+    )
     runs = [
         ("artifact_verification", artifact_run),
         ("unittest", unittest_run),
         ("provenance", provenance_run),
     ]
-    write_log(runs)
+    write_log(runs, log_path)
 
     provenance: dict[str, Any] = {}
-    if PROVENANCE_PATH.is_file():
+    if provenance_path.is_file():
         try:
-            provenance = json.loads(PROVENANCE_PATH.read_text(encoding="utf-8"))
+            provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             provenance = {}
 
@@ -137,7 +157,7 @@ def main() -> int:
         and test_summary["status"] == "passed"
         and provenance_run["exit_code"] == 0
         and provenance_status == "verified"
-        and submission_status == "not_verified"
+        and submission_status == "verified"
     )
 
     gate = {
@@ -150,16 +170,16 @@ def main() -> int:
             "provenance": {"status": provenance_status, "exit_code": provenance_run["exit_code"]},
         },
         "submission_package": {
+            **submission,
             "status": submission_status,
             "reported_by": "scripts/check_provenance.py",
             "script_exit_code": provenance_run["exit_code"],
-            "reason": submission.get("reason"),
         },
         "quality_gate": {
             "status": "passed" if quality_pass else "failed",
             "passed": quality_pass,
-            "scope": "Artifact integrity, the discovered unittest suite, and source provenance.",
-            "submission_ready": False,
+            "scope": "Artifact integrity, the discovered unittest suite, source provenance, and current submission archive.",
+            "submission_ready": quality_pass,
         },
         "runs": [
             {
@@ -170,7 +190,11 @@ def main() -> int:
             }
             for label, run in runs
         ],
-        "log": "results/verification/reproducibility.log",
+        "log": (
+            log_path.relative_to(ROOT).as_posix()
+            if log_path.is_relative_to(ROOT)
+            else str(log_path)
+        ),
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(gate, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

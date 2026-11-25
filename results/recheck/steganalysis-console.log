@@ -1,0 +1,155 @@
+{
+  "metrics": {
+    "image": {
+      "tp": 5,
+      "tn": 12,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "false_positive_rate": 0.0,
+      "sample_count": 17,
+      "scored_count": 17,
+      "unscored_count": 0,
+      "benign_count": 12,
+      "stego_count": 5
+    },
+    "audio": {
+      "tp": 0,
+      "tn": 8,
+      "fp": 0,
+      "fn": 5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "false_positive_rate": 0.0,
+      "sample_count": 13,
+      "scored_count": 13,
+      "unscored_count": 0,
+      "benign_count": 8,
+      "stego_count": 5
+    }
+  },
+  "reference_comparison": [
+    {
+      "name": "reference_free",
+      "status": "FAIL",
+      "reference_used": false,
+      "format_valid": false,
+      "ground_truth_match": false,
+      "success": false,
+      "decoded_length": 26,
+      "symbol_count": 350,
+      "separator_count": 49,
+      "error_count": 20,
+      "errors": [
+        {
+          "byte_index": 3,
+          "bits": "0110"
+        },
+        {
+          "byte_index": 4,
+          "bits": "110"
+        },
+        {
+          "byte_index": 5,
+          "bits": "011110110"
+        },
+        {
+          "byte_index": 6,
+          "bits": "0110001"
+        },
+        {
+          "byte_index": 7,
+          "bits": "1011101"
+        },
+        {
+          "byte_index": 13,
+          "bits": "1111001"
+        },
+        {
+          "byte_index": 17,
+          "bits": "000110"
+        },
+        {
+          "byte_index": 18,
+          "bits": "1"
+        },
+        {
+          "byte_index": 21,
+          "bits": "01101"
+        },
+        {
+          "byte_index": 22,
+          "bits": "01"
+        },
+        {
+          "byte_index": 24,
+          "bits": "1100001"
+        },
+        {
+          "byte_index": 25,
+          "bits": "1101100"
+        },
+        {
+          "byte_index": 31,
+          "bits": "011000"
+        },
+        {
+          "byte_index": 32,
+          "bits": "1"
+        },
+        {
+          "byte_index": 34,
+          "bits": "0"
+        },
+        {
+          "byte_index": 35,
+          "bits": "110011"
+        },
+        {
+          "byte_index": 39,
+          "bits": "0011"
+        },
+        {
+          "byte_index": 40,
+          "bits": "001"
+        },
+        {
+          "byte_index": 41,
+          "bits": "0110"
+        },
+        {
+          "byte_index": 42,
+          "bits": "010"
+        }
+      ],
+      "decoded_text": "ictsl33p_Nauk_arm_224dcb2}",
+      "decode_error": null,
+      "alignment": null
+    },
+    {
+      "name": "reference_assisted",
+      "status": "PASS",
+      "reference_used": true,
+      "format_valid": true,
+      "ground_truth_match": true,
+      "success": true,
+      "decoded_length": 39,
+      "symbol_count": 350,
+      "separator_count": 38,
+      "error_count": 0,
+      "errors": [],
+      "decoded_text": "ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}",
+      "decode_error": null,
+      "alignment": {
+        "lag_samples": 1729,
+        "correlation": 0.9998734358246231,
+        "target_start_sample": 1729
+      }
+    }
+  ],
+  "json": "results/recheck/steganalysis/benchmark.json"
+}
+exit_code=0

@@ -15,6 +15,7 @@
 
 ## 2. Triển khai và tài liệu hóa
 
+<a id="report-artifacts"></a>
 ### 2.1. Artifact và nguồn
 
 Ba artifact trong `data/` được xác định bằng kích thước và SHA-256 trong [manifest](../results/artifact_manifest.json), cùng URL nguồn challenge chính thức cho từng file. Lệnh `python scripts/verify_artifacts.py` kiểm tra kích thước và checksum.
@@ -25,6 +26,7 @@ Ba artifact trong `data/` được xác định bằng kích thước và SHA-25
 | `data/sleepy_alarm/morning_n_breakfast.mp3` | 179,283 | `bd181876c2d28152b9c3982fd88945d4e681fd93d49477622ea5841a3ff25ae2` |
 | `data/sleepy_alarm/morning_n_breakfast_original.mp3` | 160,495 | `d0c283834955e54d68b0bba723ccd194142a428d2de74722e5f1dff3ccbd94ad` |
 
+<a id="report-methods"></a>
 ### 2.2. Phương pháp và kiểm thử
 
 - **Blue 3:** decoder tìm baseline RGB rồi cộng sai khác theo từng vùng chéo để khôi phục ký tự.
@@ -37,6 +39,10 @@ Ba artifact trong `data/` được xác định bằng kích thước và SHA-25
 - Chạy toàn bộ kiểm thử trong môi trường ảo đã cài dependencies: `PYTHONPATH=src python -m unittest discover -s tests -v`.
 - Mở dashboard chẩn đoán và trạng thái kiểm chứng: `streamlit run visualization/app.py`.
 
+<a id="report-environment"></a>
+**Minh bạch về phiên bản, tham số và phương pháp.** Phiên bản Python cao nhất được ghi trong lịch sử chạy của project là 3.14.10; đây là phiên bản dùng cho các lần tái chạy được lưu trong hồ sơ dự án. Các mục lịch sử giữ nguyên phiên bản được ghi cho từng lần chạy. [Manifest của lần chạy ngày 19/11](../results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-manifest.json) ghi cấu hình ASK 8.000 Hz, 50 baud và cửa sổ 7 giây. Hồ sơ xác nhận cấu hình đã dùng nhưng không ghi lại cách suy ra các giá trị này trước khi đối chiếu với flag đã biết; vì vậy báo cáo xem đây là cấu hình decoder cố định, không tuyên bố đã chọn mù hoặc đăng ký trước. Exact-match là bước kiểm tra sau giải mã trên artifact cụ thể. Tác giả xác nhận không tham khảo writeup công khai cho hai challenge.
+
+<a id="report-results"></a>
 ## 3. Phân tích kết quả
 
 | Kiểm tra | Kết quả |
@@ -52,6 +58,7 @@ Ba artifact trong `data/` được xác định bằng kích thước và SHA-25
 | Sleepy Alarm robustness mở rộng | **7/23 PASS**; gồm baseline và sáu phép biến đổi một phía |
 | Toàn bộ unittest | **22 tests pass**, exit code 0 |
 
+<a id="report-asymmetric-robustness"></a>
 ### Robustness bất đối xứng của Sleepy Alarm
 
 Baseline reference-assisted PASS với 350 symbols, 38 separators, 39 characters và không có byte error. PASS yêu cầu `format_valid`, toàn bộ flag khớp ground truth và không có byte error. Mỗi phép biến đổi dưới đây chỉ áp dụng lên một file; file còn lại giữ nguyên.
@@ -63,7 +70,11 @@ Baseline reference-assisted PASS với 350 symbols, 38 separators, 39 characters
 
 Hai phép resample một phía giữ được exact match; các phép đổi gain một phía không đạt tiêu chí. Đây là giới hạn quan sát được trên cặp audio Sleepy Alarm đã ghim và đúng sáu cấu hình được thử, không phải kết luận tổng quát cho audio hoặc mức gain khác. JSON, CSV và log nằm trong [results/asymmetric](../results/asymmetric/); ảnh dashboard và terminal được ghi tại [Appendix A.16](APPENDIX.md#app-a16-asymmetric-audio-robustness).
 
-Hai test trong `tests/test_exact_match.py` dùng so sánh toàn chuỗi; flag chỉ đúng tiền tố sẽ thất bại. Regression tổng hợp mới đặt điểm overlap bên trong symbol thứ hai và xác nhận 16 nhãn đầu, mức ASK đầu tiên, cùng toàn bộ flag vẫn đúng. Lần reference-assisted ngày 19/11/2026 ghi 350 symbols, 38 separators và 39 characters; lag căn chỉnh là 1.729 mẫu, đây là độ lệch cross-correlation tìm thấy, không khẳng định toàn bộ lag chỉ do encoder MP3. Kết quả reference-free trước đó không khôi phục được flag hợp lệ và vẫn được giữ như một giới hạn của decoder.
+Hai test trong `tests/test_exact_match.py` dùng so sánh toàn chuỗi; flag chỉ đúng tiền tố sẽ thất bại. Regression tổng hợp mới đặt điểm overlap bên trong symbol thứ hai và xác nhận 16 nhãn đầu, mức ASK đầu tiên, cùng toàn bộ flag vẫn đúng.
+
+Các số test là kết quả của những snapshot và phạm vi khác nhau, không phải số tích lũy. Entry 06 ghi 9 kiểm tra tập trung vào visualizer. Entry 07 ghi 5 test trong snapshot alignment: hai test tích hợp ảnh/audio đã có và ba test alignment tổng hợp. Lịch sử Git cho thấy test visualizer được thêm riêng sau snapshot năm test; do đó mức 9 rồi 5 phản ánh hai bộ kiểm tra khác phạm vi/thời điểm, không phải bằng chứng test bị xóa. Từ Entry 08 trở đi, số lượng tăng theo các test được thêm; các lần chạy có log lần lượt ghi 17, 19, 21 và 22 test. Không còn transcript hoặc snapshot đầy đủ của lần 9-test để ánh xạ từng test trong lần đó.
+
+Lần reference-assisted ngày 19/11/2026 ghi 350 symbols, 38 separators và 39 characters; lag căn chỉnh là 1.729 mẫu, đây là độ lệch cross-correlation tìm thấy, không khẳng định toàn bộ lag chỉ do encoder MP3. Đây là lần chạy sau khi sửa ASK; các kết quả ngày 16/11 trong Entry 02 và các kiểm tra trước đó thuộc phiên bản decoder trước sửa đổi. Bản sửa giữ lại target prefix bị bỏ trước điểm overlap; test tổng hợp đặt overlap giữa symbol để kiểm tra trường hợp này. File challenge thật cho cùng flag trước và sau sửa. Số 350 bằng cửa sổ 7 giây nhân 50 baud (`7 × 50`), nên không phân biệt phiên bản decoder. Kết quả reference-free trước đó không khôi phục được flag hợp lệ và vẫn được giữ như một giới hạn của decoder.
 
 Chi tiết các lần chạy và bằng chứng liên quan nằm trong [Logbook Entry 01](../LOGBOOK.md#entry-01), [Entry 02](../LOGBOOK.md#entry-02), [Entry 03](../LOGBOOK.md#entry-03), [Entry 04](../LOGBOOK.md#entry-04) và [Entry 05](../LOGBOOK.md#entry-05).
 
@@ -71,6 +82,7 @@ Chi tiết các lần chạy và bằng chứng liên quan nằm trong [Logbook 
 
 Phép đo robustness bất đối xứng ngày 19/11, log chạy, bảng kết quả và ảnh evidence được ghi tại [Appendix A.16](APPENDIX.md#app-a16-asymmetric-audio-robustness) và [Logbook Entry 13](../LOGBOOK.md#entry-13).
 
+<a id="report-benchmark"></a>
 ### Baseline detector và benchmark
 
 | Media | TP | TN | FP | FN | Precision | Recall | F1 |
@@ -82,6 +94,7 @@ Benchmark ảnh gồm 12 benign controls tổng hợp và 5 positive samples t�
 
 Reference-free Sleepy Alarm vẫn **FAIL**: 350 symbols, 49 separators, 26 ký tự giải mã được và 20 nhóm byte lỗi; `format_valid` false. Chạy với reference đạt exact match 39 ký tự, 38 separators và không có byte lỗi. Hai kết quả được ghi riêng trong [benchmark JSON](../results/steganalysis/benchmark.json).
 
+<a id="report-extended-robustness"></a>
 ### Ma trận robustness mở rộng
 
 Blue 3 đạt **1/9 PASS** trên chín phép biến đổi ảnh: brightness ×0.9/×1.1, contrast ×0.9/×1.1, Gaussian blur radius 0.3, crop 16 px và Gaussian noise σ=0.5/1.0/2.0. Chỉ blur khôi phục đúng toàn bộ flag; tám biến thể còn lại thất bại.
@@ -92,57 +105,85 @@ Sleepy Alarm đạt **7/23 PASS** trong 23 lượt reference-assisted: baseline 
 
 Lệnh, log và kết quả của các thí nghiệm mới nằm trong [Appendix A.17](APPENDIX.md#app-a17-steganalysis-benchmark-and-extended-robustness) và [Logbook Entry 14](../LOGBOOK.md#entry-14).
 
+<a id="report-reflection"></a>
 ## 4. Đánh giá và phản tư
 
 Kết quả xác nhận hai decoder trên đúng các artifact đã ghim. Blue 3 phụ thuộc bố cục vùng chéo và baseline của challenge. Sleepy Alarm cần bản reference để căn chỉnh và tách tín hiệu; kết quả reference-free không khôi phục flag hợp lệ. Baseline audio detector bỏ sót toàn bộ năm positive samples trong benchmark tổng hợp. Ma trận robustness ghi nhận 1/9 phép biến đổi ảnh và 7/23 lượt audio PASS; các tỷ lệ này mô tả đúng artifact và cấu hình đã thử, không đại diện cho độ bền trên media khác. So sánh công cụ mã nguồn mở chỉ ở mức phạm vi/phương pháp, không phải kết quả chạy đối chứng.
 
+<a id="report-limitations"></a>
 ### 4.1. Phản biện và giới hạn suy luận
 
 - Kiểm tra exact match chứng minh decoder khôi phục đúng chuỗi đã biết từ ba artifact cụ thể. Vì expected flags và artifact đều cố định, kết quả này chưa chứng minh khả năng phát hiện payload chưa biết hoặc tổng quát hóa sang challenge khác.
 - Sleepy Alarm đạt exact match ở chế độ reference-assisted. Kết quả đó phụ thuộc bản ghi gốc; không thể diễn giải thành giải mã mù. Thử nghiệm reference-free vẫn thất bại và cần được giữ như một kết quả âm.
 - Benchmark detector có 17 mẫu ảnh và 13 mẫu audio, gồm các biến thể của challenge cùng benign controls tổng hợp. Confusion matrix mô tả bộ dữ liệu nhỏ, xác định này; nó không ước lượng tỷ lệ lỗi trên ảnh/audio ngoài thực tế. Đặc biệt, audio có FN=5/5 nên heuristic hiện tại không đủ làm cổng phát hiện.
-- Robustness chỉ đo các phép biến đổi và mức tham số đã nêu trên một challenge mỗi loại. Tỷ lệ PASS không đại diện cho mọi codec, thiết bị thu, nội dung hoặc cường độ biến đổi.
+- Robustness chỉ đo các phép biến đổi và mức tham số đã nêu trên một challenge mỗi loại. Tỷ lệ PASS không đại diện cho mọi codec, thiết bị thu, nội dung hoặc cường độ biến đổi. Các thời lượng làm việc ở Entries 06–10 là ước lượng tự báo cáo, không phải số giờ được bấm giờ; chúng không được dùng làm bằng chứng chính cho kết quả.
 - SHA-256 khớp manifest xác nhận các byte hiện tại trùng giá trị đã khai báo. Nó không tự xác nhận danh tính người phát hành hay độ tin cậy của nguồn khai báo. Provenance ghi commit nguồn được khai báo trong manifest và không khẳng định đó là revision của checkout cục bộ.
 - Phiên bản thư viện được ghi lúc tạo provenance, còn `requirements.txt` dùng các khoảng phiên bản thay vì lockfile. Vì vậy, provenance giúp truy vết môi trường đã chạy nhưng chưa khóa hoàn toàn môi trường cài đặt.
-- Quality gate xác nhận tính toàn vẹn artifact, unittest được phát hiện trong checkout và provenance cục bộ. Không có archive hoặc manifest gói nộp để kiểm tra, nên `submission_package` phải ở trạng thái **not_verified**; quality gate cục bộ không đồng nghĩa gói nộp đã sẵn sàng.
+- Quality gate lịch sử ngày 22/11 xác nhận artifact, unittest và provenance nhưng chưa kiểm tra archive nộp. Lần chạy lại hiện được ghi riêng ở §5 đã kiểm tra archive mới bằng CRC, tập file và so sánh byte với checkout.
 
 <a id="report-quality-gate-provenance"></a>
 ## 5. Kiểm tra chất lượng và provenance
 
-Chạy từ thư mục `STEGANO/` sau khi cài dependencies:
+Chạy từ thư mục `STEGANO/` sau khi cài dependencies. Lần chạy mới lưu JSON và log riêng trong `results/recheck/` để giữ nguyên bộ hồ sơ ngày 22/11:
 
 ```bash
-PYTHONPATH=src python scripts/verify_reproducibility.py
+rtk proxy .venv/repro314/bin/python3 scripts/create_submission_zip.py \
+  > results/recheck/package-build.log 2>&1
+rtk proxy env PYTHONPATH=src .venv/repro314/bin/python3 scripts/verify_reproducibility.py \
+  --output results/recheck/quality-gate.json \
+  --provenance-output results/recheck/provenance.json \
+  --log-output results/recheck/reproducibility.log \
+  > results/recheck/quality-gate-console.log 2>&1
 ```
 
-Script gọi `scripts/verify_artifacts.py`, chạy `python -m unittest discover -s tests -v`, gọi `scripts/check_provenance.py`, rồi ghi kết quả vào `results/verification/quality-gate.json` và log lệnh vào `results/verification/reproducibility.log`. Có thể tạo riêng hồ sơ nguồn bằng `python scripts/check_provenance.py`; script sinh `results/verification/provenance.json`, không cần sửa JSON bằng tay.
+Script gọi `scripts/verify_artifacts.py`, chạy `python -m unittest discover -s tests -v`, gọi `scripts/check_provenance.py`, rồi ghi quality gate, provenance và log vào các đường dẫn được chọn. Lệnh recheck bên dưới lưu ba hồ sơ vào `results/recheck/`. Provenance kiểm tra CRC, file bắt buộc, tập thành viên đầy đủ và byte của các file dự án so với checkout. Các run record tự kiểm chứng được giữ trong archive và kiểm tra CRC/tồn tại; chúng được miễn so byte vì chính chúng chứa kết quả kiểm tra archive.
 
-Quality gate ghi số test unittest phát hiện và chạy thực tế, kết quả kiểm tra ba artifact, trạng thái provenance và mã thoát từng lệnh. Trường `submission_package` được lấy trực tiếp từ kết quả `check_provenance.py`; trạng thái hiện tại là `not_verified` vì chưa có archive hoặc package manifest để kiểm tra.
+Quality gate ghi số test phát hiện và chạy thực tế, kết quả ba artifact, provenance, trạng thái archive và mã thoát từng lệnh. `submission_package` chỉ ở trạng thái `verified` khi archive hiện tại qua kiểm tra CRC, đủ tập file và byte các file dự án khớp checkout; run record tự kiểm chứng được kiểm tra CRC và sự hiện diện.
 
 Provenance ghi thời điểm tạo, các URL nguồn challenge trong manifest, phiên bản Python/thư viện, số lượng và SHA-256 của từng artifact, cùng checksum các file nguồn, script, test và cấu hình được kiểm kê. Báo cáo này nằm trong inventory; hai JSON kết quả được loại khỏi inventory để tránh vòng lặp hash.
 
-| Quality gate | Kết quả ngày 22/11/2026 |
+| Quality gate | Snapshot ngày 22/11/2026 |
 |---|---:|
 | Unittest | **22/22** — toàn bộ test được phát hiện đều đạt |
 | Artifact | **3/3** khớp kích thước và SHA-256 |
 | Provenance | **verified**; 30 file nguồn được băm |
-| `submission_package` | `not_verified` |
+| `submission_package` | `not_verified` — archive chưa được kiểm tra |
 
-Lệnh kiểm tra hoàn tất với exit code 0. Log đầy đủ, JSON và bốn ảnh terminal được ghi trong [Appendix A.18](APPENDIX.md#app-a18-quality-gate-and-provenance). Ảnh quality gate đầu tiên giữ nguyên cả các lần thử đường dẫn thất bại trước lệnh chạy thành công; kết quả cuối cùng hiển thị rõ.
+Bộ log và ảnh terminal của snapshot ngày 22/11 nằm trong [Appendix A.18](APPENDIX.md#app-a18-quality-gate-and-provenance). Ảnh quality gate đầu tiên giữ nguyên các lỗi đường dẫn trước lệnh chạy thành công.
 
-Ảnh chụp các trang dashboard hiện có, phần cần chụp lại và các hình đề xuất chưa dựng được liệt kê tại [Appendix A.19](APPENDIX.md#app-a19-visualization-evidence-review) và [Logbook Entry 16](../LOGBOOK.md#entry-16).
+**Lần recheck được lưu gần nhất:** 22/22 test đạt, 3/3 artifact và provenance được xác minh; `submission_package_current.zip` cũng được xác minh và quality gate đạt. JSON và log đầy đủ được liên kết trong [Appendix A.19](APPENDIX.md#app-a19-visualization-evidence-review).
 
-## 6. Đề xuất trực quan hóa
+<a id="report-visualization"></a>
+## 6. Hình trực quan hóa
 
-Các biểu đồ dưới đây có thể dựng trực tiếp từ dữ liệu JSON/CSV hiện có, không cần suy diễn thêm số liệu:
+Bốn hình dưới đây được tạo bằng `scripts/render_report_figures.py` từ các JSON kết quả đã lưu trong `results/recheck/`. Chúng tóm tắt đúng các artifact và tập thử xác định của đồ án; các hình không mở rộng phạm vi suy luận thống kê.
 
-| Nội dung | Dạng biểu đồ và dữ liệu | Thông điệp cần làm rõ |
-|---|---|---|
-| Quality gate | Thẻ trạng thái cho số test thực tế, artifact, provenance và `submission_package` từ `results/verification/quality-gate.json`. | Tóm tắt lần chạy hiện tại; thể hiện rõ package chưa được xác minh. |
-| Robustness | Heatmap PASS/FAIL theo phép biến đổi; Blue 3 gồm 9 trường hợp, Sleepy Alarm gồm 23 lượt và tách rõ target/reference. Nguồn: `results/robustness/*.json` và `*.csv`. | Cho thấy phép biến đổi nào làm decoder mất exact match; tách baseline khỏi biến thể. Gắn chú thích rằng đây là một artifact mỗi challenge. |
-| Baseline detector | Hai confusion matrix nhỏ đặt cạnh nhau cho ảnh và audio, dùng TP/TN/FP/FN trong `results/steganalysis/benchmark.json`. | Làm rõ audio bỏ sót 5/5 positive samples; kèm cỡ mẫu để tránh hiểu nhầm là đánh giá trên corpus đại diện. |
-| Provenance artifact | Sơ đồ luồng `source/manifest → artifact → SHA-256 check → kết quả quality gate`, lấy tên và trạng thái từ `results/verification/provenance.json`. | Cho người đọc lần theo nguồn đã khai báo tới byte được kiểm tra; đặt nhãn riêng cho gói nộp chưa được xác minh. |
+### Quality gate
 
-Ưu tiên đưa thẻ quality gate và heatmap robustness lên dashboard Streamlit hiện có. Confusion matrix và sơ đồ provenance phù hợp làm hình tĩnh trong báo cáo; mỗi hình nên có số mẫu, nguồn JSON và ghi chú phạm vi ngay trong caption.
+![Tóm tắt quality gate từ lần recheck đã lưu](figures/quality-gate-summary.svg)
 
-Đây là bốn đề xuất, chưa phải hình kết quả đã dựng. Ảnh dashboard trong Appendix A.19 chỉ ghi lại các trang hiện có và không thay thế các hình đề xuất này.
+*Hình 1. Kết quả unittest, kiểm tra artifact, provenance và archive hiện tại. Trạng thái được đọc từ quality-gate JSON và provenance JSON.*
+
+### Robustness
+
+![Heatmap robustness của Blue 3 và Sleepy Alarm](figures/robustness-heatmaps.svg)
+
+*Hình 2. Blue 3: 9 biến thể ảnh; Sleepy Alarm: baseline và 22 phép biến đổi một phía, phân nhóm target/reference. PASS yêu cầu exact match theo tiêu chí đã nêu; mỗi challenge chỉ có một artifact.*
+
+### Benchmark detector
+
+![Hai ma trận nhầm lẫn của detector ảnh và audio](figures/benchmark-confusion-matrices.svg)
+
+*Hình 3. Ma trận nhầm lẫn cho 17 mẫu ảnh và 13 mẫu audio. Benign controls là mẫu tổng hợp có seed cố định; kết quả không đại diện cho corpus thực tế. Detector audio bỏ sót cả 5 positive samples.*
+
+### Provenance
+
+![Luồng kiểm tra provenance từ manifest đến quality gate](figures/provenance-flow.svg)
+
+*Hình 4. Hai luồng kiểm tra artifact và archive hội tụ cùng kết quả unittest tại quality gate. Archive chứa các run record; các file tự kiểm chứng được CRC kiểm tra nhưng không so byte để tránh vòng lặp khi lưu kết quả xác minh archive.*
+
+Các hình có thể được dựng lại sau khi cập nhật dữ liệu bằng lệnh:
+
+```bash
+python scripts/render_report_figures.py
+```

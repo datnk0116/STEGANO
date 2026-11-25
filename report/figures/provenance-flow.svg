@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="480" viewBox="0 0 1100 480" role="img">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#7890ad"/></marker></defs>
+<rect width="100%" height="100%" fill="#f6f8fb"/>
+<text x="34" y="48" font-family="Arial,Helvetica,sans-serif" font-size="27px" font-weight="700" fill="#17243a">Provenance and verification flow</text>
+<text x="34" y="76" font-family="Arial,Helvetica,sans-serif" font-size="14px" font-weight="400" fill="#53647c">Manifested challenge inputs, current checkout, run suite, and submission archive</text>
+<rect x="50" y="120" width="270" height="88" rx="12" fill="#eaf0f7" stroke="#d9e0ea"/>
+<text x="64" y="150" font-family="Arial,Helvetica,sans-serif" font-size="13px" font-weight="700" fill="#53647c">SOURCE + MANIFEST</text>
+<text x="64" y="179" font-family="Arial,Helvetica,sans-serif" font-size="16px" font-weight="700" fill="#17243a">2 official challenge URLs</text>
+<rect x="410" y="120" width="270" height="88" rx="12" fill="#eaf0f7" stroke="#d9e0ea"/>
+<text x="424" y="150" font-family="Arial,Helvetica,sans-serif" font-size="13px" font-weight="700" fill="#53647c">ARTIFACT INTEGRITY</text>
+<text x="424" y="179" font-family="Arial,Helvetica,sans-serif" font-size="16px" font-weight="700" fill="#17243a">3/3 SHA-256 checks</text>
+<rect x="780" y="120" width="270" height="88" rx="12" fill="#eaf0f7" stroke="#d9e0ea"/>
+<text x="794" y="150" font-family="Arial,Helvetica,sans-serif" font-size="13px" font-weight="700" fill="#53647c">CURRENT CHECKOUT</text>
+<text x="794" y="179" font-family="Arial,Helvetica,sans-serif" font-size="16px" font-weight="700" fill="#17243a">95 files inventoried</text>
+<rect x="780" y="260" width="270" height="88" rx="12" fill="#e8f4ed" stroke="#d9e0ea"/>
+<text x="794" y="290" font-family="Arial,Helvetica,sans-serif" font-size="13px" font-weight="700" fill="#53647c">CURRENT ARCHIVE</text>
+<text x="794" y="319" font-family="Arial,Helvetica,sans-serif" font-size="16px" font-weight="700" fill="#17243a">verified · 159 members</text>
+<rect x="50" y="280" width="270" height="88" rx="12" fill="#e8f4ed" stroke="#d9e0ea"/>
+<text x="64" y="310" font-family="Arial,Helvetica,sans-serif" font-size="13px" font-weight="700" fill="#53647c">UNITTEST</text>
+<text x="64" y="339" font-family="Arial,Helvetica,sans-serif" font-size="16px" font-weight="700" fill="#17243a">22/22 passed</text>
+<rect x="410" y="310" width="270" height="88" rx="12" fill="#e8f4ed" stroke="#d9e0ea"/>
+<text x="424" y="340" font-family="Arial,Helvetica,sans-serif" font-size="13px" font-weight="700" fill="#53647c">QUALITY GATE</text>
+<text x="424" y="369" font-family="Arial,Helvetica,sans-serif" font-size="16px" font-weight="700" fill="#17243a">PASSED</text>
+<path d="M320,164 L410,164" stroke="#7890ad" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M915,208 L915,260" stroke="#7890ad" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M320,324 L410,354" stroke="#7890ad" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M545,208 L545,310" stroke="#7890ad" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M780,304 L680,354" stroke="#7890ad" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<text x="34" y="438" font-family="Arial,Helvetica,sans-serif" font-size="12px" font-weight="400" fill="#53647c">Archive verification checks CRC and project-file bytes; self-check result records are included but exempt from byte comparison to avoid recursion.</text>
+</svg>

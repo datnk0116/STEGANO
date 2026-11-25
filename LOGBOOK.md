@@ -3,9 +3,12 @@
 **Repository:** `datnk0116/STEGANO`  
 **Purpose:** chronological record of the work actually performed, commands reported as executed, observed outputs, and limitations.
 
-Estimated work duration is recorded within the corresponding entries, alongside their evidence timestamps and commands.
+Work-duration figures marked as estimates are self-reported and were not timed; timestamps in screenshots and saved logs anchor particular events, not total time worked.
 
 > This logbook is an evidence record, not a plan. Entries describe completed actions only. A result is marked successful only when the corresponding execution output was reported.
+
+**Retrospective note on the reproduction records:** Some early project work was committed before its corresponding logbook entry was recorded because the logbook update was missed at the time. The later runs marked “Re-executed” and the records under `results/reproduction-*` were added to supplement those documentation gaps by rerunning commands and preserving their outputs. Their timestamps refer to the later reruns, not to the original work or commits; they should not be read as contemporaneous records.
+
 
 ---
 
@@ -15,14 +18,14 @@ Estimated work duration is recorded within the corresponding entries, alongside 
 **Appendix/report:** [Appendix A.2](report/APPENDIX.md#app-a2-environment-setup) · [Report §3](report/REPORT.md#report-environment)
 
 **Date:** 16 November 2026  
-**Platform:** macOS, MacBook Air  
-**Python:** 3.14.10  
-**Environment:** `.venv`  
+**Platform:** macOS, MacBook Air<br>
+**Python reported for 16 November:** 3.14.10 (not independently verified)<br>
+**Environment reported:** `.venv` (its interpreter at the original run is unverified)<br>
 **pip:** upgraded from 26.2.2 to 26.3
 
 **Hypothesis tested:** the declared dependencies install successfully and the required modules import under the chosen Python environment.
 
-The operator reported creating and activating the virtual environment, upgrading pip, installing the dependencies from `requirements.txt`, and generating a dependency freeze with `python -m pip freeze`.
+The project author reported creating and activating the virtual environment, upgrading pip, installing the dependencies from `requirements.txt`, and generating a dependency freeze with `python -m pip freeze`.
 
 Packages reported installed:
 
@@ -34,13 +37,15 @@ Packages reported installed:
 - pycparser 3.12
 - typing-extensions 4.16.0
 
-The operator also reported that imports of NumPy, Pillow, SciPy, and SoundFile succeeded.
+The project author also reported that imports of NumPy, Pillow, SciPy, and SoundFile succeeded.
 
 **Observed outcome:** dependency installation and direct import checks completed without a reported error.
 
 **Scope:** this confirms the reported environment setup and imports; it does not, by itself, validate either challenge decoder.
 
-**Supplemental environment verification — 18 November 2026:** the existing `.venv` used Python 3.9.6, below the README's Python 3.10 minimum. A separate `.venv/repro314` was created with Python 3.14.10. The recorded setup interval was 15:06:20–15:07:36 (+07); virtual-environment creation occurred immediately before the start marker.
+**Source limitation:** the original setup and run outcomes in Entries 00–05 are based on the project author’s report; complete original terminal transcripts were not retained. The bare `python` commands shown there do not identify the executable or version. Interpreter details recorded for later replays apply only to those replays.
+
+**Supplemental environment verification — 18 November 2026:** the existing `.venv` was found to use Python 3.9.6, below the README's Python 3.10 minimum. A separate `.venv/repro314` was created with Python 3.14.10. This later check does not establish which interpreter `.venv` used on 16 November; the original Python 3.14.10 value remains author-reported. The recorded setup interval was 15:06:20–15:07:36 (+07); virtual-environment creation occurred immediately before the start marker.
 
 Commands:
 
@@ -60,7 +65,7 @@ The pip self-upgrade attempt could not resolve `pypi.org`; pip remained at 26.2.
 <a id="entry-01"></a>
 ## Entry 01 — Blue 3 image extraction
 
-**Appendix/report:** [Appendix A.3](report/APPENDIX.md#app-a3-blue-3-extraction) · [Report §4.1](report/REPORT.md#report-method-image) · [§6.1](report/REPORT.md#report-blue3)
+**Appendix/report:** [Appendix A.3](report/APPENDIX.md#app-a3-blue-3-extraction) · [Report §2.2](report/REPORT.md#report-methods) · [§3](report/REPORT.md#report-results)
 
 **Date:** 16 November 2026  
 **Input:** `data/blue3/blue.png`
@@ -93,7 +98,7 @@ PYTHONPATH=src python -m stegano blue3 data/blue3/blue.png
 <a id="entry-02"></a>
 ## Entry 02 — Sleepy Alarm, reference-assisted extraction
 
-**Appendix/report:** [Appendix A.4](report/APPENDIX.md#app-a4-sleepy-alarm-reference-assisted) · [Report §4.2](report/REPORT.md#report-method-audio) · [§6.2](report/REPORT.md#report-audio-assisted)
+**Appendix/report:** [Appendix A.4](report/APPENDIX.md#app-a4-sleepy-alarm-reference-assisted) · [Report §2.2](report/REPORT.md#report-methods) · [§3](report/REPORT.md#report-results)
 
 **Date:** 16 November 2026  
 **Target audio:** `data/sleepy_alarm/morning_n_breakfast.mp3`  
@@ -136,7 +141,7 @@ PYTHONPATH=src python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakf
 <a id="entry-03"></a>
 ## Entry 03 — Sleepy Alarm, reference-free extraction
 
-**Appendix/report:** [Appendix A.5](report/APPENDIX.md#app-a5-sleepy-alarm-reference-free) · [Report §6.3](report/REPORT.md#report-audio-free) · [§8](report/REPORT.md#report-limitations)
+**Appendix/report:** [Appendix A.5](report/APPENDIX.md#app-a5-sleepy-alarm-reference-free) · [Report §3](report/REPORT.md#report-results) · [§4.1](report/REPORT.md#report-limitations)
 
 **Date:** 16 November 2026  
 **Target audio:** `data/sleepy_alarm/morning_n_breakfast.mp3`  
@@ -173,7 +178,7 @@ PYTHONPATH=src python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakf
 <a id="entry-04"></a>
 ## Entry 04 — Automated tests
 
-**Appendix/report:** [Appendix A.6](report/APPENDIX.md#app-a6-initial-automated-tests) · [Report §6.4](report/REPORT.md#report-tests)
+**Appendix/report:** [Appendix A.6](report/APPENDIX.md#app-a6-initial-automated-tests) · [Report §3](report/REPORT.md#report-results)
 
 **Date:** 16 November 2026
 
@@ -196,7 +201,7 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 **Outcome:** both tests in the current test suite passed.
 
-**Scope:** the audio integration test covers reference-assisted extraction. The two passing tests do not contradict or erase the separate reference-free failure recorded in Entry 03.
+**Scope:** the audio integration test covers reference-assisted extraction. The two passing tests do not contradict or erase the separate reference-free failure recorded in Entry 03. This is the initial two-test run; later totals refer to different test sets and snapshots, not cumulative counts. Entry 06's nine tests were the visualizer-focused verification set. Entry 07's five were the repository-wide suite at the alignment snapshot: the two existing challenge tests plus three new tests in `tests/test_audio_alignment.py`. Git history confirms that this five-test suite followed the alignment-test addition; the visualization test module was committed separately later on 17 November. Subsequent test additions match the 17 tests in Entry 08 and 19 in Entry 10. The separate `STEGO` redo has no visualization suite; its historical six-test log covers alignment, Blue 3 CLI/solver, and audio solver tests. Entry 06 has no retained raw test transcript or exact test-file snapshot; its screenshots show visualizer pages rather than test output.
 
 **Re-executed — 18 November 2026, 15:08:05–15:08:53 (+07):** `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` passed all 19 tests in 7.864 seconds; exit code 0. Full output: [`unittest.log`](results/reproduction-2026-11-18/unittest.log). AppTest printed a missing-`ScriptRunContext` warning in bare mode; the page test passed. The session interval and command statuses are in [`exit-status.txt`](results/reproduction-2026-11-18/exit-status.txt).
 
@@ -209,13 +214,13 @@ The combined setup, decoder, and test replay interval was 15:06:20–15:08:53 (+
 <a id="entry-05"></a>
 ## Entry 05 — Input integrity recorded during the experiment
 
-**Appendix/report:** [Appendix A.7](report/APPENDIX.md#app-a7-input-artifact-integrity) · [Report §6.5](report/REPORT.md#report-integrity)
+**Appendix/report:** [Appendix A.7](report/APPENDIX.md#app-a7-input-artifact-integrity) · [Report §2.1](report/REPORT.md#report-artifacts)
 
 **Date:** 16 November 2026
 
 **Hypothesis tested:** the three SHA-256 values identify the exact challenge input bytes used in the runs.
 
-The operator also supplied these SHA-256 values:
+The project author also supplied these SHA-256 values:
 
 | Input artifact | SHA-256 |
 |---|---|
@@ -232,19 +237,19 @@ The operator also supplied these SHA-256 values:
 <a id="entry-06"></a>
 ## Entry 06 — Decoder-backed visualization implementation and verification
 
-**Appendix/report:** [Appendix A.8](report/APPENDIX.md#app-a8-first-visualizer-verification) · [Report §5](report/REPORT.md#report-workflow)
+**Appendix/report:** [Appendix A.8](report/APPENDIX.md#app-a8-first-visualizer-verification) · [Report §5](report/REPORT.md#report-visualization)
 
 **Date:** 16 November 2026
 
-**Estimated effort:** 5 hours for the 16 November work session covering Entries 00–06. Evidence anchors: visualization screenshots 21:40:24–21:41:45 and related commits 23:07:59, 23:16:09, and 23:22:18 (+07).
+**Estimated effort:** approximately 5 hours for the 16 November work session covering Entries 00–06 (self-reported estimate; no timer record was preserved). Evidence anchors: visualization screenshots 21:40:24–21:41:45 and related commits 23:07:59, 23:16:09, and 23:22:18 (+07).
 
 **Hypothesis tested:** the visualization pages display results and signal/image diagnostics from the decoder and challenge artifacts.
 
-Added a Streamlit overview and Blue 3 and Sleepy Alarm pages with shared decoder/data helpers and Plotly charts. The decoder implementation and challenge artifacts were not changed. Audio waveform points are sampled in bounded blocks for display; decoder calls use the original files.
+Added a Streamlit overview and Blue 3 and Sleepy Alarm pages with shared decoder/data helpers and Plotly charts. During this visualization work, the decoder implementation and challenge artifacts were not changed. Audio waveform points are sampled in bounded blocks for display; decoder calls use the original files.
 
 Verification recorded for this work:
 
-- Nine unit tests passed.
+- Nine unit tests were reported as passing; no raw terminal transcript or exact test-file snapshot was preserved for this run.
 - Streamlit `AppTest` reported no exceptions for the overview and both challenge pages.
 - The live app health endpoint returned `ok`.
 - Blue 3 and reference-assisted Sleepy Alarm returned format-valid results. Reference-free Sleepy Alarm remained invalid with 20 byte errors.
@@ -266,11 +271,11 @@ The first launch was blocked while binding localhost (`PermissionError: [Errno 1
 <a id="entry-07"></a>
 ## Entry 07 — Audio resampling and alignment regression test
 
-**Appendix/report:** [Appendix A.9](report/APPENDIX.md#app-a9-audio-alignment-regression) · [Report §6.4](report/REPORT.md#report-tests)
+**Appendix/report:** [Appendix A.9](report/APPENDIX.md#app-a9-audio-alignment-regression) · [Report §3](report/REPORT.md#report-results)
 
 **Date:** 17 November 2026
 
-**Estimated effort:** 2–3 hours. Evidence anchor: alignment-helper commit at 08:22:57 (+07), covering 134 insertions across five files.
+**Estimated effort:** 2–3 hours (self-reported; no timer record was preserved). Evidence anchor: alignment-helper commit at 08:22:57 (+07), covering 134 insertions across five files.
 
 **Hypothesis tested:** the alignment helper resamples mismatched sample rates, finds the known delay, and returns only the shared overlap.
 
@@ -282,7 +287,7 @@ Added an independent audio alignment helper that resamples the reference signal 
 python -m unittest discover -s tests -v
 ```
 
-**Reported output:** all 5 tests passed, including the existing image and reference-assisted audio tests and 3 audio alignment tests. Summary: `Ran 5 tests in 0.311s — OK`.
+**Reported output:** all 5 tests passed, including the existing image and reference-assisted audio tests and 3 audio alignment tests. Summary: `Ran 5 tests in 0.311s — OK`. No raw terminal transcript is preserved for this run.
 
 **Outcome:** the reported full test run passed. No additional measurements were recorded.
 
@@ -291,11 +296,11 @@ python -m unittest discover -s tests -v
 <a id="entry-08"></a>
 ## Entry 08 — Resampling and correlation diagnostics in the visualizer
 
-**Appendix/report:** [Appendix A.10](report/APPENDIX.md#app-a10-correlation-diagnostics) · [Report §4.2](report/REPORT.md#report-method-audio)
+**Appendix/report:** [Appendix A.10](report/APPENDIX.md#app-a10-correlation-diagnostics) · [Report §2.2](report/REPORT.md#report-methods)
 
 **Date:** 17 November 2026
 
-**Estimated effort:** 2.5 hours for Entries 08–09 together. Evidence anchors: commits 21:55:17–22:24:50 and the alignment screenshot at 22:18:35 (+07).
+**Estimated effort:** approximately 2.5 hours for Entries 08–09 together (self-reported; no timer record was preserved). Evidence anchors: commits 21:55:17–22:24:50 and the alignment screenshot at 22:18:35 (+07).
 
 **Hypothesis tested:** the plotted normalized-correlation peak matches the lag selected by the alignment routine.
 
@@ -303,7 +308,7 @@ Refactored the shared resampling and correlation path in `src/audio_alignment.py
 
 **Verification:**
 
-- `python -m unittest discover -s tests -v` passed all 17 tests.
+- `python -m unittest discover -s tests -v` was reported to pass 17 tests; no raw terminal transcript is linked for this run.
 - Streamlit `AppTest` loaded the overview and both challenge pages without exceptions.
 - Synthetic signals with different sample rates, delay, and lengths confirmed that the correlation-profile peak matches the selected alignment lag.
 
@@ -314,11 +319,11 @@ Refactored the shared resampling and correlation path in `src/audio_alignment.py
 <a id="entry-09"></a>
 ## Entry 09 — Audio alignment visualizer and evidence
 
-**Appendix/report:** [Appendix A.11](report/APPENDIX.md#app-a11-alignment-visual-evidence) · [Report §5](report/REPORT.md#report-workflow)
+**Appendix/report:** [Appendix A.11](report/APPENDIX.md#app-a11-alignment-visual-evidence) · [Report §5](report/REPORT.md#report-visualization)
 
 **Date:** 17 November 2026
 
-**Session estimate:** included in the 2.5-hour estimate recorded in Entry 08.
+**Session estimate:** included in the 2.5-hour self-reported estimate recorded in Entry 08; no independent time measurement is preserved.
 
 **Hypothesis tested:** the displayed waveforms, lag and overlap describe the signals used by the current alignment run.
 
@@ -333,11 +338,11 @@ Added `evidence/visualization/Screenshot 2026-11-17 at 22.18.35.png`, which capt
 <a id="entry-10"></a>
 ## Entry 10 — ASK and Blue 3 diagnostic visualizations
 
-**Appendix/report:** [Appendix A.12](report/APPENDIX.md#app-a12-ask-and-blue-3-diagnostics) · [Report §4.1](report/REPORT.md#report-method-image) · [§4.2](report/REPORT.md#report-method-audio)
+**Appendix/report:** [Appendix A.12](report/APPENDIX.md#app-a12-ask-and-blue-3-diagnostics) · [Report §2.2](report/REPORT.md#report-methods) · [§4.2](report/REPORT.md#report-methods)
 
 **Date:** 18 November 2026
 
-**Estimated effort:** 3 hours. Evidence anchors: screenshots 06:31:35–06:47:19 and the diagnostics commit at 06:49:47 (+07); the commit covered 308 insertions and 30 deletions across 14 files.
+**Estimated effort:** approximately 3 hours (self-reported; no timer record was preserved). Evidence anchors: screenshots 06:31:35–06:47:19 and the diagnostics commit at 06:49:47 (+07); the commit covered 308 insertions and 30 deletions across 14 files.
 
 **Hypothesis tested:** the displayed ASK values and Blue 3 block diagnostics expose the intermediate measurements used by the decoders.
 
@@ -357,7 +362,7 @@ rtk env PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
 
 **Observed result:** all 19 tests passed, including AppTest for the overview and both challenge pages. `rtk git diff --check` completed without errors.
 
-The current reference-assisted run reported 350 symbols and 38 separators in the 7-second window, with no NUL characters in the decoded byte groups. Blue 3 diagnostics reconstructed the selected valid candidate from its diagonal blocks.
+The project author's recollection is that `.venv/bin/python` was Python 3.14.10 for this 06:49 run; the command transcript did not retain a separate `--version` output. A later replay under `.venv/repro314/bin/python` also recorded Python 3.14.10. The supplemental check at 15:06 found `.venv` using Python 3.9.6, so that later observation does not independently establish the interpreter used in the morning. The reference-assisted run reported 350 symbols and 38 separators in the 7-second window, with no NUL characters in the decoded byte groups. Blue 3 diagnostics reconstructed the selected valid candidate from its diagonal blocks.
 
 ### Evidence
 
@@ -407,7 +412,7 @@ The exact-match tests verified Blue 3 at 50 characters and reference-assisted Sl
 
 The ASK decoder now retains the target prefix before the aligned overlap and decodes from sample zero. Per-symbol I/Q projection uses the original samples in each symbol window and the global sample index for carrier phase, so each measurement uses the intended target-sample window. The decoder result includes the number of decoded complete-byte characters.
 
-The synthetic regression signal places the alignment start one and a half symbol periods into the target. It checks the first 16 labels against the generated bit stream, verifies the initial ASK level, and confirms the full 39-character flag remains intact.
+The earlier reference-assisted path decoded only the aligned target/reference overlap (`x-y`), omitting target samples before the overlap. The change prepends that target prefix and keeps symbol timing and carrier phase anchored at target sample zero. The synthetic regression places the overlap start one and a half symbol periods into the target; it checks the first 16 labels, initial ASK level, and full 39-character flag. The preserved records do not identify a separate failure on the official file that first triggered the change. The official file returns the same 39-character flag before and after the change. Its 350-symbol count is the 7-second window at 50 baud (`7 × 50`), so that count does not distinguish the two decoder versions.
 
 ### Commands and observed results
 
@@ -421,6 +426,8 @@ The full unittest run passed all 22 tests in 2.966 seconds with exit code 0. The
 The reference-assisted decoder run returned `format_valid: true`, `reference_assisted: true`, 350 symbols, 38 separators, 39 characters, and no byte errors. The decoded flag was `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`. Alignment reported a 1,729-sample lag and target start, with normalized correlation 0.9998734358246231.
 
 The separate run manifest records the mode, 8,000 Hz carrier, 50 baud, 7-second window, input hashes, counts, and SHA-256 values for the JSON output and log. The original [`artifact_manifest.json`](results/artifact_manifest.json) remains the input-integrity record.
+
+**Chronology and parameter provenance:** this ASK decoder change followed the earlier results in Entries 02 and 06–08. Those entries describe the earlier implementation; the 19 November run verifies the updated implementation against the same known challenge flag. The manifest confirms the settings used in that run, but no preserved record establishes how they were selected before the expected flag was known. The report therefore treats them as fixed decoder settings and the exact-match check as post-decode validation, not as evidence of blind parameter selection.
 
 **Run artifacts:** [decoded output](results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-output.json) · [run log](results/reproduction-2026-11-19/sleepy-alarm-reference-assisted.log) · [run manifest](results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-manifest.json)
 
@@ -524,7 +531,7 @@ The image baseline identified all five positive samples and rejected all 12 synt
 rtk proxy .venv/repro314/bin/python scripts/verify_reproducibility.py
 ```
 
-**Result:** exit code 0. The unittest suite passed 22/22 tests, all three artifacts passed size/SHA-256 checks, and provenance status is `verified`. `submission_package` remains `not_verified` because there is no package archive or manifest to inspect.
+**Historical result:** exit code 0. The unittest suite passed 22/22 tests, all three artifacts passed size/SHA-256 checks, and provenance status is `verified`. At that run, `submission_package` was `not_verified` because the archive had not been checked. The current archive and latest recheck are documented in Entry 16.
 
 **Generated records:** [quality-gate.json](results/verification/quality-gate.json) · [provenance.json](results/verification/provenance.json) · [complete run log](results/verification/reproducibility.log).
 
@@ -537,7 +544,7 @@ rtk proxy .venv/repro314/bin/python scripts/verify_reproducibility.py
 
 **Date:** 22 November 2026
 
-**Objective:** index the captured dashboard views, identify redundant evidence, and record the remaining screenshot correction.
+**Objective:** index the dashboard evidence, identify redundant captures, and link the saved recheck records and generated report figures.
 
 **Evidence captured:**
 
@@ -548,4 +555,4 @@ rtk proxy .venv/repro314/bin/python scripts/verify_reproducibility.py
 
 **Redundant evidence:** [the second alignment/residual capture](evidence/visualization/2026-11-22-sleepy-alignment-correlation-residual-repeat.png) substantially repeats the first; either one is sufficient for the final evidence set.
 
-**Remaining visualization work:** the corrected Overview has now been captured. The other screenshots correspond to the currently implemented dashboard views. The four proposed figures in [Report §6](report/REPORT.md)—quality-gate summary, extended robustness heatmaps, paired benchmark confusion matrices, and provenance flow—have not been generated as figures yet. Their source data remain in the quality-gate JSON, robustness JSON/CSV files, benchmark JSON, and provenance JSON; see Entry 14 for run evidence.
+**Visualization evidence status:** the corrected Overview and current dashboard captures are indexed in [Appendix A.19](report/APPENDIX.md#app-a19-visualization-evidence-review). The repeated alignment/residual view is redundant. The four report figures are generated from the recheck JSON files and embedded in [Report §6](report/REPORT.md#report-visualization). The latest saved recheck passed 22/22 tests, verified 3/3 artifacts and provenance, and verified `submission_package_current.zip`; its [quality-gate JSON](results/recheck/quality-gate.json), [provenance JSON](results/recheck/provenance.json), and [complete run log](results/recheck/reproducibility.log) are linked in Appendix A.19.
