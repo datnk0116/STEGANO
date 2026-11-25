@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-25T12:32:10.746365+00:00",
+  "generated_at": "2026-11-25T13:14:59.316508+00:00",
   "project": "STEGANO",
   "artifact_sources": [
     {
@@ -62,7 +62,7 @@
   },
   "source_inventory": {
     "status": "hashed",
-    "file_count": 95,
+    "file_count": 97,
     "files": [
       {
         "path": "LOGBOOK.md",
@@ -71,8 +71,8 @@
       },
       {
         "path": "README.md",
-        "bytes": 6829,
-        "sha256": "09a3eb8dfc64f4a68fd339e1eed32aaf36bbb55debed1a3ab7ecb46650cfed47"
+        "bytes": 6873,
+        "sha256": "9d58b11d4d7b0cc1efec4879dd161fa6c3d85e79b8e1e1784ed0613bfb856411"
       },
       {
         "path": "evidence/terminal/2026-11-18-audio-assisted-terminal.png",
@@ -316,8 +316,8 @@
       },
       {
         "path": "report/REPORT.md",
-        "bytes": 37071,
-        "sha256": "e381e4f37b19f567964908b2e7797505ccc4e585662eda9e040c672955403ff9"
+        "bytes": 41368,
+        "sha256": "1da749e880f10285701a6d9cd13f3051dc1ff90d3ae8a86eb123db3d41b09160"
       },
       {
         "path": "report/figures/benchmark-confusion-matrices.svg",
@@ -338,6 +338,11 @@
         "path": "report/figures/robustness-heatmaps.svg",
         "bytes": 12897,
         "sha256": "f21b0c07d2f1a0cb78e84678629af0ad45f5bedca78fd216576a0ba279397652"
+      },
+      {
+        "path": "report/figures/sleepy-residual-spectrum.svg",
+        "bytes": 11351,
+        "sha256": "c051335e6a1b7826ce33336d02994e713881486ec6b7706898bc4c126b06d042"
       },
       {
         "path": "requirements.txt",
@@ -408,6 +413,11 @@
         "path": "scripts/create_submission_zip.py",
         "bytes": 3762,
         "sha256": "b4740069ea335395e214346f0a6084c52cbd97e5bd9c6765882e066e85e8aa8d"
+      },
+      {
+        "path": "scripts/inspect_discovery_signals.py",
+        "bytes": 9136,
+        "sha256": "5b13c7345f7e57c08f46707b6d06d72d9c3cd92f2a2b9aea70557da8127668ca"
       },
       {
         "path": "scripts/render_report_figures.py",
@@ -544,7 +554,7 @@
   "submission_package": {
     "status": "verified",
     "path": "submission_package_current.zip",
-    "file_count": 165,
+    "file_count": 169,
     "required_files": [
       "LOGBOOK.md",
       "README.md",

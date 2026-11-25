@@ -59,6 +59,7 @@ PYTHONPATH=src python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakf
 python scripts/run_steganalysis_benchmark.py
 python scripts/run_extended_robustness.py
 PYTHONPATH=src python scripts/run_audio_asymmetric.py
+python scripts/inspect_discovery_signals.py
 python scripts/render_report_figures.py
 ```
 

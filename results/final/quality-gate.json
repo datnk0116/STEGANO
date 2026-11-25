@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-25T12:32:10.767988+00:00",
+  "generated_at": "2026-11-25T13:14:59.352252+00:00",
   "project": "STEGANO",
   "verification_run": {
     "tests": {
@@ -26,7 +26,7 @@
   "submission_package": {
     "status": "verified",
     "path": "submission_package_current.zip",
-    "file_count": 165,
+    "file_count": 169,
     "required_files": [
       "LOGBOOK.md",
       "README.md",
@@ -64,7 +64,7 @@
         "scripts/verify_artifacts.py"
       ],
       "exit_code": 0,
-      "duration_seconds": 0.021
+      "duration_seconds": 0.045
     },
     {
       "name": "unittest",
@@ -78,7 +78,7 @@
         "-v"
       ],
       "exit_code": 0,
-      "duration_seconds": 3.339
+      "duration_seconds": 6.023
     },
     {
       "name": "provenance",
@@ -89,7 +89,7 @@
         "/Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/results/final/provenance.json"
       ],
       "exit_code": 0,
-      "duration_seconds": 0.162
+      "duration_seconds": 0.24
     }
   ],
   "log": "results/final/reproducibility.log"

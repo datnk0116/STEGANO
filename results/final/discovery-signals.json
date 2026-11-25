@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-11-25T13:13:53.255843+00:00",
+  "post_hoc_note": "Reproducible post-hoc signal inspection of the pinned challenge artifacts; not a contemporaneous pre-solve log.",
+  "blue3": {
+    "path": "data/blue3/blue.png",
+    "width": 512,
+    "height": 512,
+    "total_pixels": 262144,
+    "unique_rgb_count": 49,
+    "modal_rgb": [
+      64,
+      77,
+      205
+    ],
+    "modal_pixel_count": 258916,
+    "modal_rgb_fraction": 0.9876861572265625,
+    "non_base_pixel_count": 3228,
+    "non_base_fraction": 0.0123138427734375,
+    "max_abs_x_minus_y_px": 9
+  },
+  "sleepy_alarm": {
+    "target_path": "data/sleepy_alarm/morning_n_breakfast.mp3",
+    "reference_path": "data/sleepy_alarm/morning_n_breakfast_original.mp3",
+    "sample_rate_hz": 44100,
+    "analysis_window_seconds": 7.0,
+    "alignment": {
+      "lag_samples": 1729,
+      "correlation": 0.9998734358246231,
+      "target_start_sample": 1729
+    },
+    "target_peak_hz": 1598.7142857142856,
+    "target_8khz_band_energy_ratio": 0.00025704921448793243,
+    "residual_peak_hz": 8000.0,
+    "residual_8khz_band_energy_ratio": 0.5240094469809258
+  },
+  "figure": "report/figures/sleepy-residual-spectrum.svg"
+}
