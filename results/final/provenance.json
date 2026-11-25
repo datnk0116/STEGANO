@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-25T14:09:26.657715+00:00",
+  "generated_at": "2026-11-25T14:30:04.439942+00:00",
   "project": "STEGANO",
   "artifact_sources": [
     {
@@ -71,8 +71,8 @@
       },
       {
         "path": "README.md",
-        "bytes": 6873,
-        "sha256": "9d58b11d4d7b0cc1efec4879dd161fa6c3d85e79b8e1e1784ed0613bfb856411"
+        "bytes": 7809,
+        "sha256": "eea64c943b9440473dd69e061565e65752e71ec065be9e0b7aadbcc96b13ef5c"
       },
       {
         "path": "evidence/terminal/2026-11-18-audio-assisted-terminal.png",
