@@ -30,13 +30,13 @@ test_sleepy_diagnostics_match_the_reference_assisted_decoder (test_visualization
 test_audio_runner_passes_both_paths_and_preserves_failure_data (test_visualization.TestVisualizationDecoderCalls.test_audio_runner_passes_both_paths_and_preserves_failure_data) ... ok
 test_blue3_runner_returns_decoder_data (test_visualization.TestVisualizationDecoderCalls.test_blue3_runner_returns_decoder_data) ... ok
 test_missing_image_is_reported_as_failed (test_visualization.TestVisualizationDecoderCalls.test_missing_image_is_reported_as_failed) ... ok
-test_all_pages_load_without_exceptions (test_visualization_app.TestVisualizationPages.test_all_pages_load_without_exceptions) ... 2026-11-25 20:14:56.585 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2026-11-25 20:14:57.834 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2026-11-25 20:14:58.277 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+test_all_pages_load_without_exceptions (test_visualization_app.TestVisualizationPages.test_all_pages_load_without_exceptions) ... 2026-11-25 20:36:42.012 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-11-25 20:36:43.732 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-11-25 20:36:44.443 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
 ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 4.337s
+Ran 22 tests in 5.733s
 
 OK
 

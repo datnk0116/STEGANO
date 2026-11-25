@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-25T13:14:59.316508+00:00",
+  "generated_at": "2026-11-25T13:36:46.264540+00:00",
   "project": "STEGANO",
   "artifact_sources": [
     {
@@ -316,8 +316,8 @@
       },
       {
         "path": "report/REPORT.md",
-        "bytes": 41368,
-        "sha256": "1da749e880f10285701a6d9cd13f3051dc1ff90d3ae8a86eb123db3d41b09160"
+        "bytes": 51241,
+        "sha256": "952b35745da8c9413dfdb09e8da5874530adb88b463e136783f4a23f351be9a2"
       },
       {
         "path": "report/figures/benchmark-confusion-matrices.svg",
