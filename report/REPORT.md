@@ -344,24 +344,24 @@ Sáu ảnh chụp màn hình gốc dưới đây từ `evidence/terminal/` ghi l
 
 ![Cài đặt môi trường Python 3.14.10 và pip check](../evidence/terminal/2026-11-18-setup-terminal.png)
 
-*Hình A.3. Kiểm tra môi trường Python 3.14.10, cài đặt phụ thuộc từ `requirements.txt` và xác nhận `pip check` không có lỗi (`evidence/terminal/2026-11-18-setup-terminal.png`).*
+*Hình C.1. Kiểm tra môi trường Python 3.14.10, cài đặt phụ thuộc từ `requirements.txt` và xác nhận `pip check` không có lỗi (`evidence/terminal/2026-11-18-setup-terminal.png`).*
 
 ![Chạy decoder Blue 3 trên terminal](../evidence/terminal/2026-11-18-blue3-terminal.png)
 
-*Hình A.4. Đầu ra lệnh giải mã Blue 3 khôi phục flag 50 ký tự `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` (`evidence/terminal/2026-11-18-blue3-terminal.png`).*
+*Hình C.2. Đầu ra lệnh giải mã Blue 3 khôi phục flag 50 ký tự `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` (`evidence/terminal/2026-11-18-blue3-terminal.png`).*
 
 ![Chạy decoder Sleepy Alarm có tham chiếu trên terminal](../evidence/terminal/2026-11-18-audio-assisted-terminal.png)
 
-*Hình A.5. Đầu ra lệnh giải mã Sleepy Alarm chế độ có tham chiếu: `format_valid: true`, 350 symbol, 38 separator, lag 1.729 mẫu, 0 lỗi byte (`evidence/terminal/2026-11-18-audio-assisted-terminal.png`).*
+*Hình C.3. Đầu ra lệnh giải mã Sleepy Alarm chế độ có tham chiếu: `format_valid: true`, 350 symbol, 38 separator, lag 1.729 mẫu, 0 lỗi byte (`evidence/terminal/2026-11-18-audio-assisted-terminal.png`).*
 
 ![Kết quả thất bại của Sleepy Alarm chế độ không tham chiếu](../evidence/terminal/2026-11-20-reference-free-audio-failure-terminal.png)
 
-*Hình A.6. Đối chứng âm chế độ không tham chiếu (`reference_free`): `status: FAIL`, `format_valid: false`, 26 ký tự, 49 separator và 20 nhóm byte lỗi (`evidence/terminal/2026-11-20-reference-free-audio-failure-terminal.png`).*
+*Hình C.4. Đối chứng âm chế độ không tham chiếu (`reference_free`): `status: FAIL`, `format_valid: false`, 26 ký tự, 49 separator và 20 nhóm byte lỗi (`evidence/terminal/2026-11-20-reference-free-audio-failure-terminal.png`).*
 
 ![Kết quả 22/22 unittest đạt](../evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png)
 
-*Hình A.7. Toàn bộ 22 `unittest` vượt qua (`Ran 22 tests in 2.634s — OK`) kèm các cảnh báo bare-mode không gây lỗi của Streamlit `AppTest` (`evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png`).*
+*Hình C.5. Toàn bộ 22 `unittest` vượt qua (`Ran 22 tests in 2.634s — OK`) kèm các cảnh báo bare-mode không gây lỗi của Streamlit `AppTest` (`evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png`).*
 
 ![Kiểm tra toàn vẹn 3/3 artifact và provenance](../evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png)
 
-*Hình A.8. Kiểm tra toàn vẹn 3/3 artifact bằng SHA-256 và chạy `scripts/check_provenance.py` (`evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png`).*
+*Hình C.6. Kiểm tra toàn vẹn 3/3 artifact bằng SHA-256 và chạy `scripts/check_provenance.py` (`evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png`).*
