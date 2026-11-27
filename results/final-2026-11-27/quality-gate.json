@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-27T08:20:04.313351+00:00",
+  "generated_at": "2026-11-27T08:50:45.808274+00:00",
   "project": "STEGANO",
   "verification_run": {
     "tests": {
@@ -26,7 +26,7 @@
   "submission_package": {
     "status": "verified",
     "path": "submission_package_current.zip",
-    "file_count": 194,
+    "file_count": 176,
     "required_files": [
       "LOGBOOK.md",
       "README.md",
@@ -41,18 +41,6 @@
       "results/final-2026-11-27/quality-gate-console.log",
       "results/final-2026-11-27/quality-gate.json",
       "results/final-2026-11-27/reproducibility.log",
-      "results/final-2026-11-27c/provenance.json",
-      "results/final-2026-11-27c/quality-gate-console.log",
-      "results/final-2026-11-27c/quality-gate.json",
-      "results/final-2026-11-27c/reproducibility.log",
-      "results/final-2026-11-27d/provenance.json",
-      "results/final-2026-11-27d/quality-gate-console.log",
-      "results/final-2026-11-27d/quality-gate.json",
-      "results/final-2026-11-27d/reproducibility.log",
-      "results/final-2026-11-27e/provenance.json",
-      "results/final-2026-11-27e/quality-gate-console.log",
-      "results/final-2026-11-27e/quality-gate.json",
-      "results/final-2026-11-27e/reproducibility.log",
       "results/final/provenance.json",
       "results/final/quality-gate-console.log",
       "results/final/quality-gate.json",
@@ -80,7 +68,7 @@
         "scripts/verify_artifacts.py"
       ],
       "exit_code": 0,
-      "duration_seconds": 0.025
+      "duration_seconds": 0.03
     },
     {
       "name": "unittest",
@@ -94,7 +82,7 @@
         "-v"
       ],
       "exit_code": 0,
-      "duration_seconds": 3.508
+      "duration_seconds": 3.812
     },
     {
       "name": "provenance",
@@ -102,11 +90,11 @@
         "/Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/.venv/repro314/bin/python",
         "scripts/check_provenance.py",
         "--output",
-        "/Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/results/final-2026-11-27e/provenance.json"
+        "/Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/results/final-2026-11-27/provenance.json"
       ],
       "exit_code": 0,
-      "duration_seconds": 0.204
+      "duration_seconds": 0.174
     }
   ],
-  "log": "results/final-2026-11-27e/reproducibility.log"
+  "log": "results/final-2026-11-27/reproducibility.log"
 }

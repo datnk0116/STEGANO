@@ -46,7 +46,7 @@ The appendix expands each logbook entry with its technical hypothesis, commands,
 
 The logbook does not preserve a complete terminal transcript for the original installation. The later 18 November inspection found the existing `.venv` at Python 3.9.6, while the replay used `.venv/repro314` at Python 3.14.10; that later inspection does not establish which interpreter the bare `python` commands resolved to on 16 November. The exact setup commands for replay are in [README — Environment setup](../README.md#environment-setup); they should not be mistaken for a verbatim transcript of the original session. The dependency freeze records package versions.
 
-**Environment re-setup — 18 November 2026:** the pre-existing `.venv` used Python 3.9.6, below the README's Python 3.10 minimum. A separate `.venv/repro314` was created with Python 3.14.10. Commands were `rtk python3.14 -m venv .venv/repro314`, `rtk proxy .venv/repro314/bin/python -m pip install --upgrade pip`, `rtk proxy .venv/repro314/bin/python -m pip install -r requirements.txt`, and `rtk proxy .venv/repro314/bin/python -m pip check`. The pip upgrade attempt hit a DNS failure resolving `pypi.org`, leaving pip at 26.2.2; requirements installed successfully and `pip check` found no broken requirements. Pip disabled its unwritable user cache. The setup interval is 15:06:20–15:07:36 (+07), with venv creation immediately before the start marker. Logs: [setup-time.txt](../results/reproduction-2026-11-18/setup-time.txt), [setup-end.txt](../results/reproduction-2026-11-18/setup-end.txt), [pip-upgrade.log](../results/reproduction-2026-11-18/pip-upgrade.log), [pip-install.log](../results/reproduction-2026-11-18/pip-install.log), [environment-check.log](../results/reproduction-2026-11-18/environment-check.log), [environment-freeze.txt](../results/reproduction-2026-11-18/environment-freeze.txt), and [pip-check.log](../results/reproduction-2026-11-18/pip-check.log).
+**Environment re-setup — 18 November 2026:** the pre-existing `.venv` used Python 3.9.6, below the README's Python 3.10 minimum. A separate `.venv/repro314` was created with Python 3.14.10. Commands were `python3.14 -m venv .venv/repro314`, `.venv/repro314/bin/python -m pip install --upgrade pip`, `.venv/repro314/bin/python -m pip install -r requirements.txt`, and `.venv/repro314/bin/python -m pip check`. The pip upgrade attempt hit a DNS failure resolving `pypi.org`, leaving pip at 26.2.2; requirements installed successfully and `pip check` found no broken requirements. Pip disabled its unwritable user cache. The setup interval is 15:06:20–15:07:36 (+07), with venv creation immediately before the start marker. Logs: [setup-time.txt](../results/reproduction-2026-11-18/setup-time.txt), [setup-end.txt](../results/reproduction-2026-11-18/setup-end.txt), [pip-upgrade.log](../results/reproduction-2026-11-18/pip-upgrade.log), [pip-install.log](../results/reproduction-2026-11-18/pip-install.log), [environment-check.log](../results/reproduction-2026-11-18/environment-check.log), [environment-freeze.txt](../results/reproduction-2026-11-18/environment-freeze.txt), and [pip-check.log](../results/reproduction-2026-11-18/pip-check.log).
 
 **Terminal screenshot — 18 November 2026, 16:12:56 (+07):** Python 3.14.10, the requirements installation check, and the clean `pip check` result are shown in [the setup/configuration capture](../evidence/terminal/2026-11-18-setup-terminal.png).
 
@@ -69,7 +69,7 @@ The logbook does not preserve a complete terminal transcript for the original in
 
 The saved output shows candidate attempts for lengths 2 through 50; the accepted 50-character candidate closes with `}`. This is evidence for this supplied image and implementation, not a general image steganalysis result.
 
-**Re-executed — 18 November 2026, 15:08:05–15:08:53 (+07):** `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m stegano blue3 data/blue3/blue.png` returned the same valid 50-character flag; exit code 0. Output: [blue3.log](../results/reproduction-2026-11-18/blue3.log).
+**Re-executed — 18 November 2026, 15:08:05–15:08:53 (+07):** `env PYTHONPATH=src .venv/repro314/bin/python -m stegano blue3 data/blue3/blue.png` returned the same valid 50-character flag; exit code 0. Output: [blue3.log](../results/reproduction-2026-11-18/blue3.log).
 
 **Terminal screenshot — 18 November 2026, 16:13:32 (+07):** a later run shows the command and accepted candidate: [Blue 3 capture](../evidence/terminal/2026-11-18-blue3-terminal.png).
 
@@ -95,7 +95,7 @@ The saved output shows candidate attempts for lengths 2 through 50; the accepted
 
 The reference input is part of the method. Therefore this result supports reference-assisted extraction only; it does not establish blind recovery.
 
-**Re-executed — 18 November 2026, 15:08:05–15:08:53 (+07):** `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3` returned the same valid flag, 350 symbols, 38 separators, and exit code 0. Output: [sleepy-alarm-reference-assisted.log](../results/reproduction-2026-11-18/sleepy-alarm-reference-assisted.log).
+**Re-executed — 18 November 2026, 15:08:05–15:08:53 (+07):** `env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3` returned the same valid flag, 350 symbols, 38 separators, and exit code 0. Output: [sleepy-alarm-reference-assisted.log](../results/reproduction-2026-11-18/sleepy-alarm-reference-assisted.log).
 
 **Terminal screenshot — 18 November 2026, 16:14:39 (+07):** a subsequent run shows the flag, valid format, symbol count, separator count, and no errors: [reference-assisted capture](../evidence/terminal/2026-11-18-audio-assisted-terminal.png).
 
@@ -119,7 +119,7 @@ The reference input is part of the method. Therefore this result supports refere
 
 This negative result is retained separately from Entry 02. It shows that this implementation did not recover a valid flag in reference-free mode in the recorded run.
 
-**Re-executed — 18 November 2026, 15:08:05–15:08:53 (+07):** `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3` again returned an invalid fragment, 20 malformed byte groups, and exit code 2. Output: [sleepy-alarm-reference-free.log](../results/reproduction-2026-11-18/sleepy-alarm-reference-free.log).
+**Re-executed — 18 November 2026, 15:08:05–15:08:53 (+07):** `env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3` again returned an invalid fragment, 20 malformed byte groups, and exit code 2. Output: [sleepy-alarm-reference-free.log](../results/reproduction-2026-11-18/sleepy-alarm-reference-free.log).
 
 **Terminal screenshot — 18 November 2026, 16:15:19 (+07):** a new target-only run displays `format_valid: false`: [reference-free capture](../evidence/terminal/2026-11-18-audio-reference-free-terminal.png). The detailed earlier run log records 20 malformed groups and exit code 2.
 
@@ -141,7 +141,7 @@ This negative result is retained separately from Entry 02. It shows that this im
 
 This is the initial two-test run. Later counts are separate suite snapshots, not cumulative totals. The nine checks in A.8 were visualizer-focused; the five-test repository suite in A.9 comprised the two existing challenge tests and three alignment tests. Git history shows the visualization test module was added separately after the five-test snapshot, so the different totals describe suite scope and timing rather than tests being removed. The raw nine-test transcript and exact file snapshot were not retained, so its individual test mapping cannot now be reconstructed.
 
-**Re-executed — 18 November 2026, 15:08:05–15:08:53 (+07):** `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` passed 19 tests in 7.864 seconds; exit code 0. AppTest printed a missing-`ScriptRunContext` warning in bare mode; the page test passed. Full output: [unittest.log](../results/reproduction-2026-11-18/unittest.log); statuses: [exit-status.txt](../results/reproduction-2026-11-18/exit-status.txt).
+**Re-executed — 18 November 2026, 15:08:05–15:08:53 (+07):** `env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` passed 19 tests in 7.864 seconds; exit code 0. AppTest printed a missing-`ScriptRunContext` warning in bare mode; the page test passed. Full output: [unittest.log](../results/reproduction-2026-11-18/unittest.log); statuses: [exit-status.txt](../results/reproduction-2026-11-18/exit-status.txt).
 
 **Terminal screenshot — 18 November 2026, 16:15:58 (+07):** a subsequent run passed all 19 tests in 2.285 seconds: [unittest capture](../evidence/terminal/2026-11-18-unittest-terminal.png).
 
@@ -205,7 +205,7 @@ The following SHA-256 values were supplied for the inputs used by the recorded e
 **Visualization recheck — 18 November 2026, 15:46:46–15:47:40 (+07):**
 
 ```text
-rtk proxy env PYTHONPATH=src .venv/repro314/bin/streamlit run visualization/app.py --server.headless true --server.port 8765
+env PYTHONPATH=src .venv/repro314/bin/streamlit run visualization/app.py --server.headless true --server.port 8765
 ```
 
 The first launch could not bind localhost (`PermissionError: [Errno 1] Operation not permitted`). After retrying with local-server access, Streamlit started and the `/_stcore/health` endpoint returned `ok`; the server was stopped after this check. Logs: [initial launch error](../results/reproduction-2026-11-18/streamlit.log), [successful launch](../results/reproduction-2026-11-18/streamlit-retry.log), [health response](../results/reproduction-2026-11-18/streamlit-health.log), and [timestamps](../results/reproduction-2026-11-18/visualizer-time.txt).
@@ -279,10 +279,10 @@ The screenshot dated 22:18:35 (+07) records both files at 44,100 Hz, with 441,84
 | Date | 18 November 2026; screenshots dated 06:31:35–06:47:19 and commit at 06:49:47 (+07) |
 | Audio diagnostics | Channel-0 ASK level/label per symbol, three cluster centers, decoded byte groups |
 | Image diagnostics | Inferred RGB baseline and selected diagonal blocks, pixel bounds, per-channel deltas, summed character codes, decoded characters |
-| Command reported | `rtk env PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v` |
+| Command reported | `env PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v` |
 | Interpreter evidence | The project author recalls `.venv/bin/python` was Python 3.14.10 for this 06:49 run, matching the adjacent project runs; the command transcript has no `--version` output. The later Python 3.9.6 observation of `.venv` does not establish its interpreter at 06:49. |
 | Test outcome | 19 tests passed, including AppTest for the overview and both challenge pages |
-| Additional check | `rtk git diff --check` completed without errors |
+| Additional check | `git diff --check` completed without errors |
 | Run observation | Reference-assisted result reported 350 symbols, 38 separators, and no NUL characters in decoded byte groups; Blue 3 diagnostics reconstructed the selected valid candidate |
 | Error / correction | No failure or corrective action recorded |
 
@@ -331,9 +331,9 @@ The 18 November terminal captures document real reruns and are linked beside the
 | Item | Recorded detail |
 |---|---|
 | Date/time | 18 November 2026; timestamp sample 20:08:39 (+07) |
-| Integrity command | `rtk proxy python scripts/verify_artifacts.py` |
+| Integrity command | `python scripts/verify_artifacts.py` |
 | Integrity result | Exit code 0; all 3/3 artifacts passed size and SHA-256 checks |
-| Test command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
+| Test command | `env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
 | Test result | 21 tests passed; exit code 0; 2.691 seconds |
 | Exact-match cases | Blue 3: 50/50 characters; Sleepy Alarm reference-assisted: 39/39 characters |
 | Audio observations | 350 symbols; 38 separators; no byte errors; observed cross-correlation lag 1,729 samples |
@@ -366,10 +366,10 @@ The lag is the alignment offset observed from cross-correlation at run time; the
 | Synthetic regression | Overlap starts 1.5 symbol periods into the target; first 16 labels and first ASK level match the generated signal; full flag preserved |
 | Official challenge comparison | Same 39-character flag before and after the fix; the preserved records do not show a different real-file result |
 | Symbol count | 350 = 7-second window × 50 baud; this count does not distinguish the decoder versions |
-| Test command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
+| Test command | `env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
 | Test result | Two runs passed all 22 tests; exit code 0; 2.966 and 2.826 seconds |
 | Test warning | Review rerun emitted three Streamlit `missing ScriptRunContext` warnings in bare mode; the AppTest page test passed |
-| Run command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3` |
+| Run command | `env PYTHONPATH=src .venv/repro314/bin/python -m stegano sleepy-alarm data/sleepy_alarm/morning_n_breakfast.mp3 --reference data/sleepy_alarm/morning_n_breakfast_original.mp3` |
 | Decoder result | `format_valid: true`; `reference_assisted: true`; 350 symbols; 38 separators; 39 characters; no byte errors |
 | Alignment | Lag and target start: 1,729 samples; normalized correlation: 0.9998734358246231 |
 | Configuration | 8,000 Hz carrier; 50 baud; 7-second decoding window |
@@ -406,8 +406,8 @@ The separate run manifest supplements the input-integrity manifest; it does not 
 | Variant result | 2/6 PASS: target-only and reference-only resample round trips; all four one-sided gain variants FAIL |
 | PASS criterion | `format_valid`, exact ground-truth match, and no byte errors |
 | Input integrity | Both audio SHA-256 values still match `results/artifact_manifest.json` |
-| Run command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python scripts/run_audio_asymmetric.py` |
-| Test command/result | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` — 22 tests passed; exit code 0; 2.713 seconds |
+| Run command | `env PYTHONPATH=src .venv/repro314/bin/python scripts/run_audio_asymmetric.py` |
+| Test command/result | `env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` — 22 tests passed; exit code 0; 2.713 seconds |
 | Test warning | Three Streamlit `missing ScriptRunContext` warnings in bare mode; AppTest passed |
 | Run artifacts | [JSON](../results/asymmetric/asymmetric_robustness.json) · [CSV](../results/asymmetric/asymmetric_robustness.csv) · [run log](../results/asymmetric/asymmetric_robustness.log) · [unittest log](../results/asymmetric/unittest.log) |
 | Dashboard screenshot | [Streamlit asymmetric robustness](../evidence/visualization/2026-11-19-asymmetric-dashboard.png) — baseline metrics, 2/6 and 4/6, heatmap, six table rows, and scope note |
@@ -436,13 +436,13 @@ The Streamlit and terminal captures below document the rendered status table and
 |---|---|
 | Date/time | 20 November 2026; generated at 18:15:20 (+07) |
 | Environment | Python 3.14.10 in `.venv/repro314`; existing project dependencies |
-| Benchmark command | `rtk proxy .venv/repro314/bin/python scripts/run_steganalysis_benchmark.py > results/steganalysis/benchmark-run.log 2>&1` |
+| Benchmark command | `.venv/repro314/bin/python scripts/run_steganalysis_benchmark.py > results/steganalysis/benchmark-run.log 2>&1` |
 | Benchmark result | Image TP=5, TN=12, FP=0, FN=0 (17/17 scored); audio TP=0, TN=8, FP=0, FN=5 (13/13 scored), recall 0 |
 | Dataset limits | Positive samples are the official artifact plus deterministic transformed copies; benign controls are seeded synthetic samples, not a representative corpus |
 | Reference-free audio | FAIL; 26 decoded characters, 49 separators, 20 malformed byte groups; `format_valid: false` |
 | Reference-assisted audio | PASS; exact 39-character match, 350 symbols, 38 separators, 0 byte errors |
 | Open-source comparison | Capability/method scope only; Aperi'Solve, The-A-Files, and WavSteg were not executed |
-| Robustness command | `rtk proxy .venv/repro314/bin/python scripts/run_extended_robustness.py > results/robustness/extended-robustness-run.log 2>&1` |
+| Robustness command | `.venv/repro314/bin/python scripts/run_extended_robustness.py > results/robustness/extended-robustness-run.log 2>&1` |
 | Blue 3 matrix | 1/9 variants PASS; Gaussian blur radius 0.3 is the sole PASS |
 | Sleepy Alarm matrix | 7/23 trials PASS, including baseline; remaining 16 trials FAIL under exact-match criteria |
 | PASS criterion | Valid format, exact ground-truth match, and no byte errors |
@@ -463,8 +463,8 @@ The 23 audio trials comprise one baseline plus 11 one-sided transformations on e
 |---|---|
 | Date | 22 November 2026 (historical snapshot) |
 | Environment | Python 3.14.10 in `.venv/repro314` |
-| Main command | `rtk proxy .venv/repro314/bin/python scripts/verify_reproducibility.py` |
-| Unittest command | `rtk proxy env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
+| Main command | `.venv/repro314/bin/python scripts/verify_reproducibility.py` |
+| Unittest command | `env PYTHONPATH=src .venv/repro314/bin/python -m unittest discover -s tests -v` |
 | Unittest | 22/22 tests passed; exit code 0 |
 | Artifact integrity | 3/3 verified; exit code 0 |
 | Provenance | `verified`; 30 source/config/documentation files inventoried and hashed; 3/3 artifact hashes match |

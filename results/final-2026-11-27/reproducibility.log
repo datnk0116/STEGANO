@@ -30,18 +30,18 @@ test_sleepy_diagnostics_match_the_reference_assisted_decoder (test_visualization
 test_audio_runner_passes_both_paths_and_preserves_failure_data (test_visualization.TestVisualizationDecoderCalls.test_audio_runner_passes_both_paths_and_preserves_failure_data) ... ok
 test_blue3_runner_returns_decoder_data (test_visualization.TestVisualizationDecoderCalls.test_blue3_runner_returns_decoder_data) ... ok
 test_missing_image_is_reported_as_failed (test_visualization.TestVisualizationDecoderCalls.test_missing_image_is_reported_as_failed) ... ok
-test_all_pages_load_without_exceptions (test_visualization_app.TestVisualizationPages.test_all_pages_load_without_exceptions) ... 2026-11-27 15:20:02.571 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2026-11-27 15:20:03.259 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
-2026-11-27 15:20:03.542 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+test_all_pages_load_without_exceptions (test_visualization_app.TestVisualizationPages.test_all_pages_load_without_exceptions) ... 2026-11-27 15:50:43.978 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-11-27 15:50:44.761 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-11-27 15:50:45.068 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
 ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 2.790s
+Ran 22 tests in 2.850s
 
 OK
 
 [provenance]
-$ /Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/.venv/repro314/bin/python scripts/check_provenance.py --output /Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/results/final-2026-11-27e/provenance.json
+$ /Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/.venv/repro314/bin/python scripts/check_provenance.py --output /Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/results/final-2026-11-27/provenance.json
 exit_code=0
 Provenance: verified — artifacts 3/3 — submission_package verified
-Wrote results/final-2026-11-27e/provenance.json
+Wrote results/final-2026-11-27/provenance.json

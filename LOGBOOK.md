@@ -556,3 +556,44 @@ The image baseline identified all five positive samples and rejected all 12 synt
 **Redundant evidence:** [the second alignment/residual capture](evidence/visualization/2026-11-22-sleepy-alignment-correlation-residual-repeat.png) substantially repeats the first; either one is sufficient for the final evidence set.
 
 **Visualization evidence status:** the corrected Overview and current dashboard captures are indexed in [Appendix A.19](report/APPENDIX.md#app-a19-visualization-evidence-review). The repeated alignment/residual view is redundant. The four report figures are generated from the recheck JSON files and embedded in [Report §7.1 and Appendix A](report/REPORT.md#report-extended-robustness). The latest saved recheck passed 22/22 tests, verified 3/3 artifacts and provenance, and verified `submission_package_current.zip`; its [quality-gate JSON](results/recheck/quality-gate.json), [provenance JSON](results/recheck/provenance.json), and [complete run log](results/recheck/reproducibility.log) are linked in Appendix A.19.
+
+
+---
+
+<a id="entry-17"></a>
+## Entry 17 — Independent ASK measurement, writeup comparison, and final verification
+
+**Appendix/report:** [Report §4.3](report/REPORT.md#report-methods) · [§7.2](report/REPORT.md) · [Appendix A](report/REPORT.md#report-quality-gate-provenance) · [Appendix D](report/REPORT.md)
+
+**Date:** 27 November 2026, 15:50 (+07)
+
+**Hypothesis tested:** Independent spectral and envelope-transition measurement on the aligned Sleepy Alarm residual verifies the 8,000 Hz carrier, 50 baud (20 ms/symbol) rate, and 7.0 s framing window without reading challenge constants during estimation, and the full test, provenance, and archive checks pass on the finalized documentation.
+
+**Work performed:**
+
+- Implemented and ran `scripts/measure_ask_params.py` (`--self-check` and full challenge run) into `results/independent-measurement/`, with local terminal capture saved at `evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png` (Figure D.7).
+- Verified public CTF references accessed on 27 November 2026 (Cook1e's ImaginaryCTF 2024 writeup and official BYU-CSA / ImaginaryCTF 2024 challenge READMEs) and documented the comparison in `REPORT.md` §7.2 and IEEE Reference `[13]`.
+- Updated `REPORT.md` (§4.3, §7.2, Appendix A–D, cover dates `27/11/2026` / `13/12/2026`), `README.md`, `.gitignore`, and `report/APPENDIX.md`, exported `report/24021404_UETCN3124_CTF_Report.pdf`, and ran the final packaging and quality gate into `results/final-2026-11-27/`.
+
+**Commands and observed outputs:**
+
+```bash
+.venv/repro314/bin/python scripts/measure_ask_params.py --self-check
+.venv/repro314/bin/python scripts/measure_ask_params.py
+.venv/repro314/bin/python scripts/create_submission_zip.py
+.venv/repro314/bin/python scripts/verify_reproducibility.py \
+  --output results/final-2026-11-27/quality-gate.json \
+  --provenance-output results/final-2026-11-27/provenance.json \
+  --log-output results/final-2026-11-27/reproducibility.log
+```
+
+- `measure_ask_params.py --self-check`: `Self-check PASS: synthetic ASK parameters recovered within tolerance.` (exit code `0`).
+- `measure_ask_params.py` (exit code `0`, `results/independent-measurement/ask_params.json`):
+  - Alignment: `lag=1729` samples, `target_start_sample=1729`, `corr=0.999873`.
+  - Carrier peak: `7999.9774 Hz` (`-0.0226 Hz` vs. 8,000 Hz); $\pm 100\text{ Hz}$ energy ratio `0.474145` (`47.41%`).
+  - Envelope (~5 ms window = `220` samples / `4.9887 ms`): `222` transitions (`221` intervals; raw mean `31.3920 ms`, std `17.9522 ms`, median `20.4535 ms`).
+  - Single-step intervals ($k=1$, $n=135$): mean `20.0702 ms`, std `1.5939 ms`, error vs. 20 ms `+0.0702 ms` (`0.35%`, `49.83 baud`).
+  - Run-length normalized ($n=221$, $\max k=5$): mean `20.0206 ms`, std `1.2523 ms`, error vs. 20 ms `+0.0206 ms` (`0.10%`, `49.95 baud`).
+  - Carrier drop-off: `7.0020 s` (sample `308,786`, `+0.0020 s` vs. 7.0 s); tail noise mean `0.000094`, max `0.000732`.
+- `create_submission_zip.py` + `verify_reproducibility.py` (exit code `0`): `quality_gate: passed`, `22/22` tests PASS, `3/3` artifacts verified, `provenance: verified`, `submission_package: verified`.
+- Saved records: [`ask_params.json`](results/independent-measurement/ask_params.json), [`ask_params.log`](results/independent-measurement/ask_params.log), [`quality-gate.json`](results/final-2026-11-27/quality-gate.json), [`provenance.json`](results/final-2026-11-27/provenance.json), [`reproducibility.log`](results/final-2026-11-27/reproducibility.log), and `submission_package_current.zip`.

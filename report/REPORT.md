@@ -56,7 +56,7 @@ The project pairs one image task (**Blue 3**) with one audio task (**Sleepy Alar
 <a id="report-environment"></a>
 <a id="report-artifacts"></a>
 
-**Runtime Environment and Parameter Provenance:** The codebase targets **Python $\ge 3.10$**. All verified reproduction and quality-gate runs from 18 November onward executed on **Python 3.14.10** (CPython) under macOS arm64 (`.venv/repro314`, recorded in `results/final-2026-11-27e/provenance.json`). By contrast, the earlier 16 November run's `.venv` interpreter could not be independently verified from historical logs—a supplemental check on 18 November found the pre-existing `.venv` running Python 3.9.6 (below the 3.10 minimum) and the system Python lacking `streamlit`, prompting creation of the isolated Python 3.14.10 environment. Exact package versions are locked in `requirements-lock.txt` (`pip freeze`), while `requirements.txt` keeps looser compatible ranges: NumPy `2.5.5`, Pillow `13.0.0`, SciPy `1.18.1`, SoundFile `0.14.0`, Plotly `6.9.0`, and Streamlit `1.67.0`.
+**Runtime Environment and Parameter Provenance:** The codebase targets **Python $\ge 3.10$**. All verified reproduction and quality-gate runs from 18 November onward executed on **Python 3.14.10** (CPython) under macOS arm64 (`.venv/repro314`, recorded in `results/final-2026-11-27/provenance.json`). By contrast, the earlier 16 November run's `.venv` interpreter could not be independently verified from historical logs—a supplemental check on 18 November found the pre-existing `.venv` running Python 3.9.6 (below the 3.10 minimum) and the system Python lacking `streamlit`, prompting creation of the isolated Python 3.14.10 environment. Exact package versions are locked in `requirements-lock.txt` (`pip freeze`), while `requirements.txt` keeps looser compatible ranges: NumPy `2.5.5`, Pillow `13.0.0`, SciPy `1.18.1`, SoundFile `0.14.0`, Plotly `6.9.0`, and Streamlit `1.67.0`.
 
 The November 19 run manifest (`results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-manifest.json`) fixes the Sleepy Alarm modulation parameters at an **8,000 Hz** carrier and **50 baud** symbol rate over a **7.0-second** extraction window matched to the 350-symbol framed message. Those settings match the official challenge README [2] and are independently re-measured from the audio in Section 4.3 (`scripts/measure_ask_params.py`) alongside the reproducible post-hoc signal inspection in `scripts/inspect_discovery_signals.py`.
 
@@ -152,7 +152,7 @@ The table below compiles every quantitative outcome directly from the saved JSON
 | Sleepy Alarm extended robustness | **7/23 PASS** (baseline + gain ×0.75, AWGN SNR 30 dB, resample on each side) | `results/robustness/sleepy_alarm_robustness_matrix.json` |
 | Baseline detector — Image | **TP=5, TN=12, FP=0, FN=0** (Precision/Recall/F1 = 1.00 across 17 samples) | `results/steganalysis/benchmark.json` |
 | Baseline detector — Audio | **TP=0, TN=8, FP=0, FN=5** (Recall = 0.00 across 13 samples — misses all 5 positives) | `results/steganalysis/benchmark.json` |
-| Automated tests & final quality gate | **22/22 unittest PASS** (exit code 0); provenance & archive `verified` | `results/final-2026-11-27e/quality-gate.json` |
+| Automated tests & final quality gate | **22/22 unittest PASS** (exit code 0); provenance & archive `verified` | `results/final-2026-11-27/quality-gate.json` |
 
 ---
 
@@ -309,16 +309,16 @@ This project built, tested, and documented independent decoders, independent par
 
 The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/verify_artifacts.py`, `unittest discover -s tests -v`, and `scripts/check_provenance.py` in sequence. For `submission_package_current.zip`, provenance checks CRC integrity (`testzip()`), required files, full member lists, and byte-for-byte parity against the working tree (skipping self-referential quality-gate outputs during byte comparison to avoid hash loops, while still verifying their presence and CRC).
 
-| Check | Snapshot 22/11 (`results/verification/`) | Recheck (`results/recheck/`) | Final Run (`results/final-2026-11-27e/`) |
+| Check | Snapshot 22/11 (`results/verification/`) | Recheck (`results/recheck/`) | Final Run (`results/final-2026-11-27/`) |
 |---|---|---|---|
 | Unittest | **22/22 PASS** (exit 0) | **22/22 PASS** (exit 0) | **22/22 PASS** (exit 0) |
 | Artifact integrity | **3/3 verified** | **3/3 verified** | **3/3 verified** |
-| Provenance | `verified` (30 hashed files) | `verified` (95 hashed files) | `verified` |
-| `submission_package` | `not_verified` | `verified` (159 members) | `verified` |
+| Provenance | `verified` (30 hashed files) | `verified` (95 hashed files) | `verified` (99 hashed files) |
+| `submission_package` | `not_verified` | `verified` (159 members) | `verified` (176 members) |
 
 ![Quality gate summary from saved recheck JSON](figures/quality-gate-summary.svg)
 
-*Figure A.1. Quality-gate summary rendered from `results/recheck/quality-gate.json` and `results/recheck/provenance.json` (`report/figures/quality-gate-summary.svg`).*
+*Figure A.1. Quality-gate summary rendered from `results/recheck/quality-gate.json` and `results/recheck/provenance.json` (`report/figures/quality-gate-summary.svg`, generated by `scripts/render_report_figures.py` which targets `results/recheck/`); the final run in `results/final-2026-11-27/` preserves the PASS state with 99 inventoried files and 176 archive members.*
 
 ![Provenance and verification flow](figures/provenance-flow.svg)
 
@@ -340,7 +340,7 @@ The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/veri
 
 ### C. Detailed Record Cross-References
 
-- Full chronological experiment log (Entries 00–16): `LOGBOOK.md` (independent ASK measurement and final verification records are stored in `results/independent-measurement/` and `results/final-2026-11-27e/`)
+- Full chronological experiment log (Entries 00–17): `LOGBOOK.md` (independent ASK measurement and final verification records are stored in `results/independent-measurement/` and `results/final-2026-11-27/`)
 - Detailed per-run appendix records (A.1–A.19): `report/APPENDIX.md`
 - Reproduce post-hoc signal discovery metrics and residual spectrum SVG (`results/final/discovery-signals.json`, `report/figures/sleepy-residual-spectrum.svg`):
   ```bash
@@ -355,13 +355,13 @@ The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/veri
   ```bash
   python scripts/render_report_figures.py
   ```
-- Re-run the quality gate into a new results directory (e.g., `results/final-2026-11-27e/`):
+- Re-run the quality gate into a new results directory (e.g., `results/final-2026-11-27/`):
   ```bash
   python scripts/create_submission_zip.py
   python scripts/verify_reproducibility.py \
-    --output results/final-2026-11-27e/quality-gate.json \
-    --provenance-output results/final-2026-11-27e/provenance.json \
-    --log-output results/final-2026-11-27e/reproducibility.log
+    --output results/final-2026-11-27/quality-gate.json \
+    --provenance-output results/final-2026-11-27/provenance.json \
+    --log-output results/final-2026-11-27/reproducibility.log
   ```
 
 ### D. Terminal Execution Evidence
@@ -392,6 +392,6 @@ The seven unaltered terminal screenshots below from `evidence/terminal/` show en
 
 *Figure D.6. SHA-256 verification of all 3/3 official artifacts and `scripts/check_provenance.py` execution (`evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png`).*
 
-![Independent ASK parameter measurement local terminal run](../evidence/terminal/Screenshot%202026-11-27%20at%2015.16.00.png)
+![Independent ASK parameter measurement local terminal run](../evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png)
 
-*Figure D.7. Independent Sleepy Alarm ASK parameter verification (`scripts/measure_ask_params.py --self-check` and `scripts/measure_ask_params.py`) executed locally on the student's machine (`evidence/terminal/Screenshot 2026-11-27 at 15.16.00.png`).*
+*Figure D.7. Independent Sleepy Alarm ASK parameter verification (`scripts/measure_ask_params.py --self-check` and `scripts/measure_ask_params.py`) executed locally on the student's machine (`evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png`).*

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-27T08:20:04.289810+00:00",
+  "generated_at": "2026-11-27T08:50:45.785071+00:00",
   "project": "STEGANO",
   "artifact_sources": [
     {
@@ -62,17 +62,17 @@
   },
   "source_inventory": {
     "status": "hashed",
-    "file_count": 100,
+    "file_count": 99,
     "files": [
       {
         "path": "LOGBOOK.md",
-        "bytes": 41191,
-        "sha256": "da326e7bbd9a93b95586150a6846e988780e16e481c0b180804e2a86d337c378"
+        "bytes": 44733,
+        "sha256": "3e53c6d421e2532175616706ee9f6e97848998b5a7ce5414790075a54bc7dff1"
       },
       {
         "path": "README.md",
-        "bytes": 7779,
-        "sha256": "a7ebbc9781c1cb63add58c8640b417e821a527f33f4a786744750ef53c25da89"
+        "bytes": 8098,
+        "sha256": "060918cc771df86e2ba8c88519a471fe385f5a21097c5beddc95d4931fd045f5"
       },
       {
         "path": "evidence/terminal/2026-11-18-audio-assisted-terminal.png",
@@ -155,12 +155,7 @@
         "sha256": "0b157f9b72f037d73a7c929adeb837d93fa2ddbf0f7a04d1726692a2f0903c8c"
       },
       {
-        "path": "evidence/terminal/Screenshot 2026-11-27 at 15.05.55.png",
-        "bytes": 109599,
-        "sha256": "a3fd8afcea2bdb0da91868cf061caa8c7bb3c32fa23f241ca2af8bddad3b2825"
-      },
-      {
-        "path": "evidence/terminal/Screenshot 2026-11-27 at 15.16.00.png",
+        "path": "evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png",
         "bytes": 107331,
         "sha256": "f133f91e21f2bf35ee76106796d37908975ae45ac4fbf68f367fc5c75bbbd141"
       },
@@ -321,13 +316,13 @@
       },
       {
         "path": "report/APPENDIX.md",
-        "bytes": 48659,
-        "sha256": "7fa9184680fb5ca0ed4ccba07ce189bb3444be6d5ed0d1f283374d88e9cfcc30"
+        "bytes": 48467,
+        "sha256": "1b831a178ed6f665a4025c20dfdb2b959a5ad9603a2bf360d4f3f84b35ee4e97"
       },
       {
         "path": "report/REPORT.md",
-        "bytes": 49860,
-        "sha256": "e5beba74a60354b6f1aeb08d50f0c4d44dba0c0fd10bcff6c8961e4e79fbafbb"
+        "bytes": 50109,
+        "sha256": "e206035612259a353dbec7921e7ef5a9ccc2463c316d38e6de7302e45aee5728"
       },
       {
         "path": "report/figures/benchmark-confusion-matrices.svg",
@@ -421,8 +416,8 @@
       },
       {
         "path": "scripts/create_submission_zip.py",
-        "bytes": 4805,
-        "sha256": "7a667959d57d80784d1f973343e093a237e3c4adc9e6a99480bf2b0e8e4421b6"
+        "bytes": 4019,
+        "sha256": "b84417d459ee3e3bd6bf4af93994b3008a1450980cb4a283e98eb6ada117a2de"
       },
       {
         "path": "scripts/inspect_discovery_signals.py",
@@ -569,7 +564,7 @@
   "submission_package": {
     "status": "verified",
     "path": "submission_package_current.zip",
-    "file_count": 194,
+    "file_count": 176,
     "required_files": [
       "LOGBOOK.md",
       "README.md",
@@ -584,18 +579,6 @@
       "results/final-2026-11-27/quality-gate-console.log",
       "results/final-2026-11-27/quality-gate.json",
       "results/final-2026-11-27/reproducibility.log",
-      "results/final-2026-11-27c/provenance.json",
-      "results/final-2026-11-27c/quality-gate-console.log",
-      "results/final-2026-11-27c/quality-gate.json",
-      "results/final-2026-11-27c/reproducibility.log",
-      "results/final-2026-11-27d/provenance.json",
-      "results/final-2026-11-27d/quality-gate-console.log",
-      "results/final-2026-11-27d/quality-gate.json",
-      "results/final-2026-11-27d/reproducibility.log",
-      "results/final-2026-11-27e/provenance.json",
-      "results/final-2026-11-27e/quality-gate-console.log",
-      "results/final-2026-11-27e/quality-gate.json",
-      "results/final-2026-11-27e/reproducibility.log",
       "results/final/provenance.json",
       "results/final/quality-gate-console.log",
       "results/final/quality-gate.json",

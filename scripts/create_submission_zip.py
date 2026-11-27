@@ -35,9 +35,6 @@ PACKAGE_BUILD_LOGS = {
     "results/recheck/package-build.log",
     "results/final/package-build.log",
     "results/final-2026-11-27/package-build.log",
-    "results/final-2026-11-27c/package-build.log",
-    "results/final-2026-11-27d/package-build.log",
-    "results/final-2026-11-27e/package-build.log",
 }
 SELF_CHECK_OUTPUTS = {
     "results/recheck/quality-gate.json",
@@ -52,18 +49,6 @@ SELF_CHECK_OUTPUTS = {
     "results/final-2026-11-27/quality-gate-console.log",
     "results/final-2026-11-27/provenance.json",
     "results/final-2026-11-27/reproducibility.log",
-    "results/final-2026-11-27c/quality-gate.json",
-    "results/final-2026-11-27c/quality-gate-console.log",
-    "results/final-2026-11-27c/provenance.json",
-    "results/final-2026-11-27c/reproducibility.log",
-    "results/final-2026-11-27d/quality-gate.json",
-    "results/final-2026-11-27d/quality-gate-console.log",
-    "results/final-2026-11-27d/provenance.json",
-    "results/final-2026-11-27d/reproducibility.log",
-    "results/final-2026-11-27e/quality-gate.json",
-    "results/final-2026-11-27e/quality-gate-console.log",
-    "results/final-2026-11-27e/provenance.json",
-    "results/final-2026-11-27e/reproducibility.log",
 }
 
 
