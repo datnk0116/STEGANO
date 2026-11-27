@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-27T12:07:26.997971+00:00",
+  "generated_at": "2026-11-27T13:19:05.868138+00:00",
   "project": "STEGANO",
   "verification_run": {
     "tests": {
@@ -41,7 +41,7 @@
         "scripts/verify_artifacts.py"
       ],
       "exit_code": 0,
-      "duration_seconds": 0.034
+      "duration_seconds": 0.032
     },
     {
       "name": "unittest",
@@ -55,7 +55,7 @@
         "-v"
       ],
       "exit_code": 0,
-      "duration_seconds": 3.708
+      "duration_seconds": 4.441
     },
     {
       "name": "provenance",
@@ -66,7 +66,7 @@
         "/Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/results/final-2026-11-27/provenance.json"
       ],
       "exit_code": 0,
-      "duration_seconds": 0.086
+      "duration_seconds": 0.094
     }
   ],
   "log": "results/final-2026-11-27/reproducibility.log"

@@ -307,7 +307,7 @@ This project built, tested, and documented independent decoders, independent par
 
 ### A. Quality Gate and Provenance Summary
 
-The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/verify_artifacts.py`, `unittest discover -s tests -v`, and `scripts/check_provenance.py` in sequence, verifying artifact byte sizes and SHA-256 digests, all 22 unit tests, and SHA-256 source inventory hashes across `src/`, `scripts/`, `tests/`, `visualization/`, `evidence/`, `report/`, and `results/artifact_manifest.json`. The final submission archive is packaged manually from tracked Git files on `clean-submission`.
+The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/verify_artifacts.py`, `unittest discover -s tests -v`, and `scripts/check_provenance.py` in sequence, verifying artifact byte sizes and SHA-256 digests, all 22 unit tests, and SHA-256 source inventory hashes across `src/`, `scripts/`, `tests/`, `visualization/`, `evidence/`, `report/`, and `results/artifact_manifest.json`. The final submission archive is packaged manually from tracked Git files on `final`.
 
 | Check | Snapshot 22/11 (historical) | Recheck 25/11 (historical) | Final Run (`results/final-2026-11-27/`) |
 |---|---|---|---|

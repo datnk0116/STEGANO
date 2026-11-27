@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-27T12:07:26.975468+00:00",
+  "generated_at": "2026-11-27T13:19:05.841694+00:00",
   "project": "STEGANO",
   "artifact_sources": [
     {
@@ -66,13 +66,13 @@
     "files": [
       {
         "path": "LOGBOOK.md",
-        "bytes": 45135,
-        "sha256": "e5f4f68c4dc7ae71e7082af5b027bbcaf42103b9243560c708ed03aa79de2c1d"
+        "bytes": 45124,
+        "sha256": "e8d6b04061dfe792ea4e022f2d4506e0ddf7c58106078f318dc6ca8b3f95cef4"
       },
       {
         "path": "README.md",
-        "bytes": 7596,
-        "sha256": "b0ef40a1eced39bf9af08bfa3de4b93095b174ff82e860e5b169c98913cd76cc"
+        "bytes": 7585,
+        "sha256": "657771eec33f3faf4ce0eab014fdc20008a82ef590ef00118f808b6aaa1414f0"
       },
       {
         "path": "evidence/terminal/2026-11-18-audio-assisted-terminal.png",
@@ -106,8 +106,8 @@
       },
       {
         "path": "evidence/terminal/2026-11-18-verification-log-terminal.png",
-        "bytes": 659353,
-        "sha256": "28acbe66ce5f5aea71813d69b3f0a4d9ba381fbdb33b5b9905092833909ceb73"
+        "bytes": 545987,
+        "sha256": "51be24066d6b1499224acf436590f63fc54af86ab64d3460ddeea1f814d61e15"
       },
       {
         "path": "evidence/terminal/2026-11-19-asymmetric-run-terminal.png",
@@ -116,8 +116,8 @@
       },
       {
         "path": "evidence/terminal/2026-11-20-extended-robustness-summary-terminal.png",
-        "bytes": 562151,
-        "sha256": "4c0a8ea67251ceff13e393431ee86513562d7098a0a4198e04a9348a1af620b9"
+        "bytes": 466719,
+        "sha256": "5e58861999e11905715ecfac04a2d669a8d9746f9cffe8aa48f99456e71762e2"
       },
       {
         "path": "evidence/terminal/2026-11-20-reference-assisted-result-terminal.png",
@@ -136,13 +136,13 @@
       },
       {
         "path": "evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png",
-        "bytes": 642253,
-        "sha256": "e2e5a0491b8ef169652baff9adce102fd50ae8e23e22a9ea22d490523c7b703a"
+        "bytes": 638995,
+        "sha256": "8ef116a8e38fdffdf91831ea11215bfc040e16f95a777376291493c3f4536bc5"
       },
       {
         "path": "evidence/terminal/2026-11-22-quality-gate-run-with-initial-path-errors-terminal.png",
-        "bytes": 808556,
-        "sha256": "b4ff156cd7aee378064b9c39cf1ceb2a62d1ac85a1a184a2be1a15d9e4641c96"
+        "bytes": 365844,
+        "sha256": "ec59b3ce71caf53cb54e89c8b9e0a81c9e2f1da8d206f9508380645ccba2331f"
       },
       {
         "path": "evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png",
@@ -151,8 +151,8 @@
       },
       {
         "path": "evidence/terminal/2026-11-22-unittest-and-artifact-integrity-terminal.png",
-        "bytes": 665411,
-        "sha256": "fb7167d2059558ee13cc797895e0d66d83f516aab55db06d7e4e00041fa2d0e7"
+        "bytes": 668733,
+        "sha256": "96e5c8070517ad51d518566fd08a3766080cc481923531959956c5d859657655"
       },
       {
         "path": "evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png",
@@ -316,8 +316,8 @@
       },
       {
         "path": "report/24021404_UETCN3124_CTF_Report.pdf",
-        "bytes": 4197103,
-        "sha256": "aba5b722e7009ab9f5aa6d028189866c9f7abf3da6b1e7e4bf09eec8ade748d2"
+        "bytes": 4171841,
+        "sha256": "a7c261837b86e6efdc0ed2ed6ce352a0bd1f83f63cc71ed95a7bab63ec780192"
       },
       {
         "path": "report/APPENDIX.md",
@@ -326,8 +326,8 @@
       },
       {
         "path": "report/REPORT.md",
-        "bytes": 50226,
-        "sha256": "686bdeadcfa0dde8b6affd0274c6affba89f3953aa14df9c9d64f3f0f0a72764"
+        "bytes": 50215,
+        "sha256": "07602017088415e6fc1004271b5d5e12bbe8184017b76f451683e142b2ab3f69"
       },
       {
         "path": "report/figures/benchmark-confusion-matrices.svg",

@@ -573,7 +573,7 @@ The image baseline identified all five positive samples and rejected all 12 synt
 
 - Implemented and ran `scripts/measure_ask_params.py` (`--self-check` and full challenge run) into `results/independent-measurement/`, with local terminal capture saved at `evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png` (Figure D.7).
 - Verified public CTF references accessed on 27 November 2026 (Cook1e's ImaginaryCTF 2024 writeup and official BYU-CSA / ImaginaryCTF 2024 challenge READMEs) and documented the comparison in `REPORT.md` §7.2 and IEEE Reference `[13]`.
-- Updated `REPORT.md` (§4.3, §7.2, Appendix A–D, cover dates `27/11/2026` / `13/12/2026`), `README.md`, `.gitignore`, and `report/APPENDIX.md`; removed `scripts/create_submission_zip.py` in favor of manual packaging from tracked Git files on the `clean-submission` branch; pruned historical `results/` snapshots via `.gitignore`; synchronized `scripts/render_report_figures.py` and `scripts/inspect_discovery_signals.py` to `results/final-2026-11-27/`; exported `report/24021404_UETCN3124_CTF_Report.pdf`; and ran the final quality gate into `results/final-2026-11-27/`.
+- Updated `REPORT.md` (§4.3, §7.2, Appendix A–D, cover dates `27/11/2026` / `13/12/2026`), `README.md`, `.gitignore`, and `report/APPENDIX.md`; removed `scripts/create_submission_zip.py` in favor of manual packaging from tracked Git files on the `final` branch; pruned historical `results/` snapshots via `.gitignore`; synchronized `scripts/render_report_figures.py` and `scripts/inspect_discovery_signals.py` to `results/final-2026-11-27/`; exported `report/24021404_UETCN3124_CTF_Report.pdf`; and ran the final quality gate into `results/final-2026-11-27/`.
 
 **Commands and observed outputs:**
 

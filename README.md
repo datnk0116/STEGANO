@@ -96,7 +96,7 @@ python scripts/verify_reproducibility.py \
   --log-output results/final-2026-11-27/reproducibility.log
 ```
 
-`verify_reproducibility.py` executes artifact verification, the full 22-test `unittest` suite, and source provenance SHA-256 hashing. The submission archive is packaged manually from tracked Git files on the `clean-submission` branch (e.g., via `git archive`).
+`verify_reproducibility.py` executes artifact verification, the full 22-test `unittest` suite, and source provenance SHA-256 hashing. The submission archive is packaged manually from tracked Git files on the `final` branch (e.g., via `git archive`).
 
 ## Repository structure
 
