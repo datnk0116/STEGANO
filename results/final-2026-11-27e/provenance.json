@@ -1,0 +1,611 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-27T08:20:04.289810+00:00",
+  "project": "STEGANO",
+  "artifact_sources": [
+    {
+      "path": "data/blue3/blue.png",
+      "official_source": "https://github.com/BYU-CSA/old-ctf-challenges/tree/master/forensics-steganography/blue-3"
+    },
+    {
+      "path": "data/sleepy_alarm/morning_n_breakfast.mp3",
+      "official_source": "https://github.com/ImaginaryCTF/ImaginaryCTF-2024-Challenges/tree/main/Forensics/Sleepy%20Alarm"
+    },
+    {
+      "path": "data/sleepy_alarm/morning_n_breakfast_original.mp3",
+      "official_source": "https://github.com/ImaginaryCTF/ImaginaryCTF-2024-Challenges/tree/main/Forensics/Sleepy%20Alarm"
+    }
+  ],
+  "environment": {
+    "python": "3.14.10",
+    "implementation": "CPython",
+    "platform": "macOS-15.7.4-arm64-arm-64bit-Mach-O",
+    "dependencies": {
+      "numpy": "2.5.5",
+      "Pillow": "13.0.0",
+      "scipy": "1.18.1",
+      "soundfile": "0.14.0",
+      "plotly": "6.9.0",
+      "streamlit": "1.67.0"
+    }
+  },
+  "artifact_integrity": {
+    "status": "verified",
+    "passed": 3,
+    "total": 3,
+    "artifacts": [
+      {
+        "path": "data/blue3/blue.png",
+        "expected_bytes": 9406,
+        "actual_bytes": 9406,
+        "expected_sha256": "009dab85bf6ccc5b42b8efa5f959ab6efa0c556b37eb6b4a77a21ec3356b721e",
+        "actual_sha256": "009dab85bf6ccc5b42b8efa5f959ab6efa0c556b37eb6b4a77a21ec3356b721e",
+        "status": "verified"
+      },
+      {
+        "path": "data/sleepy_alarm/morning_n_breakfast.mp3",
+        "expected_bytes": 179283,
+        "actual_bytes": 179283,
+        "expected_sha256": "bd181876c2d28152b9c3982fd88945d4e681fd93d49477622ea5841a3ff25ae2",
+        "actual_sha256": "bd181876c2d28152b9c3982fd88945d4e681fd93d49477622ea5841a3ff25ae2",
+        "status": "verified"
+      },
+      {
+        "path": "data/sleepy_alarm/morning_n_breakfast_original.mp3",
+        "expected_bytes": 160495,
+        "actual_bytes": 160495,
+        "expected_sha256": "d0c283834955e54d68b0bba723ccd194142a428d2de74722e5f1dff3ccbd94ad",
+        "actual_sha256": "d0c283834955e54d68b0bba723ccd194142a428d2de74722e5f1dff3ccbd94ad",
+        "status": "verified"
+      }
+    ]
+  },
+  "source_inventory": {
+    "status": "hashed",
+    "file_count": 100,
+    "files": [
+      {
+        "path": "LOGBOOK.md",
+        "bytes": 41191,
+        "sha256": "da326e7bbd9a93b95586150a6846e988780e16e481c0b180804e2a86d337c378"
+      },
+      {
+        "path": "README.md",
+        "bytes": 7779,
+        "sha256": "a7ebbc9781c1cb63add58c8640b417e821a527f33f4a786744750ef53c25da89"
+      },
+      {
+        "path": "evidence/terminal/2026-11-18-audio-assisted-terminal.png",
+        "bytes": 437459,
+        "sha256": "3d015c9dfd02401e56874589beed9497f6c92392f55f90538bd66435d9bc1168"
+      },
+      {
+        "path": "evidence/terminal/2026-11-18-audio-reference-free-terminal.png",
+        "bytes": 352805,
+        "sha256": "3a9412e1ef0fb58c70fc60d68c7818a6ca5b07c6e800a3dd7cbb37fd11c532aa"
+      },
+      {
+        "path": "evidence/terminal/2026-11-18-blue3-terminal.png",
+        "bytes": 350585,
+        "sha256": "c5963c0b91ab776e5dcb5da7da164226bcebf200d1abcd571a0eecb78d66d5a1"
+      },
+      {
+        "path": "evidence/terminal/2026-11-18-setup-terminal.png",
+        "bytes": 488374,
+        "sha256": "085e2a2df215bddac293e88d4334807bf191da5623e2595eae44b76d7a9888d8"
+      },
+      {
+        "path": "evidence/terminal/2026-11-18-streamlit-terminal.png",
+        "bytes": 420922,
+        "sha256": "eedfbef6e6c7f9c1355593f73fa1fb35a835b359993d66622e8130ae3fae7e23"
+      },
+      {
+        "path": "evidence/terminal/2026-11-18-unittest-terminal.png",
+        "bytes": 594995,
+        "sha256": "90c49b2c653549676e0b45aa7d76f069ea2ca64deae1b70bed2a18103f549856"
+      },
+      {
+        "path": "evidence/terminal/2026-11-18-verification-log-terminal.png",
+        "bytes": 659353,
+        "sha256": "28acbe66ce5f5aea71813d69b3f0a4d9ba381fbdb33b5b9905092833909ceb73"
+      },
+      {
+        "path": "evidence/terminal/2026-11-19-asymmetric-run-terminal.png",
+        "bytes": 660499,
+        "sha256": "d1356ea8d7ff316fe8d727740c9319630650ab3d1dee289597aa97bd08813681"
+      },
+      {
+        "path": "evidence/terminal/2026-11-20-extended-robustness-summary-terminal.png",
+        "bytes": 562151,
+        "sha256": "4c0a8ea67251ceff13e393431ee86513562d7098a0a4198e04a9348a1af620b9"
+      },
+      {
+        "path": "evidence/terminal/2026-11-20-reference-assisted-result-terminal.png",
+        "bytes": 534457,
+        "sha256": "21c109edf7c1d5bccda2e11b70f9f322a9010ad9ef804b102a7c876c8b175c87"
+      },
+      {
+        "path": "evidence/terminal/2026-11-20-reference-free-audio-failure-terminal.png",
+        "bytes": 581199,
+        "sha256": "a0d3afb4cb73fca8837d20b1084dd40d83cddd0e6c76db331806f80e0b75a73f"
+      },
+      {
+        "path": "evidence/terminal/2026-11-20-steganalysis-benchmark-metrics-terminal.png",
+        "bytes": 578853,
+        "sha256": "4439440f7d7d30b854fa08fb68197495471e248d0e4559fb83d1968545606a7a"
+      },
+      {
+        "path": "evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png",
+        "bytes": 747725,
+        "sha256": "88b71945e706009c8a04cf0ea34b026c450547c1d048dbd7a87c23fa4e2c14bc"
+      },
+      {
+        "path": "evidence/terminal/2026-11-22-quality-gate-run-with-initial-path-errors-terminal.png",
+        "bytes": 808556,
+        "sha256": "b4ff156cd7aee378064b9c39cf1ceb2a62d1ac85a1a184a2be1a15d9e4641c96"
+      },
+      {
+        "path": "evidence/terminal/2026-11-22-unittest-22-tests-passed-terminal.png",
+        "bytes": 749304,
+        "sha256": "385abd3613273f1fd79ea0cab9cd370d4ae4938440e47a7e42a0a05f3dbe15cd"
+      },
+      {
+        "path": "evidence/terminal/2026-11-22-unittest-and-artifact-integrity-terminal.png",
+        "bytes": 774791,
+        "sha256": "0b157f9b72f037d73a7c929adeb837d93fa2ddbf0f7a04d1726692a2f0903c8c"
+      },
+      {
+        "path": "evidence/terminal/Screenshot 2026-11-27 at 15.05.55.png",
+        "bytes": 109599,
+        "sha256": "a3fd8afcea2bdb0da91868cf061caa8c7bb3c32fa23f241ca2af8bddad3b2825"
+      },
+      {
+        "path": "evidence/terminal/Screenshot 2026-11-27 at 15.16.00.png",
+        "bytes": 107331,
+        "sha256": "f133f91e21f2bf35ee76106796d37908975ae45ac4fbf68f367fc5c75bbbd141"
+      },
+      {
+        "path": "evidence/visualization/2026-11-18-verification-dashboard.png",
+        "bytes": 247124,
+        "sha256": "b49a7ca9e0be264655a057c263780109ac395364f6ef1f7b0b0da2e06b92345f"
+      },
+      {
+        "path": "evidence/visualization/2026-11-19-asymmetric-dashboard.png",
+        "bytes": 235808,
+        "sha256": "2f1a84fa982052a69fb3623019d9f6ed56be371d0e31a1e514246417bcce181c"
+      },
+      {
+        "path": "evidence/visualization/2026-11-19-sleepy-alarm-run-log.png",
+        "bytes": 78567,
+        "sha256": "49bf405edb4a2d7eb287c76b9622679acd677aa048d4667672b9b40362178afa"
+      },
+      {
+        "path": "evidence/visualization/2026-11-19-sleepy-alarm-streamlit.png",
+        "bytes": 174615,
+        "sha256": "b11a1db13e7ad30083348852da3b1f865d8a54a423db3f76dc93ed86ddcbea76"
+      },
+      {
+        "path": "evidence/visualization/2026-11-20-blue3-rgb-channel-histogram-and-diagonal-trace.png",
+        "bytes": 147640,
+        "sha256": "12531843ec3ef898b6eda6fbea7554b303a58f3b5073050831d85f23942bdda4"
+      },
+      {
+        "path": "evidence/visualization/2026-11-20-sleepy-alarm-ask-diagnostics.png",
+        "bytes": 268148,
+        "sha256": "c840cafcf7741dc939b5f2495499117ad9ac6f3fc590d70679b0568aef3e17e1"
+      },
+      {
+        "path": "evidence/visualization/2026-11-20-sleepy-alarm-decoder-results.png",
+        "bytes": 154542,
+        "sha256": "698ab70c0a4c3759826addb117faf4be84520ada0829de182a6413cb4952a203"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-blue3-input-baseline-overview.png",
+        "bytes": 187540,
+        "sha256": "270d000960a5d02f5dc25c9b7fe190c37fc1a913cd7cd2c96be5340a7118bf6a"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-blue3-rgb-histogram-diagonal-trace.png",
+        "bytes": 223870,
+        "sha256": "63d603f3d5ad0574c7ff57725f50e8317d84024fb4670d7589ee7f243aa306c8"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-blue3-selected-candidate-block-table.png",
+        "bytes": 211372,
+        "sha256": "1061cc9eba1d2b27beaef8e7824d45e2b9cd1b78c8f1da9c64e4f0b81073411a"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-overview-before-status-copy-fix.png",
+        "bytes": 414996,
+        "sha256": "4738ba4eee645915f79006e632bc4051ff7fc862dc343c35acd48579fec8c1e8"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-overview-corrected-status.png",
+        "bytes": 437968,
+        "sha256": "5a964df7bef83d22ac7452ee8b9dcbda5c9efff9641e76bdd8f2db0c19c68e76"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-sleepy-alignment-correlation-residual-repeat.png",
+        "bytes": 514613,
+        "sha256": "7482d65f14c51ebd0f71c8737f71e94cfe5990b1a447c9e38c9ecaded0235ead"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-sleepy-alignment-correlation-residual.png",
+        "bytes": 463246,
+        "sha256": "d4e3ae4a5cd7c4e348adcfca2c50ea424b804450b706137e29c54bfa70924e98"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-sleepy-ask-symbol-clusters.png",
+        "bytes": 200426,
+        "sha256": "c54ad51b344c30d30b6f3f99f6aaab71bbac176c0a563dde9098c9f058e4346e"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-sleepy-assisted-vs-free-results.png",
+        "bytes": 207093,
+        "sha256": "2639ff9afa2a1454a3a17fccb96ca80237630bc076e68e4fbd868623b2cc814c"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-sleepy-asymmetric-robustness-2-of-6.png",
+        "bytes": 243542,
+        "sha256": "990630fcb15c7c13b6e779c8d7055984f1f1348f6738537a5bac015f6676efbe"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-sleepy-audio-file-metadata.png",
+        "bytes": 164105,
+        "sha256": "72496d79051d88aa93292a9ea627eac3f1c8d777cf4ec82f4c6950a59f80ffa3"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-sleepy-first-32-symbols-byte-groups.png",
+        "bytes": 312542,
+        "sha256": "bbb7d891f89f62daa4926c24afe90d13282bfa30d0e6d14cc39531f9216a9d7d"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-sleepy-reference-resampling.png",
+        "bytes": 416824,
+        "sha256": "819a2b63c9d38776985b236bbceae7677cdbfe5b981ccdf499c318fb0e6697ae"
+      },
+      {
+        "path": "evidence/visualization/2026-11-22-sleepy-target-reference-waveforms.png",
+        "bytes": 420301,
+        "sha256": "b72d462e8a36bed3744164382626957051468dfdafdc82803c91ad813a67d1ba"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-16 at 21.40.24.png",
+        "bytes": 145719,
+        "sha256": "726ec04285dcee26c36b9d681570632b1548343bbfb0a9862b4a560fd9112614"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-16 at 21.40.45.png",
+        "bytes": 138607,
+        "sha256": "36fbb5f25d41156499535edb6751985e85ed20290e03f8f84c65f7f4326918c3"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-16 at 21.41.25.png",
+        "bytes": 59421,
+        "sha256": "fadbcf868809682d653e7505aa8e36cad7c5fc36e850669ae828d4c9e6b9861c"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-16 at 21.41.39.png",
+        "bytes": 407196,
+        "sha256": "842ae9bc77f04f6806909f8137749de03077473bcc3708bab2811e80ebeda0a7"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-16 at 21.41.45.png",
+        "bytes": 147699,
+        "sha256": "b2f3f3a76d61a39e0a18033fcdb31e0c5f5296e0b0ea7e822cdd4093605e188c"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-17 at 22.18.35.png",
+        "bytes": 979346,
+        "sha256": "7002205c18763df75830c8b62884bb655a62ded5b23cb4aaa8f3422535ffd1e5"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-18 at 06.31.35.png",
+        "bytes": 187318,
+        "sha256": "102d0aea436ed073f5c7159785ae8be1f36fc46efea8942b63ad7b1f029ff158"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-18 at 06.31.58.png",
+        "bytes": 352866,
+        "sha256": "d608b124e743f9dd867b9229df25315b8f4926beb856e3289a8b0a4208e592fb"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-18 at 06.34.48.png",
+        "bytes": 152346,
+        "sha256": "eb7490738509c92042bed848f25ea36f1ee67d678ca250cd8500ec9a29dc2580"
+      },
+      {
+        "path": "evidence/visualization/Screenshot 2026-11-18 at 06.47.19.png",
+        "bytes": 272905,
+        "sha256": "fd1ec29dceaca7a8804d433eb7eb1d5e3ee8d83ce5fd76a76e636033bb5795a1"
+      },
+      {
+        "path": "report/APPENDIX.md",
+        "bytes": 48659,
+        "sha256": "7fa9184680fb5ca0ed4ccba07ce189bb3444be6d5ed0d1f283374d88e9cfcc30"
+      },
+      {
+        "path": "report/REPORT.md",
+        "bytes": 49860,
+        "sha256": "e5beba74a60354b6f1aeb08d50f0c4d44dba0c0fd10bcff6c8961e4e79fbafbb"
+      },
+      {
+        "path": "report/figures/benchmark-confusion-matrices.svg",
+        "bytes": 5334,
+        "sha256": "e51afce03eca53e8890ab9a7503ff5b6d0560ce775a4d930f64893bc16e9a5e0"
+      },
+      {
+        "path": "report/figures/provenance-flow.svg",
+        "bytes": 3595,
+        "sha256": "fa940250079cb54c10f57a529d0c911a9787d92bc0c9dbe35dda401ba60e095e"
+      },
+      {
+        "path": "report/figures/quality-gate-summary.svg",
+        "bytes": 2953,
+        "sha256": "eb27c41d73fd5ced420aff2a57eb63d19d4f89c2eb3eab31d131ebd5ccc90aae"
+      },
+      {
+        "path": "report/figures/robustness-heatmaps.svg",
+        "bytes": 12897,
+        "sha256": "f21b0c07d2f1a0cb78e84678629af0ad45f5bedca78fd216576a0ba279397652"
+      },
+      {
+        "path": "report/figures/sleepy-residual-spectrum.svg",
+        "bytes": 11351,
+        "sha256": "c051335e6a1b7826ce33336d02994e713881486ec6b7706898bc4c126b06d042"
+      },
+      {
+        "path": "requirements.txt",
+        "bytes": 99,
+        "sha256": "3d83a59a9978087dcda74492b4c4a6806ceefc98e39d4192f595f63ef9fe9874"
+      },
+      {
+        "path": "results/artifact_manifest.json",
+        "bytes": 931,
+        "sha256": "cc9bba6899b572e0271709d616aa4c7a340514516df5b95ad9cbed67069a99ba"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.49.40.png",
+        "bytes": 413931,
+        "sha256": "48e2398351110ca38ddeb065b82697e681e5266644a0fd189b9614f391822983"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.50.28.png",
+        "bytes": 183950,
+        "sha256": "70030370b2ba143b38c1bf7d9b3760dc5a999de72358eb5f185242f46750c918"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.51.13.png",
+        "bytes": 246524,
+        "sha256": "54b3fac787a55ec0a12cdbf02ee01dfd72f71d842935190c1d61354198b3fbef"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.51.38.png",
+        "bytes": 445721,
+        "sha256": "0ff0d79240bee9fa6ad21604fab98430d9a1ad944806223bff3baa8a8a0f6370"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.51.50.png",
+        "bytes": 790767,
+        "sha256": "11311543ea5962c27a7af42f7261e11a27c6561023fdf96116e3661a289a57a9"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.04.png",
+        "bytes": 684764,
+        "sha256": "49e9c3651ffbe655a30b2d1e76f41892cf2ae2cce6a2aacc74abd04e8572b5f0"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.16.png",
+        "bytes": 697394,
+        "sha256": "f83ef130bbcad58284e55395aed6c0bd0ecfddeb05ba4502637ec264a62e5a1c"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.29.png",
+        "bytes": 446011,
+        "sha256": "516831c6b4e81246bd2fbaaeea090b2aaeaaee414fa8ddd1206c02239a2397ec"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.50.png",
+        "bytes": 457861,
+        "sha256": "f0604112d5a8f685429f26c191cc9b31ac167e3d37e819f9e0a133b42839697a"
+      },
+      {
+        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.57.png",
+        "bytes": 230206,
+        "sha256": "10820f09a40297f6ed71a7914b64ace6537c05be4dea08135e18f48ff00342d9"
+      },
+      {
+        "path": "scripts/check_provenance.py",
+        "bytes": 9479,
+        "sha256": "576e3c208ea88697ec7a91f4ecf9f78583ba614d50d576f337f73c4599b7c920"
+      },
+      {
+        "path": "scripts/create_submission_zip.py",
+        "bytes": 4805,
+        "sha256": "7a667959d57d80784d1f973343e093a237e3c4adc9e6a99480bf2b0e8e4421b6"
+      },
+      {
+        "path": "scripts/inspect_discovery_signals.py",
+        "bytes": 9136,
+        "sha256": "5b13c7345f7e57c08f46707b6d06d72d9c3cd92f2a2b9aea70557da8127668ca"
+      },
+      {
+        "path": "scripts/measure_ask_params.py",
+        "bytes": 12977,
+        "sha256": "78541547eaa26a413b94f4d7b296400eec148f42d5627085d69d061be2a05205"
+      },
+      {
+        "path": "scripts/render_report_figures.py",
+        "bytes": 9941,
+        "sha256": "69854d45da2ee690c20689140018e7aee15a336e422ff00ea50a92f9ccef8018"
+      },
+      {
+        "path": "scripts/run_audio_asymmetric.py",
+        "bytes": 11983,
+        "sha256": "3af763bb0871c088a080419e96eefd834701cf8539870df1beb0d9c23d3e3890"
+      },
+      {
+        "path": "scripts/run_extended_robustness.py",
+        "bytes": 20087,
+        "sha256": "c2b20d010b2196f3aa56ee1ee9a635b5be2d71532313905a7d45580da421e4d0"
+      },
+      {
+        "path": "scripts/run_steganalysis_benchmark.py",
+        "bytes": 11926,
+        "sha256": "657855cf9bf05f81a7764bdef219df39fb456a3051f337d943da4f1f7d07c610"
+      },
+      {
+        "path": "scripts/verify_artifacts.py",
+        "bytes": 3774,
+        "sha256": "f50b3e2109b2bb6cd3e34fae58e8fe2aa6b0b7499c3605fad6da9678f7a2128f"
+      },
+      {
+        "path": "scripts/verify_reproducibility.py",
+        "bytes": 7858,
+        "sha256": "9e21a7fa33ea1ce70d49081d7d8d6b3d8f9da76836d50da07691e04b26e019fc"
+      },
+      {
+        "path": "src/audio_alignment.py",
+        "bytes": 4264,
+        "sha256": "e87e0818686429bcba0e4e9edf4c94a35ee90cfc3a109e1bdbdfc4320a962ee1"
+      },
+      {
+        "path": "src/steganalysis.py",
+        "bytes": 4198,
+        "sha256": "995c3305c2a1ea5e0c190640571edfc5a08c01969cb30ef7cdd90a0668d53102"
+      },
+      {
+        "path": "src/stegano/__init__.py",
+        "bytes": 22,
+        "sha256": "46c663463329acd7039bdef0a9145293aad32e04d7f0dd06ca2719c99f0eb014"
+      },
+      {
+        "path": "src/stegano/__main__.py",
+        "bytes": 78,
+        "sha256": "28de248c91c00642578a541827361af9b0e5e049e4c61dd6ec1f9dc78580c24e"
+      },
+      {
+        "path": "src/stegano/audio.py",
+        "bytes": 6348,
+        "sha256": "957ccb19f595f747ffafcd3ea73f8c41b7bda782e456fc62b262182c23b5492d"
+      },
+      {
+        "path": "src/stegano/cli.py",
+        "bytes": 618,
+        "sha256": "1ae4c50b575d90dea403c476d0e5257ef48eceba238c40565f206668a1a15a80"
+      },
+      {
+        "path": "src/stegano/image.py",
+        "bytes": 2414,
+        "sha256": "a0084a0c697e3577387563decd0f901293f39ecc89059e165efe2ec51ff96c40"
+      },
+      {
+        "path": "tests/test_audio.py",
+        "bytes": 2818,
+        "sha256": "274d9bdcf62f27362f0b42fdc3d8b909917cb7ebe77e501c113e32e4974c0c74"
+      },
+      {
+        "path": "tests/test_audio_alignment.py",
+        "bytes": 2641,
+        "sha256": "dce231140d469de218865617371b48a4bed88f377a18d354537a4814e46f0d4a"
+      },
+      {
+        "path": "tests/test_exact_match.py",
+        "bytes": 1816,
+        "sha256": "60b9e81af324b3de68a99280346dd15c21e1c2428cbc5e8e3cda0fb2cc49dad2"
+      },
+      {
+        "path": "tests/test_image.py",
+        "bytes": 448,
+        "sha256": "bd6ba724b03a1554a0e1da4ee8f8f91fae153deb9d32909545b70561058b1bcf"
+      },
+      {
+        "path": "tests/test_visualization.py",
+        "bytes": 6792,
+        "sha256": "f22657823d87866c39a357a5d314ff0e621267f8b9efc2fc649ebf87c8f3903e"
+      },
+      {
+        "path": "tests/test_visualization_app.py",
+        "bytes": 2501,
+        "sha256": "6e2fd0fd2c83022cc2ca654fdb85bcbbcec9521c26e826e45d812de1975e43bf"
+      },
+      {
+        "path": "visualization/__init__.py",
+        "bytes": 71,
+        "sha256": "68a89c08745ee5ec410ad442dcb0b202703cfa3b6f82093200126c5495e72f02"
+      },
+      {
+        "path": "visualization/app.py",
+        "bytes": 5051,
+        "sha256": "9c4c1539c7cbdde493d3a7f1a53951a9b4cec488373b028d05e8edf53e5a8716"
+      },
+      {
+        "path": "visualization/pages/1_Blue_3.py",
+        "bytes": 4490,
+        "sha256": "abbf99c4753d6da35ff93f2c1c0f1b1afbda9116ceb14a725b5557d8119c7762"
+      },
+      {
+        "path": "visualization/pages/2_Sleepy_Alarm.py",
+        "bytes": 20106,
+        "sha256": "f9afe7fdebf3d454ae5b1bfda62523ec3ffe0c62ba3e60af055d370aa1fe1675"
+      },
+      {
+        "path": "visualization/pages/__init__.py",
+        "bytes": 56,
+        "sha256": "fb572ac4fdfac63e7f4d1d17001f3660fd6cbd5d63ca803cf14488b88384230e"
+      },
+      {
+        "path": "visualization/plotting.py",
+        "bytes": 448,
+        "sha256": "f04df9f00269c019b3b343d4a830161c9be62e296d3f94a689e3f5af59361532"
+      },
+      {
+        "path": "visualization/utils.py",
+        "bytes": 7658,
+        "sha256": "f06f00f6e0211607eb7915e9b474f58185a13c1c93289c99a37100aa961d3f8d"
+      }
+    ]
+  },
+  "submission_package": {
+    "status": "verified",
+    "path": "submission_package_current.zip",
+    "file_count": 194,
+    "required_files": [
+      "LOGBOOK.md",
+      "README.md",
+      "report/24021404_UETCN3124_CTF_Report.pdf",
+      "report/REPORT.md",
+      "requirements.txt",
+      "src/stegano/cli.py"
+    ],
+    "validation": "zip CRC, required members, full file-set, project-file byte comparison; self-check records checked for presence and CRC",
+    "self_check_outputs_exempt_from_byte_comparison": [
+      "results/final-2026-11-27/provenance.json",
+      "results/final-2026-11-27/quality-gate-console.log",
+      "results/final-2026-11-27/quality-gate.json",
+      "results/final-2026-11-27/reproducibility.log",
+      "results/final-2026-11-27c/provenance.json",
+      "results/final-2026-11-27c/quality-gate-console.log",
+      "results/final-2026-11-27c/quality-gate.json",
+      "results/final-2026-11-27c/reproducibility.log",
+      "results/final-2026-11-27d/provenance.json",
+      "results/final-2026-11-27d/quality-gate-console.log",
+      "results/final-2026-11-27d/quality-gate.json",
+      "results/final-2026-11-27d/reproducibility.log",
+      "results/final-2026-11-27e/provenance.json",
+      "results/final-2026-11-27e/quality-gate-console.log",
+      "results/final-2026-11-27e/quality-gate.json",
+      "results/final-2026-11-27e/reproducibility.log",
+      "results/final/provenance.json",
+      "results/final/quality-gate-console.log",
+      "results/final/quality-gate.json",
+      "results/final/reproducibility.log",
+      "results/recheck/provenance.json",
+      "results/recheck/quality-gate-console.log",
+      "results/recheck/quality-gate.json",
+      "results/recheck/reproducibility.log"
+    ],
+    "errors": []
+  },
+  "status": "verified"
+}
