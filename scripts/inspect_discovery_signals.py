@@ -23,7 +23,7 @@ from stegano.audio import _align  # noqa: E402
 BLUE3_PATH = ROOT / "data/blue3/blue.png"
 TARGET_AUDIO_PATH = ROOT / "data/sleepy_alarm/morning_n_breakfast.mp3"
 REF_AUDIO_PATH = ROOT / "data/sleepy_alarm/morning_n_breakfast_original.mp3"
-DEFAULT_JSON = ROOT / "results/final/discovery-signals.json"
+DEFAULT_JSON = ROOT / "results/final-2026-11-27/discovery-signals.json"
 DEFAULT_SVG = ROOT / "report/figures/sleepy-residual-spectrum.svg"
 
 

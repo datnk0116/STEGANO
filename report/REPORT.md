@@ -58,7 +58,7 @@ The project pairs one image task (**Blue 3**) with one audio task (**Sleepy Alar
 
 **Runtime Environment and Parameter Provenance:** The codebase targets **Python $\ge 3.10$**. All verified reproduction and quality-gate runs from 18 November onward executed on **Python 3.14.10** (CPython) under macOS arm64 (`.venv/repro314`, recorded in `results/final-2026-11-27/provenance.json`). By contrast, the earlier 16 November run's `.venv` interpreter could not be independently verified from historical logs—a supplemental check on 18 November found the pre-existing `.venv` running Python 3.9.6 (below the 3.10 minimum) and the system Python lacking `streamlit`, prompting creation of the isolated Python 3.14.10 environment. Exact package versions are locked in `requirements-lock.txt` (`pip freeze`), while `requirements.txt` keeps looser compatible ranges: NumPy `2.5.5`, Pillow `13.0.0`, SciPy `1.18.1`, SoundFile `0.14.0`, Plotly `6.9.0`, and Streamlit `1.67.0`.
 
-The November 19 run manifest (`results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-manifest.json`) fixes the Sleepy Alarm modulation parameters at an **8,000 Hz** carrier and **50 baud** symbol rate over a **7.0-second** extraction window matched to the 350-symbol framed message. Those settings match the official challenge README [2] and are independently re-measured from the audio in Section 4.3 (`scripts/measure_ask_params.py`) alongside the reproducible post-hoc signal inspection in `scripts/inspect_discovery_signals.py`.
+The project configuration (`src/stegano/audio.py` and `results/final-2026-11-27/sleepy-alarm-reference-assisted-output.json`) fixes the Sleepy Alarm modulation parameters at an **8,000 Hz** carrier and **50 baud** symbol rate over a **7.0-second** extraction window matched to the 350-symbol framed message. Those settings match the official challenge README [2] and are independently re-measured from the audio in Section 4.3 (`scripts/measure_ask_params.py`) alongside the reproducible post-hoc signal inspection in `scripts/inspect_discovery_signals.py`.
 
 **Input Artifact Integrity:** Running `python scripts/verify_artifacts.py` checks the byte size and SHA-256 hash of all three official inputs in `data/` against `results/artifact_manifest.json`:
 
@@ -74,16 +74,16 @@ The November 19 run manifest (`results/reproduction-2026-11-19/sleepy-alarm-refe
 
 <a id="report-methods"></a>
 
-Every step, hypothesis, intermediate output, and bug fix is logged chronologically in `LOGBOOK.md` and expanded in `report/APPENDIX.md`. The *signal discovery checks* below are **reproducible post-hoc inspections** run via `python scripts/inspect_discovery_signals.py` (`results/final/discovery-signals.json`), followed by independent parameter verification in Section 4.3. Run all commands below from the repository root.
+Every step, hypothesis, intermediate output, and bug fix is logged chronologically in `LOGBOOK.md` and expanded in `report/APPENDIX.md`. The *signal discovery checks* below are **reproducible post-hoc inspections** run via `python scripts/inspect_discovery_signals.py` (`results/final-2026-11-27/discovery-signals.json`), followed by independent parameter verification in Section 4.3. Run all commands below from the repository root.
 
 ### 4.1. Challenge 1 — Blue 3 (PNG Image)
 
-1. **Structural Discovery Check (post-hoc on raw image):** `data/blue3/blue.png` is $512 \times 512$ px (262,144 pixels) and contains only 49 distinct RGB colors. A single background color `(64, 77, 205)` fills 258,916 pixels (98.77%). Filtering for non-background pixels (`pixels != base`) shows all **3,228 modified pixels** (1.23%) clustered within $|x - y| \le 9\text{ px}$ along the main diagonal (`results/final/discovery-signals.json`), as seen in Figure 1. That tight diagonal band points directly to slicing the image into an $n \times n$ grid and summing RGB deltas in each diagonal cell.
+1. **Structural Discovery Check (post-hoc on raw image):** `data/blue3/blue.png` is $512 \times 512$ px (262,144 pixels) and contains only 49 distinct RGB colors. A single background color `(64, 77, 205)` fills 258,916 pixels (98.77%). Filtering for non-background pixels (`pixels != base`) shows all **3,228 modified pixels** (1.23%) clustered within $|x - y| \le 9\text{ px}$ along the main diagonal (`results/final-2026-11-27/discovery-signals.json`), as seen in Figure 1. That tight diagonal band points directly to slicing the image into an $n \times n$ grid and summing RGB deltas in each diagonal cell.
 2. **Hypothesis and Command:** Summing RGB offsets from the background color across $n$ diagonal blocks recovers the flag string:
    ```bash
    PYTHONPATH=src python -m stegano blue3 data/blue3/blue.png
    ```
-3. **Intermediate and Final Output:** `_decode_blue3` in `src/stegano/image.py` loops `n` from `2` up to `min(w, h)` (`512` for a $512 \times 512$ image), skips any grid size whose block sum falls outside Unicode scalar range `0..0x10ffff`, and **returns immediately on the first candidate matching the `byuctf{...}` flag format**. On `data/blue3/blue.png`, this early exit occurs at $n = 50$, which is why `results/recheck/blue3.log` records 49 candidates (`length=2..50`). Sizes $n=2..49$ return garbled text or clip the closing brace (for instance, $n=49$ outputs `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP`). At $n=50$, the decoder hits the exact string `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` (`format_valid: true`, exit code 0).
+3. **Intermediate and Final Output:** `_decode_blue3` in `src/stegano/image.py` loops `n` from `2` up to `min(w, h)` (`512` for a $512 \times 512$ image), skips any grid size whose block sum falls outside Unicode scalar range `0..0x10ffff`, and **returns immediately on the first candidate matching the `byuctf{...}` flag format**. On `data/blue3/blue.png`, this early exit occurs at $n = 50$, which is why `results/final-2026-11-27/blue3.log` records 49 candidates (`length=2..50`). Sizes $n=2..49$ return garbled text or clip the closing brace (for instance, $n=49$ outputs `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP`). At $n=50$, the decoder hits the exact string `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` (`format_valid: true`, exit code 0).
 4. **Errors and Fixes:** Initial environment checks (`LOGBOOK.md` Entries 00 and 12) flagged the pre-existing `.venv` running Python 3.9.6 (below 3.10) and a system Python missing `streamlit`. An isolated Python 3.14.10 virtual environment (`.venv/repro314`) was built and verified with `pip check`.
 5. **Evidence:** See `LOGBOOK.md` Entry 01, Appendix A.3 (`report/APPENDIX.md`), and Figure 1.
 
@@ -93,7 +93,7 @@ Every step, hypothesis, intermediate output, and bug fix is logged chronological
 
 ### 4.2. Challenge 2 — Sleepy Alarm (MP3 Audio)
 
-1. **Spectral and Symbol-Timing Check (post-hoc on audio pair):** Before subtraction, the 7.0-second `periodogram` of `morning_n_breakfast.mp3` peaks at 1,598.71 Hz from the background music, and the 7.9–8.1 kHz band holds just **0.03%** (`0.000257`, `results/final/discovery-signals.json`) of total power. (The **0.02%** / `0.000204` figure in `results/steganalysis/benchmark.json` covers the **full 10.02-second file**, whereas **0.03%** covers the **first 7.0-second payload window**.) Once aligned (`lag_samples = 1729`) and subtracted (`target - reference`), the residual spectrum jumps to a sharp peak at **8,000.00 Hz**, pushing the 7.9–8.1 kHz band up to **52.40%** (`0.524009`) of residual energy (Figure 2). Under the **50 baud** (**20 ms/symbol**) modulation rate, both the 32-symbol zoom (`evidence/visualization/2026-11-22-sleepy-first-32-symbols-byte-groups.png`) and Figure 3 align cleanly across the 350-symbol (7.0 s) payload window.
+1. **Spectral and Symbol-Timing Check (post-hoc on audio pair):** Before subtraction, the 7.0-second `periodogram` of `morning_n_breakfast.mp3` peaks at 1,598.71 Hz from the background music, and the 7.9–8.1 kHz band holds just **0.03%** (`0.000257`, `results/final-2026-11-27/discovery-signals.json`) of total power. (The **0.02%** / `0.000204` figure in `results/steganalysis/benchmark.json` covers the **full 10.02-second file**, whereas **0.03%** covers the **first 7.0-second payload window**.) Once aligned (`lag_samples = 1729`) and subtracted (`target - reference`), the residual spectrum jumps to a sharp peak at **8,000.00 Hz**, pushing the 7.9–8.1 kHz band up to **52.40%** (`0.524009`) of residual energy (Figure 2). Under the **50 baud** (**20 ms/symbol**) modulation rate, both the 32-symbol zoom (`evidence/visualization/2026-11-22-sleepy-first-32-symbols-byte-groups.png`) and Figure 3 align cleanly across the 350-symbol (7.0 s) payload window.
 2. **Hypothesis and Commands:** Subtracting the aligned reference exposes three ASK amplitude levels (separator, bit `0`, bit `1`). Running without `--reference` acts as the negative control:
    ```bash
    # Reference-assisted mode
@@ -105,7 +105,7 @@ Every step, hypothesis, intermediate output, and bug fix is logged chronological
    PYTHONPATH=src python -m stegano sleepy-alarm \
      data/sleepy_alarm/morning_n_breakfast.mp3
    ```
-3. **Intermediate and Final Output:** In *reference-assisted* mode (`results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-output.json`), alignment locks onto `lag_samples = 1729`, `target_start_sample = 1729`, and correlation `0.9998734358246231` ($\approx 0.9999$). Clustering the 350 I/Q projections produces three clean centers `[0.0001035, 0.0019975, 0.0049727]` (Figure 3), 38 separators, 0 malformed byte groups, and the exact 39-character flag `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}` (exit code 0). Without the reference (`results/recheck/sleepy-alarm-reference-free.log`), the decoder still measures 350 symbols, yet clustering collapses (49 separators, 20 malformed byte groups) into the broken string `ictsl33p_Nauk_arm_224dcb2}` (26 characters, `format_valid: false`, exit code 2).
+3. **Intermediate and Final Output:** In *reference-assisted* mode (`results/final-2026-11-27/sleepy-alarm-reference-assisted-output.json`), alignment locks onto `lag_samples = 1729`, `target_start_sample = 1729`, and correlation `0.9998734358246231` ($\approx 0.9999$). Clustering the 350 I/Q projections produces three clean centers `[0.0001035, 0.0019975, 0.0049727]` (Figure 3), 38 separators, 0 malformed byte groups, and the exact 39-character flag `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}` (exit code 0). Without the reference (`results/final-2026-11-27/sleepy-alarm-reference-free.log`), the decoder still measures 350 symbols, yet clustering collapses (49 separators, 20 malformed byte groups) into the broken string `ictsl33p_Nauk_arm_224dcb2}` (26 characters, `format_valid: false`, exit code 2).
 4. **Bugs Found and Fixes (`LOGBOOK.md` Entry 12):** Before November 19, the decoder ran only on the aligned overlap `x - y`. Whenever alignment started inside an early symbol, that dropped the leading samples of `target` before `target_start_sample`. This was fixed in `src/stegano/audio.py` by prepending `prefix = target[:alignment['target_start_sample']]` and projecting each symbol with global sample indices to keep carrier phase anchored to sample 0. A synthetic regression test in `tests/test_audio.py` shifts the overlap 1.5 symbol periods into the target and verifies the first 16 labels plus the full flag. Separately, running Streamlit `AppTest` in bare mode logs three harmless `missing ScriptRunContext` warnings (all tests still pass), and a misleading green status banner on the Overview page was fixed in `LOGBOOK.md` Entry 16.
 5. **Evidence:** See `LOGBOOK.md` Entries 02, 03, and 12, Appendix A.4–A.5 and A.15 (`report/APPENDIX.md`), Figure 2, and Figure 3.
 
@@ -121,7 +121,7 @@ Every step, hypothesis, intermediate output, and bug fix is logged chronological
 
 The Sleepy Alarm modulation and framing values match the official challenge README [2] and are re-measured independently from the audio here using `scripts/measure_ask_params.py` (`results/independent-measurement/ask_params.json`, `results/independent-measurement/ask_params.log`). Because the estimator's thresholds (`height >= 0.25 * p95`, `p10 + 0.20 * (p95 - p10)`, ~5 ms window, 10 ms minimum peak spacing) were chosen after observing the residual signal, this measurement serves as independent verification rather than blind discovery:
 
-1. **Carrier Frequency (8,000 Hz):** Computing the `periodogram` over the entire aligned overlap (`438,912` samples = `9.9527 s` after `lag = 1,729` samples, without truncating to 7 s) finds a dominant spectral peak at **7,999.98 Hz** (`7999.9774 Hz`, error `-0.0226 Hz` relative to 8,000 Hz), with **47.41%** (`0.474145`) of total residual power ($\ge 100\text{ Hz}$) concentrated inside $\pm 100\text{ Hz}$ of the peak. This agrees with the 0–7.0 s residual spectrum in Figure 2 (`8,000.00 Hz` peak, `52.40%` in 7.9–8.1 kHz, `results/final/discovery-signals.json`).
+1. **Carrier Frequency (8,000 Hz):** Computing the `periodogram` over the entire aligned overlap (`438,912` samples = `9.9527 s` after `lag = 1,729` samples, without truncating to 7 s) finds a dominant spectral peak at **7,999.98 Hz** (`7999.9774 Hz`, error `-0.0226 Hz` relative to 8,000 Hz), with **47.41%** (`0.474145`) of total residual power ($\ge 100\text{ Hz}$) concentrated inside $\pm 100\text{ Hz}$ of the peak. This agrees with the 0–7.0 s residual spectrum in Figure 2 (`8,000.00 Hz` peak, `52.40%` in 7.9–8.1 kHz, `results/final-2026-11-27/discovery-signals.json`).
 2. **Symbol Rate (50 baud / 20 ms):** Demodulating the residual around the detected spectral peak into a complex baseband envelope smoothed with a **~5 ms** sliding boxcar window (`220` samples = `4.9887 ms` at 44,100 Hz) and locating envelope derivative peaks (`height >= 0.25 * p95`) detects **222 amplitude transitions** (**221 inter-transition intervals**; raw mean `31.3920 ms`, std `17.9522 ms`, median `20.4535 ms`, range `12.3129–99.9773 ms`). Because consecutive identical symbols hold a constant level without an edge, raw intervals span integer multiples $k \cdot T_{\text{sym}}$ ($k \in [1, 5]$). Isolating the shortest cluster `dts_ms <= 1.5 * Q25` gives single-symbol transitions ($k = 1$, $n = 135$) with mean **20.0702 ms** (std `1.5939 ms`, error `+0.0702 ms` / `0.35%` vs. 20 ms, `49.83 baud`); dividing each interval by `k = max(1, round(dt / median(single)))` (without referencing nominal 20 ms) normalizes all 221 intervals to **20.0206 ms** (std `1.2523 ms`, error `+0.0206 ms` / `0.10%` vs. 20 ms, `49.95 baud`).
 3. **Active Payload Window (7.0 s):** Rather than acting as an independent modulation parameter, **7.0 s** is the message-framing duration matching the 39-character ASCII payload with 1-symbol byte separators: $(39 \times 8) + 38 = 350\text{ symbols} \times 20\text{ ms/symbol} = 7.00\text{ s}$. Independently, tracking where the ~5 ms carrier envelope falls below `p10 + 0.20 * (p95 - p10)` (`0.001055`) locates the final active carrier drop-off at **7.0020 s** (`sample 308,786`, error `+0.0020 s` vs. 7.0 s), after which the envelope settles to the post-payload noise floor (`tail_mean = 0.000094`, `tail_max = 0.000732` from `7.2020 s` onward).
 
@@ -142,17 +142,17 @@ The table below compiles every quantitative outcome directly from the saved JSON
 | Verification Item | Recorded Outcome | Data Source |
 |---|---|---|
 | Artifact integrity | **3/3 PASS** (byte size + SHA-256 verified) | `results/artifact_manifest.json` |
-| Signal discovery check (post-hoc) | Blue 3: 3,228 px within $\lvert x-y \rvert \le 9$; Audio residual: 8,000 Hz peak (52.40%) | `results/final/discovery-signals.json` |
+| Signal discovery check (post-hoc) | Blue 3: 3,228 px within $\lvert x-y \rvert \le 9$; Audio residual: 8,000 Hz peak (52.40%) | `results/final-2026-11-27/discovery-signals.json` |
 | Independent ASK parameter measurement | Peak `7,999.98 Hz`; $k$-norm period `20.02 ms` (`49.95 baud`); drop-off `7.0020 s` | `results/independent-measurement/ask_params.json` |
-| Blue 3 extraction | **Exact match**, 50 chars: `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` | `results/recheck/blue3.log` |
-| Sleepy Alarm (reference-assisted) | **Exact match**, 39 chars: `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`; 350 symbols, 38 separators, lag 1,729, corr 0.9999, 0 byte errors | `results/reproduction-2026-11-19/sleepy-alarm-reference-assisted-output.json` |
+| Blue 3 extraction | **Exact match**, 50 chars: `byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP}` | `results/final-2026-11-27/blue3.log` |
+| Sleepy Alarm (reference-assisted) | **Exact match**, 39 chars: `ictf{1_sl33py_NaYuKi_alarm_2a634dc1bb2}`; 350 symbols, 38 separators, lag 1,729, corr 0.9999, 0 byte errors | `results/final-2026-11-27/sleepy-alarm-reference-assisted-output.json` |
 | Sleepy Alarm (reference-free) | **FAIL** — 26 chars, 49 separators, 20 malformed byte groups, `format_valid: false`, exit code 2 | `results/steganalysis/benchmark.json` |
 | Sleepy Alarm asymmetric robustness | Baseline **PASS**; one-sided transforms **2/6 PASS** (2 resample PASS, 4 gain FAIL) | `results/asymmetric/asymmetric_robustness.json` |
 | Blue 3 extended robustness | **1/9 PASS** (only Gaussian blur r=0.3 achieves exact match) | `results/robustness/blue3_extended_robustness.json` |
 | Sleepy Alarm extended robustness | **7/23 PASS** (baseline + gain ×0.75, AWGN SNR 30 dB, resample on each side) | `results/robustness/sleepy_alarm_robustness_matrix.json` |
 | Baseline detector — Image | **TP=5, TN=12, FP=0, FN=0** (Precision/Recall/F1 = 1.00 across 17 samples) | `results/steganalysis/benchmark.json` |
 | Baseline detector — Audio | **TP=0, TN=8, FP=0, FN=5** (Recall = 0.00 across 13 samples — misses all 5 positives) | `results/steganalysis/benchmark.json` |
-| Automated tests & final quality gate | **22/22 unittest PASS** (exit code 0); provenance & archive `verified` | `results/final-2026-11-27/quality-gate.json` |
+| Automated tests & final quality gate | **22/22 unittest PASS** (exit code 0); provenance `verified` (submission archive packaged manually) | `results/final-2026-11-27/quality-gate.json` |
 
 ---
 
@@ -219,7 +219,7 @@ Beyond solving both base challenges, the project implements extended robustness 
 
 ![Extended robustness results for Blue 3 and Sleepy Alarm](figures/robustness-heatmaps.svg)
 
-*Figure 4. PASS/FAIL breakdown across 9 Blue 3 image variants and 23 Sleepy Alarm audio trials (`report/figures/robustness-heatmaps.svg`, source `results/recheck/robustness/`).*
+*Figure 4. PASS/FAIL breakdown across 9 Blue 3 image variants and 23 Sleepy Alarm audio trials (`report/figures/robustness-heatmaps.svg`, source `results/robustness/`).*
 
 ![Baseline detector confusion matrices](figures/benchmark-confusion-matrices.svg)
 
@@ -307,22 +307,22 @@ This project built, tested, and documented independent decoders, independent par
 
 ### A. Quality Gate and Provenance Summary
 
-The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/verify_artifacts.py`, `unittest discover -s tests -v`, and `scripts/check_provenance.py` in sequence. For `submission_package_current.zip`, provenance checks CRC integrity (`testzip()`), required files, full member lists, and byte-for-byte parity against the working tree (skipping self-referential quality-gate outputs during byte comparison to avoid hash loops, while still verifying their presence and CRC).
+The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/verify_artifacts.py`, `unittest discover -s tests -v`, and `scripts/check_provenance.py` in sequence, verifying artifact byte sizes and SHA-256 digests, all 22 unit tests, and SHA-256 source inventory hashes across `src/`, `scripts/`, `tests/`, `visualization/`, `evidence/`, `report/`, and `results/artifact_manifest.json`. The final submission archive is packaged manually from tracked Git files on `clean-submission`.
 
-| Check | Snapshot 22/11 (`results/verification/`) | Recheck (`results/recheck/`) | Final Run (`results/final-2026-11-27/`) |
+| Check | Snapshot 22/11 (historical) | Recheck 25/11 (historical) | Final Run (`results/final-2026-11-27/`) |
 |---|---|---|---|
 | Unittest | **22/22 PASS** (exit 0) | **22/22 PASS** (exit 0) | **22/22 PASS** (exit 0) |
 | Artifact integrity | **3/3 verified** | **3/3 verified** | **3/3 verified** |
-| Provenance | `verified` (30 hashed files) | `verified` (95 hashed files) | `verified` (99 hashed files) |
-| `submission_package` | `not_verified` | `verified` (159 members) | `verified` (176 members) |
+| Provenance | `verified` (30 hashed files) | `verified` (95 hashed files) | `verified` (90 hashed files) |
+| Submission packaging | `not_verified` | `verified` (prior script) | Manual (clean Git branch) |
 
-![Quality gate summary from saved recheck JSON](figures/quality-gate-summary.svg)
+![Quality gate summary from results/final-2026-11-27/](figures/quality-gate-summary.svg)
 
-*Figure A.1. Quality-gate summary rendered from `results/recheck/quality-gate.json` and `results/recheck/provenance.json` (`report/figures/quality-gate-summary.svg`, generated by `scripts/render_report_figures.py` which targets `results/recheck/`); the final run in `results/final-2026-11-27/` preserves the PASS state with 99 inventoried files and 176 archive members.*
+*Figure A.1. Quality-gate summary rendered from `results/final-2026-11-27/quality-gate.json` and `results/final-2026-11-27/provenance.json` (`report/figures/quality-gate-summary.svg`, generated by `scripts/render_report_figures.py`): 22/22 tests pass, 3/3 artifacts verified, and 90 source/report/evidence files hashed.*
 
 ![Provenance and verification flow](figures/provenance-flow.svg)
 
-*Figure A.2. End-to-end provenance and archive verification flow converging at the quality gate (`report/figures/provenance-flow.svg`).*
+*Figure A.2. End-to-end provenance and verification flow converging at the quality gate (`report/figures/provenance-flow.svg`).*
 
 <a id="report-visualization"></a>
 
@@ -342,7 +342,7 @@ The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/veri
 
 - Full chronological experiment log (Entries 00–17): `LOGBOOK.md` (independent ASK measurement and final verification records are stored in `results/independent-measurement/` and `results/final-2026-11-27/`)
 - Detailed per-run appendix records (A.1–A.19): `report/APPENDIX.md`
-- Reproduce post-hoc signal discovery metrics and residual spectrum SVG (`results/final/discovery-signals.json`, `report/figures/sleepy-residual-spectrum.svg`):
+- Reproduce post-hoc signal discovery metrics and residual spectrum SVG (`results/final-2026-11-27/discovery-signals.json`, `report/figures/sleepy-residual-spectrum.svg`):
   ```bash
   python scripts/inspect_discovery_signals.py
   ```
@@ -351,13 +351,12 @@ The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/veri
   python scripts/measure_ask_params.py --self-check
   python scripts/measure_ask_params.py
   ```
-- Re-render the four static report SVG figures from `results/recheck/`:
+- Re-render the four static report SVG figures from `results/final-2026-11-27/`, `results/robustness/`, and `results/steganalysis/`:
   ```bash
   python scripts/render_report_figures.py
   ```
-- Re-run the quality gate into a new results directory (e.g., `results/final-2026-11-27/`):
+- Re-run the quality gate into `results/final-2026-11-27/` (the submission archive is packaged manually from tracked Git files):
   ```bash
-  python scripts/create_submission_zip.py
   python scripts/verify_reproducibility.py \
     --output results/final-2026-11-27/quality-gate.json \
     --provenance-output results/final-2026-11-27/provenance.json \

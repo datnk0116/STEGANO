@@ -1,4 +1,4 @@
-Command: rtk proxy env PYTHONPATH=src .venv/repro314/bin/python scripts/run_audio_asymmetric.py
+Command: env PYTHONPATH=src .venv/repro314/bin/python scripts/run_audio_asymmetric.py
 Exit status: 0 (baseline passed; variant failures are expected observations)
 
 Variant                                      Status  Symbols  Separators  Characters  Errors

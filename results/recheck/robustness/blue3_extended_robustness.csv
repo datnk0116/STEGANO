@@ -1,10 +1,0 @@
-variant,transformation,status,success,format_valid,ground_truth_match,decoded_length,candidate,candidate_at_expected_length,attempt_count,elapsed_seconds,error,candidate_available,candidate_length,position_matches,position_accuracy,edit_distance,normalized_edit_similarity
-brightness_0.9,brightness ×0.9,FAIL,False,False,False,0,,byuctf{lore_blue_steganographw_da^ba_dee_nkiY9CyP},511,0.383446,,True,50,47,0.94,3,0.94
-brightness_1.1,brightness ×1.1,FAIL,False,False,False,0,,c{vcuf|posf_clue_stegbnogsaph|_dbacbadef_oliY9C{P~,511,0.378747,,True,50,28,0.56,20,0.6
-contrast_0.9,contrast ×0.9,FAIL,False,False,False,0,,[mmaqavfglb^\jm_Zlpbd]kidk_map\bYY]]Yb_`YfcdW8BrOu,511,0.430439,,True,50,0,0.0,48,0.040000000000000036
-contrast_1.1,contrast ×1.1,FAIL,False,False,False,0,,}y{{|~}y{z{zkI[h,511,0.380966,,True,50,0,0.0,50,0.0
-gaussian_blur_radius_0.3,Gaussian blur radius 0.3,PASS,True,True,True,50,byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP},byuctf{more_blue_steganography_da_ba_dee_nkiY9CyP},49,0.136626,,True,50,50,1.0,0,1.0
-crop_16px,crop 16 pixels from each edge,FAIL,False,False,False,0,,"44 =I_JO75 #.BKUOE>243+DET[DA7:,'-EHM;32)&)0HWU4""",479,0.336769,,True,50,0,0.0,50,0.0
-gaussian_noise_sigma_0.5,Gaussian noise σ=0.5,FAIL,False,False,False,0,,,0,0.150763,,False,0,0,0.0,,0.0
-gaussian_noise_sigma_1.0,Gaussian noise σ=1.0,FAIL,False,False,False,0,,,0,0.151958,,False,0,0,0.0,,0.0
-gaussian_noise_sigma_2.0,Gaussian noise σ=2.0,FAIL,False,False,False,0,,ëÜŠãŅĩðĚăċŃ¦ŦÊĈĉüòâîÒú©¸ćúöĄÿĔĖÄčĝåďąĐÜÿÆèĴăĨèöîįĩ,124,0.181052,,True,50,0,0.0,50,0.0

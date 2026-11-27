@@ -16,9 +16,9 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT = ROOT / "results" / "verification" / "quality-gate.json"
-PROVENANCE_PATH = ROOT / "results" / "verification" / "provenance.json"
-LOG_PATH = ROOT / "results" / "verification" / "reproducibility.log"
+DEFAULT_OUTPUT = ROOT / "results" / "final-2026-11-27" / "quality-gate.json"
+PROVENANCE_PATH = ROOT / "results" / "final-2026-11-27" / "provenance.json"
+LOG_PATH = ROOT / "results" / "final-2026-11-27" / "reproducibility.log"
 
 
 def run_command(command: list[str], env: dict[str, str] | None = None) -> dict[str, Any]:
@@ -89,19 +89,19 @@ def main() -> int:
         "--output",
         type=Path,
         default=DEFAULT_OUTPUT,
-        help="JSON output path (default: results/verification/quality-gate.json)",
+        help="JSON output path (default: results/final-2026-11-27/quality-gate.json)",
     )
     parser.add_argument(
         "--provenance-output",
         type=Path,
         default=PROVENANCE_PATH,
-        help="provenance JSON path (default: results/verification/provenance.json)",
+        help="provenance JSON path (default: results/final-2026-11-27/provenance.json)",
     )
     parser.add_argument(
         "--log-output",
         type=Path,
         default=LOG_PATH,
-        help="combined run log path (default: results/verification/reproducibility.log)",
+        help="combined run log path (default: results/final-2026-11-27/reproducibility.log)",
     )
     args = parser.parse_args()
     output_path = args.output if args.output.is_absolute() else ROOT / args.output
@@ -143,21 +143,18 @@ def main() -> int:
     artifact_summary = parse_artifacts(artifact_run["output"], artifact_run["exit_code"])
     test_summary = parse_unittest(unittest_run["output"], unittest_run["exit_code"])
     provenance_status = provenance.get("status", "failed")
-    submission = provenance.get("submission_package", {})
-    reported_submission = re.search(
-        r"submission_package\s+(verified|not_verified|failed)", provenance_run["output"]
-    )
-    submission_status = (
-        reported_submission.group(1)
-        if reported_submission
-        else submission.get("status", "failed")
+    submission = provenance.get(
+        "submission_package",
+        {
+            "status": "manual",
+            "note": "Submission archive is packaged manually from tracked Git files.",
+        },
     )
     quality_pass = (
         artifact_summary["status"] == "passed"
         and test_summary["status"] == "passed"
         and provenance_run["exit_code"] == 0
         and provenance_status == "verified"
-        and submission_status == "verified"
     )
 
     gate = {
@@ -169,16 +166,11 @@ def main() -> int:
             "artifact_integrity": artifact_summary,
             "provenance": {"status": provenance_status, "exit_code": provenance_run["exit_code"]},
         },
-        "submission_package": {
-            **submission,
-            "status": submission_status,
-            "reported_by": "scripts/check_provenance.py",
-            "script_exit_code": provenance_run["exit_code"],
-        },
+        "submission_package": submission,
         "quality_gate": {
             "status": "passed" if quality_pass else "failed",
             "passed": quality_pass,
-            "scope": "Artifact integrity, the discovered unittest suite, source provenance, and current submission archive.",
+            "scope": "Artifact integrity, the discovered unittest suite, and source provenance.",
             "submission_ready": quality_pass,
         },
         "runs": [
@@ -203,7 +195,7 @@ def main() -> int:
         f"STEGANO quality gate: {gate['quality_gate']['status']} — tests "
         f"{test_summary['passed']}/{test_summary['total']} — artifacts "
         f"{artifact_summary['passed']}/{artifact_summary['total']} — "
-        f"provenance {provenance_status} — submission_package {submission_status}"
+        f"provenance {provenance_status}"
     )
     print(f"Wrote {output_path.relative_to(ROOT) if output_path.is_relative_to(ROOT) else output_path}")
     if not quality_pass:

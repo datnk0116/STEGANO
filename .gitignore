@@ -1,5 +1,6 @@
 __pycache__/
 *.py[cod]
+*.pyc
 .pytest_cache/
 .venv/
 venv/
@@ -9,3 +10,12 @@ Thumbs.db
 *.bak
 AGENTS.md
 *.zip
+
+# Historical / superseded result runs and empty logs
+results/recheck/compile.log
+results/recheck/screenshots/
+results/recheck/
+results/final/
+results/verification/
+results/reproduction-2026-11-18/
+results/reproduction-2026-11-19/

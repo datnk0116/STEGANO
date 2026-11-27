@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the report's static SVG figures from saved STEGANO recheck JSON."""
+"""Render the report's static SVG figures from saved STEGANO result JSON."""
 
 from __future__ import annotations
 
@@ -9,7 +9,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "results/recheck"
+FINAL_DATA = ROOT / "results/final-2026-11-27"
+ROBUSTNESS_DATA = ROOT / "results/robustness"
+STEGANALYSIS_DATA = ROOT / "results/steganalysis"
 OUT = ROOT / "report/figures"
 
 
@@ -54,32 +56,45 @@ def status_color(value: str) -> str:
 
 
 def render_quality_gate() -> None:
-    gate = read_json(DATA / "quality-gate.json")
-    provenance = read_json(DATA / "provenance.json")
+    gate = read_json(FINAL_DATA / "quality-gate.json")
+    provenance = read_json(FINAL_DATA / "provenance.json")
     run = gate["verification_run"]
     tests = run["tests"]
     artifacts = run["artifact_integrity"]
     inventory = provenance["source_inventory"]
-    package = gate["submission_package"]
     quality = gate["quality_gate"]
     cards = [
         ("UNITTEST", f'{tests["passed"]}/{tests["total"]}', f'{tests["failed"]} failures', tests["status"]),
         ("ARTIFACTS", f'{artifacts["passed"]}/{artifacts["total"]}', "size + SHA-256", artifacts["status"]),
         ("PROVENANCE", provenance["status"], f'{inventory["file_count"]} inventoried files', provenance["status"]),
-        ("CURRENT ARCHIVE", package["status"], f'{package.get("file_count", "?")} members checked', package["status"]),
     ]
-    parts = start(1000, 400, "Quality gate summary", "Values read from the saved quality-gate and provenance JSON records")
+    parts = start(
+        1000,
+        400,
+        "Quality gate summary",
+        "Values read from results/final-2026-11-27/quality-gate.json and provenance.json",
+    )
     q_color = status_color(quality["status"])
-    parts += [rect(30, 96, 940, 64, "#e8f4ed" if q_color == "#17804b" else "#f9e8e7", 14),
-              text(54, 136, f'QUALITY GATE  {quality["status"].upper()}', 25, q_color, 700)]
+    parts += [
+        rect(30, 96, 940, 64, "#e8f4ed" if q_color == "#17804b" else "#f9e8e7", 14),
+        text(54, 136, f'QUALITY GATE  {quality["status"].upper()}', 25, q_color, 700),
+    ]
     for i, (label, value, detail, state) in enumerate(cards):
-        x = 30 + i * 237
-        parts.append(rect(x, 183, 220, 150, "#ffffff"))
-        parts.append(text(x + 18, 215, label, 13, "#53647c", 700))
-        parts.append(text(x + 18, 263, value, 27, status_color(state), 700))
-        parts.append(text(x + 18, 295, detail, 13, "#53647c"))
+        x = 30 + i * 320
+        parts.append(rect(x, 183, 300, 150, "#ffffff"))
+        parts.append(text(x + 20, 215, label, 13, "#53647c", 700))
+        parts.append(text(x + 20, 263, value, 27, status_color(state), 700))
+        parts.append(text(x + 20, 295, detail, 13, "#53647c"))
     env = provenance.get("environment", {})
-    parts.append(text(34, 372, f'Python {env.get("python", "unknown")} · submission_ready={str(quality.get("submission_ready", False)).lower()}', 14, "#53647c"))
+    parts.append(
+        text(
+            34,
+            372,
+            f'Python {env.get("python", "unknown")} · submission_ready={str(quality.get("submission_ready", False)).lower()} · packaging: manual from tracked Git files',
+            14,
+            "#53647c",
+        )
+    )
     finish(parts, OUT / "quality-gate-summary.svg")
 
 
@@ -94,8 +109,8 @@ def short_label(row: dict) -> str:
 
 
 def render_robustness() -> None:
-    blue = read_json(DATA / "robustness/blue3_extended_robustness.json")
-    audio = read_json(DATA / "robustness/sleepy_alarm_robustness_matrix.json")
+    blue = read_json(ROBUSTNESS_DATA / "blue3_extended_robustness.json")
+    audio = read_json(ROBUSTNESS_DATA / "sleepy_alarm_robustness_matrix.json")
     parts = start(1100, 760, "Extended robustness results", "PASS/FAIL by saved trial; baseline is shown separately for Blue 3")
     parts += [rect(28, 100, 410, 620, "#ffffff"), rect(455, 100, 617, 620, "#ffffff")]
     parts += [text(50, 134, f'Blue 3 · {blue["success_count"]}/{blue["variant_count"]} variants', 19, "#17243a", 700),
@@ -138,7 +153,7 @@ def render_matrix(parts: list[str], x: int, y: int, title: str, metric: dict) ->
 
 
 def render_benchmark() -> None:
-    benchmark = read_json(DATA / "steganalysis/benchmark.json")
+    benchmark = read_json(STEGANALYSIS_DATA / "benchmark.json")
     parts = start(1100, 545, "Baseline detector confusion matrices", "Rows are actual labels; columns are predicted labels")
     render_matrix(parts, 30, 105, "Image", benchmark["metrics"]["image"])
     render_matrix(parts, 570, 105, "Audio", benchmark["metrics"]["audio"])
@@ -157,18 +172,17 @@ def arrow(parts: list[str], x1: int, y1: int, x2: int, y2: int) -> None:
 
 
 def render_provenance() -> None:
-    gate = read_json(DATA / "quality-gate.json")
-    provenance = read_json(DATA / "provenance.json")
+    gate = read_json(FINAL_DATA / "quality-gate.json")
+    provenance = read_json(FINAL_DATA / "provenance.json")
     artifacts = provenance["artifact_integrity"]
     inventory = provenance["source_inventory"]
-    package = provenance["submission_package"]
     tests = gate["verification_run"]["tests"]
     status = gate["quality_gate"]["status"].upper()
-    parts = start(1100, 480, "Provenance and verification flow", "Manifested challenge inputs, current checkout, run suite, and submission archive")
+    parts = start(1100, 480, "Provenance and verification flow", "Manifested challenge inputs, current checkout, run suite, and manual packaging")
     node(parts, 50, 120, 270, "SOURCE + MANIFEST", "2 official challenge URLs")
     node(parts, 410, 120, 270, "ARTIFACT INTEGRITY", f'{artifacts["passed"]}/{artifacts["total"]} SHA-256 checks')
     node(parts, 780, 120, 270, "CURRENT CHECKOUT", f'{inventory["file_count"]} files inventoried')
-    node(parts, 780, 260, 270, "CURRENT ARCHIVE", f'{package["status"]} · {package.get("file_count", "?")} members', "#e8f4ed" if package["status"] == "verified" else "#fae9e8")
+    node(parts, 780, 260, 270, "SUBMISSION PACKAGING", "Manual (clean Git branch)", "#eaf0f7")
     node(parts, 50, 280, 270, "UNITTEST", f'{tests["passed"]}/{tests["total"]} passed', "#e8f4ed" if tests["status"] == "passed" else "#fae9e8")
     node(parts, 410, 310, 270, "QUALITY GATE", status, "#e8f4ed" if status == "PASSED" else "#fae9e8")
     arrow(parts, 320, 164, 410, 164)
@@ -176,7 +190,7 @@ def render_provenance() -> None:
     arrow(parts, 320, 324, 410, 354)
     arrow(parts, 545, 208, 545, 310)
     arrow(parts, 780, 304, 680, 354)
-    parts.append(text(34, 438, "Archive verification checks CRC and project-file bytes; self-check result records are included but exempt from byte comparison to avoid recursion.", 12, "#53647c"))
+    parts.append(text(34, 438, "All source, script, test, evidence, figure, and report files are SHA-256 hashed; submission archive is packaged manually from tracked Git files.", 12, "#53647c"))
     finish(parts, OUT / "provenance-flow.svg")
 
 

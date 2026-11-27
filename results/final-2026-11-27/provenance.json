@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-27T08:50:45.785071+00:00",
+  "generated_at": "2026-11-27T12:07:26.975468+00:00",
   "project": "STEGANO",
   "artifact_sources": [
     {
@@ -62,17 +62,17 @@
   },
   "source_inventory": {
     "status": "hashed",
-    "file_count": 99,
+    "file_count": 90,
     "files": [
       {
         "path": "LOGBOOK.md",
-        "bytes": 44733,
-        "sha256": "3e53c6d421e2532175616706ee9f6e97848998b5a7ce5414790075a54bc7dff1"
+        "bytes": 45135,
+        "sha256": "e5f4f68c4dc7ae71e7082af5b027bbcaf42103b9243560c708ed03aa79de2c1d"
       },
       {
         "path": "README.md",
-        "bytes": 8098,
-        "sha256": "060918cc771df86e2ba8c88519a471fe385f5a21097c5beddc95d4931fd045f5"
+        "bytes": 7596,
+        "sha256": "b0ef40a1eced39bf9af08bfa3de4b93095b174ff82e860e5b169c98913cd76cc"
       },
       {
         "path": "evidence/terminal/2026-11-18-audio-assisted-terminal.png",
@@ -136,8 +136,8 @@
       },
       {
         "path": "evidence/terminal/2026-11-22-artifact-and-provenance-terminal.png",
-        "bytes": 747725,
-        "sha256": "88b71945e706009c8a04cf0ea34b026c450547c1d048dbd7a87c23fa4e2c14bc"
+        "bytes": 642253,
+        "sha256": "e2e5a0491b8ef169652baff9adce102fd50ae8e23e22a9ea22d490523c7b703a"
       },
       {
         "path": "evidence/terminal/2026-11-22-quality-gate-run-with-initial-path-errors-terminal.png",
@@ -151,8 +151,8 @@
       },
       {
         "path": "evidence/terminal/2026-11-22-unittest-and-artifact-integrity-terminal.png",
-        "bytes": 774791,
-        "sha256": "0b157f9b72f037d73a7c929adeb837d93fa2ddbf0f7a04d1726692a2f0903c8c"
+        "bytes": 665411,
+        "sha256": "fb7167d2059558ee13cc797895e0d66d83f516aab55db06d7e4e00041fa2d0e7"
       },
       {
         "path": "evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png",
@@ -315,14 +315,19 @@
         "sha256": "fd1ec29dceaca7a8804d433eb7eb1d5e3ee8d83ce5fd76a76e636033bb5795a1"
       },
       {
+        "path": "report/24021404_UETCN3124_CTF_Report.pdf",
+        "bytes": 4197103,
+        "sha256": "aba5b722e7009ab9f5aa6d028189866c9f7abf3da6b1e7e4bf09eec8ade748d2"
+      },
+      {
         "path": "report/APPENDIX.md",
-        "bytes": 48467,
-        "sha256": "1b831a178ed6f665a4025c20dfdb2b959a5ad9603a2bf360d4f3f84b35ee4e97"
+        "bytes": 47462,
+        "sha256": "34b5096188328d78c9d616b7a5698d0d9081af184a750ca304ff1c3f5bdf1bc9"
       },
       {
         "path": "report/REPORT.md",
-        "bytes": 50109,
-        "sha256": "e206035612259a353dbec7921e7ef5a9ccc2463c316d38e6de7302e45aee5728"
+        "bytes": 50226,
+        "sha256": "686bdeadcfa0dde8b6affd0274c6affba89f3953aa14df9c9d64f3f0f0a72764"
       },
       {
         "path": "report/figures/benchmark-confusion-matrices.svg",
@@ -331,13 +336,13 @@
       },
       {
         "path": "report/figures/provenance-flow.svg",
-        "bytes": 3595,
-        "sha256": "fa940250079cb54c10f57a529d0c911a9787d92bc0c9dbe35dda401ba60e095e"
+        "bytes": 3598,
+        "sha256": "98e6c6ddcfdf6b6d238fb1d9355dc284ad74b8fda5125ef367f15d945135b961"
       },
       {
         "path": "report/figures/quality-gate-summary.svg",
-        "bytes": 2953,
-        "sha256": "eb27c41d73fd5ced420aff2a57eb63d19d4f89c2eb3eab31d131ebd5ccc90aae"
+        "bytes": 2515,
+        "sha256": "b1c655dd1231e6b049e99bbb550a2b88b7cebdcfc76d0b55e301e482f37a0160"
       },
       {
         "path": "report/figures/robustness-heatmaps.svg",
@@ -350,6 +355,11 @@
         "sha256": "c051335e6a1b7826ce33336d02994e713881486ec6b7706898bc4c126b06d042"
       },
       {
+        "path": "requirements-lock.txt",
+        "bytes": 655,
+        "sha256": "317c01765ba6b4e35c475bb41078172c49a60f1996a5262361d69b214fffdc52"
+      },
+      {
         "path": "requirements.txt",
         "bytes": 99,
         "sha256": "3d83a59a9978087dcda74492b4c4a6806ceefc98e39d4192f595f63ef9fe9874"
@@ -360,69 +370,14 @@
         "sha256": "cc9bba6899b572e0271709d616aa4c7a340514516df5b95ad9cbed67069a99ba"
       },
       {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.49.40.png",
-        "bytes": 413931,
-        "sha256": "48e2398351110ca38ddeb065b82697e681e5266644a0fd189b9614f391822983"
-      },
-      {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.50.28.png",
-        "bytes": 183950,
-        "sha256": "70030370b2ba143b38c1bf7d9b3760dc5a999de72358eb5f185242f46750c918"
-      },
-      {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.51.13.png",
-        "bytes": 246524,
-        "sha256": "54b3fac787a55ec0a12cdbf02ee01dfd72f71d842935190c1d61354198b3fbef"
-      },
-      {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.51.38.png",
-        "bytes": 445721,
-        "sha256": "0ff0d79240bee9fa6ad21604fab98430d9a1ad944806223bff3baa8a8a0f6370"
-      },
-      {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.51.50.png",
-        "bytes": 790767,
-        "sha256": "11311543ea5962c27a7af42f7261e11a27c6561023fdf96116e3661a289a57a9"
-      },
-      {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.04.png",
-        "bytes": 684764,
-        "sha256": "49e9c3651ffbe655a30b2d1e76f41892cf2ae2cce6a2aacc74abd04e8572b5f0"
-      },
-      {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.16.png",
-        "bytes": 697394,
-        "sha256": "f83ef130bbcad58284e55395aed6c0bd0ecfddeb05ba4502637ec264a62e5a1c"
-      },
-      {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.29.png",
-        "bytes": 446011,
-        "sha256": "516831c6b4e81246bd2fbaaeea090b2aaeaaee414fa8ddd1206c02239a2397ec"
-      },
-      {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.50.png",
-        "bytes": 457861,
-        "sha256": "f0604112d5a8f685429f26c191cc9b31ac167e3d37e819f9e0a133b42839697a"
-      },
-      {
-        "path": "results/recheck/screenshots/Screenshot 2026-11-25 at 17.52.57.png",
-        "bytes": 230206,
-        "sha256": "10820f09a40297f6ed71a7914b64ace6537c05be4dea08135e18f48ff00342d9"
-      },
-      {
         "path": "scripts/check_provenance.py",
-        "bytes": 9479,
-        "sha256": "576e3c208ea88697ec7a91f4ecf9f78583ba614d50d576f337f73c4599b7c920"
-      },
-      {
-        "path": "scripts/create_submission_zip.py",
-        "bytes": 4019,
-        "sha256": "b84417d459ee3e3bd6bf4af93994b3008a1450980cb4a283e98eb6ada117a2de"
+        "bytes": 5982,
+        "sha256": "8e5bfa1246cde5920eb8eb8aec20107821421b307c02f43dd18eb4487ee4ec96"
       },
       {
         "path": "scripts/inspect_discovery_signals.py",
-        "bytes": 9136,
-        "sha256": "5b13c7345f7e57c08f46707b6d06d72d9c3cd92f2a2b9aea70557da8127668ca"
+        "bytes": 9147,
+        "sha256": "8cc15a29d9928ca24b07b2b7d34fcb7d46752aee311d5fd6dfaecdfe6001b2a0"
       },
       {
         "path": "scripts/measure_ask_params.py",
@@ -431,8 +386,8 @@
       },
       {
         "path": "scripts/render_report_figures.py",
-        "bytes": 9941,
-        "sha256": "69854d45da2ee690c20689140018e7aee15a336e422ff00ea50a92f9ccef8018"
+        "bytes": 9968,
+        "sha256": "650c9351584295e68c848764a3886532bf8031d7b7115b86f8ba0d51052d76ee"
       },
       {
         "path": "scripts/run_audio_asymmetric.py",
@@ -456,8 +411,8 @@
       },
       {
         "path": "scripts/verify_reproducibility.py",
-        "bytes": 7858,
-        "sha256": "9e21a7fa33ea1ce70d49081d7d8d6b3d8f9da76836d50da07691e04b26e019fc"
+        "bytes": 7451,
+        "sha256": "86c57f8e3d5f073a593b3fb356492774565c7467b489d367cfb09ab591ea01c6"
       },
       {
         "path": "src/audio_alignment.py",
@@ -562,33 +517,8 @@
     ]
   },
   "submission_package": {
-    "status": "verified",
-    "path": "submission_package_current.zip",
-    "file_count": 176,
-    "required_files": [
-      "LOGBOOK.md",
-      "README.md",
-      "report/24021404_UETCN3124_CTF_Report.pdf",
-      "report/REPORT.md",
-      "requirements.txt",
-      "src/stegano/cli.py"
-    ],
-    "validation": "zip CRC, required members, full file-set, project-file byte comparison; self-check records checked for presence and CRC",
-    "self_check_outputs_exempt_from_byte_comparison": [
-      "results/final-2026-11-27/provenance.json",
-      "results/final-2026-11-27/quality-gate-console.log",
-      "results/final-2026-11-27/quality-gate.json",
-      "results/final-2026-11-27/reproducibility.log",
-      "results/final/provenance.json",
-      "results/final/quality-gate-console.log",
-      "results/final/quality-gate.json",
-      "results/final/reproducibility.log",
-      "results/recheck/provenance.json",
-      "results/recheck/quality-gate-console.log",
-      "results/recheck/quality-gate.json",
-      "results/recheck/reproducibility.log"
-    ],
-    "errors": []
+    "status": "manual",
+    "note": "Submission archive is packaged manually from tracked Git files."
   },
   "status": "verified"
 }

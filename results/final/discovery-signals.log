@@ -1,3 +1,0 @@
-Blue 3: base=(64, 77, 205) non_base=3228/262144 max_|x-y|=9px
-Sleepy Alarm: target_8khz_ratio=0.000257 residual_peak=8000.00Hz residual_8khz_ratio=0.5240
-Wrote results/final/discovery-signals.json and report/figures/sleepy-residual-spectrum.svg

@@ -573,14 +573,15 @@ The image baseline identified all five positive samples and rejected all 12 synt
 
 - Implemented and ran `scripts/measure_ask_params.py` (`--self-check` and full challenge run) into `results/independent-measurement/`, with local terminal capture saved at `evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png` (Figure D.7).
 - Verified public CTF references accessed on 27 November 2026 (Cook1e's ImaginaryCTF 2024 writeup and official BYU-CSA / ImaginaryCTF 2024 challenge READMEs) and documented the comparison in `REPORT.md` §7.2 and IEEE Reference `[13]`.
-- Updated `REPORT.md` (§4.3, §7.2, Appendix A–D, cover dates `27/11/2026` / `13/12/2026`), `README.md`, `.gitignore`, and `report/APPENDIX.md`, exported `report/24021404_UETCN3124_CTF_Report.pdf`, and ran the final packaging and quality gate into `results/final-2026-11-27/`.
+- Updated `REPORT.md` (§4.3, §7.2, Appendix A–D, cover dates `27/11/2026` / `13/12/2026`), `README.md`, `.gitignore`, and `report/APPENDIX.md`; removed `scripts/create_submission_zip.py` in favor of manual packaging from tracked Git files on the `clean-submission` branch; pruned historical `results/` snapshots via `.gitignore`; synchronized `scripts/render_report_figures.py` and `scripts/inspect_discovery_signals.py` to `results/final-2026-11-27/`; exported `report/24021404_UETCN3124_CTF_Report.pdf`; and ran the final quality gate into `results/final-2026-11-27/`.
 
 **Commands and observed outputs:**
 
 ```bash
 .venv/repro314/bin/python scripts/measure_ask_params.py --self-check
 .venv/repro314/bin/python scripts/measure_ask_params.py
-.venv/repro314/bin/python scripts/create_submission_zip.py
+.venv/repro314/bin/python scripts/inspect_discovery_signals.py
+.venv/repro314/bin/python scripts/render_report_figures.py
 .venv/repro314/bin/python scripts/verify_reproducibility.py \
   --output results/final-2026-11-27/quality-gate.json \
   --provenance-output results/final-2026-11-27/provenance.json \
@@ -595,5 +596,5 @@ The image baseline identified all five positive samples and rejected all 12 synt
   - Single-step intervals ($k=1$, $n=135$): mean `20.0702 ms`, std `1.5939 ms`, error vs. 20 ms `+0.0702 ms` (`0.35%`, `49.83 baud`).
   - Run-length normalized ($n=221$, $\max k=5$): mean `20.0206 ms`, std `1.2523 ms`, error vs. 20 ms `+0.0206 ms` (`0.10%`, `49.95 baud`).
   - Carrier drop-off: `7.0020 s` (sample `308,786`, `+0.0020 s` vs. 7.0 s); tail noise mean `0.000094`, max `0.000732`.
-- `create_submission_zip.py` + `verify_reproducibility.py` (exit code `0`): `quality_gate: passed`, `22/22` tests PASS, `3/3` artifacts verified, `provenance: verified`, `submission_package: verified`.
-- Saved records: [`ask_params.json`](results/independent-measurement/ask_params.json), [`ask_params.log`](results/independent-measurement/ask_params.log), [`quality-gate.json`](results/final-2026-11-27/quality-gate.json), [`provenance.json`](results/final-2026-11-27/provenance.json), [`reproducibility.log`](results/final-2026-11-27/reproducibility.log), and `submission_package_current.zip`.
+- `verify_reproducibility.py` (exit code `0`): `quality_gate: passed`, `22/22` tests PASS, `3/3` artifacts verified, `provenance: verified` (submission archive packaged manually from tracked Git files).
+- Saved records: [`ask_params.json`](results/independent-measurement/ask_params.json), [`ask_params.log`](results/independent-measurement/ask_params.log), [`discovery-signals.json`](results/final-2026-11-27/discovery-signals.json), [`quality-gate.json`](results/final-2026-11-27/quality-gate.json), [`provenance.json`](results/final-2026-11-27/provenance.json), and [`reproducibility.log`](results/final-2026-11-27/reproducibility.log).

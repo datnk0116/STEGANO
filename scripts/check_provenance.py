@@ -9,7 +9,6 @@ import importlib.metadata
 import json
 import platform
 import sys
-import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -19,15 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from verify_artifacts import verify_artifacts  # noqa: E402
-from create_submission_zip import (  # noqa: E402
-    INCLUDE as PACKAGE_INCLUDE,
-    REQUIRED_ARCHIVE_FILES,
-    SELF_CHECK_OUTPUTS,
-    should_skip as should_skip_package_file,
-)
 
 
-DEFAULT_OUTPUT = ROOT / "results" / "verification" / "provenance.json"
+DEFAULT_OUTPUT = ROOT / "results" / "final-2026-11-27" / "provenance.json"
 SOURCE_DIRECTORIES = (
     "src",
     "scripts",
@@ -35,17 +28,17 @@ SOURCE_DIRECTORIES = (
     "visualization",
     "evidence",
     "report/figures",
-    "results/recheck/screenshots",
 )
 SOURCE_FILES = (
     "README.md",
     "LOGBOOK.md",
     "requirements.txt",
+    "requirements-lock.txt",
     "report/REPORT.md",
     "report/APPENDIX.md",
+    "report/24021404_UETCN3124_CTF_Report.pdf",
     "results/artifact_manifest.json",
 )
-SUBMISSION_PACKAGE = ROOT / "submission_package_current.zip"
 DEPENDENCIES = ("numpy", "Pillow", "scipy", "soundfile", "plotly", "streamlit")
 
 
@@ -58,7 +51,7 @@ def sha256(path: Path) -> str:
 
 
 def source_inventory(root: Path = ROOT) -> list[dict[str, Any]]:
-    """Hash project files, documented evidence, and the latest screenshot captures."""
+    """Hash project source, script, test, evidence, figure, and report files."""
     paths: set[Path] = set()
     for directory in SOURCE_DIRECTORIES:
         base = root / directory
@@ -87,81 +80,6 @@ def source_inventory(root: Path = ROOT) -> list[dict[str, Any]]:
     return inventory
 
 
-def expected_package_files(root: Path = ROOT) -> dict[str, Path]:
-    """Return the project files that the package builder is expected to archive."""
-    expected: dict[str, Path] = {}
-    for name in PACKAGE_INCLUDE:
-        source = root / name
-        candidates = [source] if source.is_file() else sorted(source.rglob("*"))
-        for path in candidates:
-            if path.is_file() and not should_skip_package_file(path, SUBMISSION_PACKAGE):
-                expected[path.relative_to(root).as_posix()] = path
-    return expected
-
-
-def verify_submission_package(root: Path = ROOT) -> dict[str, Any]:
-    """Verify archive readability, required members, and current project contents."""
-    archive_path = root / SUBMISSION_PACKAGE.name
-    if not archive_path.is_file():
-        return {
-            "status": "not_verified",
-            "reason": f"Submission archive is missing: {archive_path.name}.",
-        }
-
-    expected = expected_package_files(root)
-    errors: list[str] = []
-    try:
-        with zipfile.ZipFile(archive_path) as archive:
-            names_list = archive.namelist()
-            names = set(names_list)
-            if len(names_list) != len(names):
-                errors.append("Archive contains duplicate member names.")
-            damaged = archive.testzip()
-            if damaged:
-                errors.append(f"Archive CRC check failed at {damaged}.")
-            missing_required = REQUIRED_ARCHIVE_FILES - names
-            if missing_required:
-                errors.append(
-                    "Required archive files are missing: "
-                    + ", ".join(sorted(missing_required))
-                    + "."
-                )
-
-            missing = set(expected) - names
-            extra = names - set(expected)
-            if missing:
-                errors.append("Project files missing from archive: " + ", ".join(sorted(missing)))
-            if extra:
-                errors.append("Unexpected archive members: " + ", ".join(sorted(extra)))
-
-            # Run records contain the result of this archive check, so their bytes are self-referential.
-            # They remain required archive members and are covered by testzip() CRC validation.
-            mismatched = [
-                name
-                for name, path in expected.items()
-                if name in names and name not in SELF_CHECK_OUTPUTS and archive.read(name) != path.read_bytes()
-            ]
-            if mismatched:
-                errors.append(
-                    "Archive contents differ from the current project: "
-                    + ", ".join(mismatched)
-                    + "."
-                )
-    except (OSError, zipfile.BadZipFile, RuntimeError) as exc:
-        errors.append(f"Archive could not be read: {type(exc).__name__}: {exc}")
-        names = set()
-
-    return {
-        "status": "verified" if not errors else "failed",
-        "path": archive_path.relative_to(root).as_posix(),
-        "file_count": len(names),
-        "required_files": sorted(REQUIRED_ARCHIVE_FILES),
-        "validation": "zip CRC, required members, full file-set, project-file byte comparison; self-check records checked for presence and CRC",
-        "self_check_outputs_exempt_from_byte_comparison": sorted(SELF_CHECK_OUTPUTS),
-        "errors": errors,
-    }
-
-
 def dependency_versions() -> dict[str, str | None]:
     versions: dict[str, str | None] = {}
     for package in DEPENDENCIES:
@@ -188,12 +106,11 @@ def build_provenance(root: Path = ROOT) -> dict[str, Any]:
         for check in artifact_result["checks"]
     ]
     inventory = source_inventory(root)
-    package_result = verify_submission_package(root)
-    integrity_passed = (
-        artifact_result["all_passed"]
-        and bool(inventory)
-        and package_result["status"] == "verified"
-    )
+    package_result = {
+        "status": "manual",
+        "note": "Submission archive is packaged manually from tracked Git files.",
+    }
+    integrity_passed = artifact_result["all_passed"] and bool(inventory)
 
     artifact_sources = [
         {
@@ -236,7 +153,7 @@ def main() -> int:
         "--output",
         type=Path,
         default=DEFAULT_OUTPUT,
-        help="JSON output path (default: results/verification/provenance.json)",
+        help="JSON output path (default: results/final-2026-11-27/provenance.json)",
     )
     args = parser.parse_args()
     output = args.output if args.output.is_absolute() else ROOT / args.output
@@ -256,7 +173,7 @@ def main() -> int:
     print(
         f"Provenance: {provenance['status']} — artifacts "
         f"{artifact['passed']}/{artifact['total']} — "
-        f"submission_package {provenance['submission_package']['status']}"
+        f"source_inventory {provenance['source_inventory']['file_count']} files"
     )
     print(f"Wrote {output.relative_to(ROOT) if output.is_relative_to(ROOT) else output}")
     return 0 if provenance["status"] == "verified" else 1

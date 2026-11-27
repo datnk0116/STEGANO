@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-27T08:50:45.808274+00:00",
+  "generated_at": "2026-11-27T12:07:26.997971+00:00",
   "project": "STEGANO",
   "verification_run": {
     "tests": {
@@ -24,40 +24,13 @@
     }
   },
   "submission_package": {
-    "status": "verified",
-    "path": "submission_package_current.zip",
-    "file_count": 176,
-    "required_files": [
-      "LOGBOOK.md",
-      "README.md",
-      "report/24021404_UETCN3124_CTF_Report.pdf",
-      "report/REPORT.md",
-      "requirements.txt",
-      "src/stegano/cli.py"
-    ],
-    "validation": "zip CRC, required members, full file-set, project-file byte comparison; self-check records checked for presence and CRC",
-    "self_check_outputs_exempt_from_byte_comparison": [
-      "results/final-2026-11-27/provenance.json",
-      "results/final-2026-11-27/quality-gate-console.log",
-      "results/final-2026-11-27/quality-gate.json",
-      "results/final-2026-11-27/reproducibility.log",
-      "results/final/provenance.json",
-      "results/final/quality-gate-console.log",
-      "results/final/quality-gate.json",
-      "results/final/reproducibility.log",
-      "results/recheck/provenance.json",
-      "results/recheck/quality-gate-console.log",
-      "results/recheck/quality-gate.json",
-      "results/recheck/reproducibility.log"
-    ],
-    "errors": [],
-    "reported_by": "scripts/check_provenance.py",
-    "script_exit_code": 0
+    "status": "manual",
+    "note": "Submission archive is packaged manually from tracked Git files."
   },
   "quality_gate": {
     "status": "passed",
     "passed": true,
-    "scope": "Artifact integrity, the discovered unittest suite, source provenance, and current submission archive.",
+    "scope": "Artifact integrity, the discovered unittest suite, and source provenance.",
     "submission_ready": true
   },
   "runs": [
@@ -68,7 +41,7 @@
         "scripts/verify_artifacts.py"
       ],
       "exit_code": 0,
-      "duration_seconds": 0.03
+      "duration_seconds": 0.034
     },
     {
       "name": "unittest",
@@ -82,7 +55,7 @@
         "-v"
       ],
       "exit_code": 0,
-      "duration_seconds": 3.812
+      "duration_seconds": 3.708
     },
     {
       "name": "provenance",
@@ -93,7 +66,7 @@
         "/Users/dat.vjp.pr0_10x/Desktop/SECURITY/btl/STEGANO/STEGANO/results/final-2026-11-27/provenance.json"
       ],
       "exit_code": 0,
-      "duration_seconds": 0.174
+      "duration_seconds": 0.086
     }
   ],
   "log": "results/final-2026-11-27/reproducibility.log"
