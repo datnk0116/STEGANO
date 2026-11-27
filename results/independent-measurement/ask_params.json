@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-11-27T08:15:50.501785+00:00",
+  "method": "independent_residual_periodogram_and_5ms_envelope_transitions",
+  "inputs": {
+    "target": "data/sleepy_alarm/morning_n_breakfast.mp3",
+    "reference": "data/sleepy_alarm/morning_n_breakfast_original.mp3"
+  },
+  "measurements": {
+    "sample_rate_hz": 44100,
+    "target_samples": 441840,
+    "reference_samples": 438912,
+    "overlap_samples": 438912,
+    "overlap_duration_seconds": 9.95265306122449,
+    "alignment": {
+      "lag_samples": 1729,
+      "correlation": 0.9998734358246231,
+      "target_start_sample": 1729
+    },
+    "carrier": {
+      "peak_hz": 7999.977444225721,
+      "band_pm_100hz_energy_ratio": 0.4741452263161934,
+      "error_vs_8000hz_hz": -0.022555774278771423
+    },
+    "envelope": {
+      "window_samples": 220,
+      "window_ms": 4.988662131519274,
+      "overlap_p10": 3.954532531373783e-05,
+      "overlap_p95": 0.005116655485238104,
+      "dropoff_threshold": 0.001054967357298611,
+      "transition_diff_height_threshold": 0.001279163871309526
+    },
+    "transitions": {
+      "transition_count": 222,
+      "interval_count": 221,
+      "raw_intervals_ms": {
+        "mean": 31.392043997086013,
+        "std": 17.952196129210364,
+        "median": 20.453514739228922,
+        "min": 12.31292517006807,
+        "max": 99.97732426303901
+      },
+      "single_symbol_intervals": {
+        "count": 135,
+        "mean_ms": 20.070210800369534,
+        "std_ms": 1.5939426465005302,
+        "error_vs_20ms_ms": 0.07021080036953364,
+        "relative_error_vs_20ms_pct": 0.3510540018476682,
+        "implied_baud": 49.82508703802892
+      },
+      "run_length_normalized": {
+        "count": 221,
+        "max_run_length_k": 5,
+        "mean_ms": 20.02055010038203,
+        "std_ms": 1.2523463280179294,
+        "error_vs_20ms_ms": 0.020550100382031644,
+        "relative_error_vs_20ms_pct": 0.10275050191015822,
+        "implied_baud": 49.94867748318854
+      }
+    },
+    "dropoff": {
+      "last_active_sample": 308786,
+      "dropoff_seconds": 7.001950113378685,
+      "error_vs_7s_seconds": 0.0019501133786850033,
+      "tail_noise_floor": {
+        "tail_start_seconds": 7.201950113378685,
+        "mean": 9.353272676467574e-05,
+        "std": 8.506958725440245e-05,
+        "max": 0.0007324663196358384
+      }
+    }
+  }
+}

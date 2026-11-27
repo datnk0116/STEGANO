@@ -1,0 +1,9 @@
+Target: data/sleepy_alarm/morning_n_breakfast.mp3
+Reference: data/sleepy_alarm/morning_n_breakfast_original.mp3
+Alignment: lag=1729 samples, target_start_sample=1729, corr=0.999873
+Carrier peak: 7999.9774 Hz (err vs 8000 Hz: -0.0226 Hz), +-100 Hz energy ratio=0.474145 (47.41%)
+Envelope window: 220 samples (4.9887 ms), p10=0.000040, p95=0.005117
+Transitions detected: 222 (221 intervals); raw interval mean=31.3920 ms, std=17.9522 ms, median=20.4535 ms [12.3129, 99.9773] ms
+Single-step intervals (k=1, n=135): mean=20.0702 ms, std=1.5939 ms, err vs 20 ms=+0.0702 ms (0.35%), implied=49.83 baud
+Run-length normalized (n=221, max_k=5): mean=20.0206 ms, std=1.2523 ms, err vs 20 ms=+0.0206 ms (0.10%), implied=49.95 baud
+Carrier drop-off: 7.0020 s (sample 308786, err vs 7.0 s: +0.0020 s), tail noise mean=0.000094, max=0.000732
