@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-27T13:19:05.841694+00:00",
+  "generated_at": "2026-11-27T13:25:48.502964+00:00",
   "project": "STEGANO",
   "artifact_sources": [
     {
@@ -111,8 +111,8 @@
       },
       {
         "path": "evidence/terminal/2026-11-19-asymmetric-run-terminal.png",
-        "bytes": 660499,
-        "sha256": "d1356ea8d7ff316fe8d727740c9319630650ab3d1dee289597aa97bd08813681"
+        "bytes": 561614,
+        "sha256": "b23d5148f50d7f108a39e4f12780d220b40b8c8adff0a6e022f130ca6266ff42"
       },
       {
         "path": "evidence/terminal/2026-11-20-extended-robustness-summary-terminal.png",
