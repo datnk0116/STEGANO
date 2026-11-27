@@ -365,7 +365,7 @@ The verification runner (`scripts/verify_reproducibility.py`) runs `scripts/veri
 
 ### D. Terminal Execution Evidence
 
-The seven unaltered terminal screenshots below from `evidence/terminal/` show environment setup, decoding for both challenges (including the reference-free negative control), unit tests, artifact/provenance checks, and independent ASK parameter measurement:
+The eight unaltered terminal screenshots below from `evidence/terminal/` show environment setup, decoding for both challenges (including the reference-free negative control), unit tests, artifact/provenance checks, independent ASK parameter measurement, and asymmetric audio robustness:
 
 ![Python 3.14.10 environment setup and pip check](../evidence/terminal/2026-11-18-setup-terminal.png)
 
@@ -394,3 +394,7 @@ The seven unaltered terminal screenshots below from `evidence/terminal/` show en
 ![Independent ASK parameter measurement local terminal run](../evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png)
 
 *Figure D.7. Independent Sleepy Alarm ASK parameter verification (`scripts/measure_ask_params.py --self-check` and `scripts/measure_ask_params.py`) executed locally on the student's machine (`evidence/terminal/2026-11-27-independent-ask-measurement-terminal.png`).*
+
+![Sleepy Alarm asymmetric audio robustness terminal output](../evidence/terminal/2026-11-19-asymmetric-run-terminal.png)
+
+*Figure D.8. Sleepy Alarm asymmetric audio robustness run (`scripts/run_audio_asymmetric.py`): baseline PASS and 2/6 one-sided variants PASS (target-only and reference-only resampling round-trips), with all four one-sided gain variants failing (`evidence/terminal/2026-11-19-asymmetric-run-terminal.png`).*

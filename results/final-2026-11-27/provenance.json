@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-27T13:25:48.502964+00:00",
+  "generated_at": "2026-11-27T13:28:46.761896+00:00",
   "project": "STEGANO",
   "artifact_sources": [
     {
@@ -316,8 +316,8 @@
       },
       {
         "path": "report/24021404_UETCN3124_CTF_Report.pdf",
-        "bytes": 4171841,
-        "sha256": "a7c261837b86e6efdc0ed2ed6ce352a0bd1f83f63cc71ed95a7bab63ec780192"
+        "bytes": 4588492,
+        "sha256": "8509aadaad939abb4e2fe936c2113a463c6bfba3fa349e3adf5ba8573ca896a3"
       },
       {
         "path": "report/APPENDIX.md",
@@ -326,8 +326,8 @@
       },
       {
         "path": "report/REPORT.md",
-        "bytes": 50215,
-        "sha256": "07602017088415e6fc1004271b5d5e12bbe8184017b76f451683e142b2ab3f69"
+        "bytes": 50674,
+        "sha256": "78bee33761bb5d83086dac377f93c03d3ae85b615c8707bbe9764626f9e9322b"
       },
       {
         "path": "report/figures/benchmark-confusion-matrices.svg",
